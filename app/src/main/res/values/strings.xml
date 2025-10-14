@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">mindbloom</string>
+    <string name="signin">
+        <font color = "#828282">have an account? </font><font color = "#395886">Sign in</font>
+    </string>
+    <string name="create">
+        <font color = "#828282">Dont have an account? </font><font color = "#395886">Create Account</font>
+    </string>
+    <string name="info">
+        <font color = "#828282">By clicking continue, you agree to our </font> <font color="#000000">Terms of Service </font> <font color = "#828282">and </font> <font color="#000000">Privacy Policy</font>.
+    </string>
+    <string name="default_web_client_id">YOUR_CLIENT_ID_FROM_GOOGLE_SERVICES_JSON</string>
+
+</resources>

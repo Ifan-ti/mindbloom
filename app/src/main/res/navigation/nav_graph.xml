@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_Registrasi">
+
+    <fragment
+        android:id="@+id/fragment_Registrasi"
+        android:name="com.project.mindbloom.Fragment_Registrasi"
+        android:label="Fragment_Registrasi" >
+        <action
+            android:id="@+id/action_fragment_Registrasi_to_fragment_Login"
+            app:destination="@id/fragment_Login" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_Login"
+        android:name="com.project.mindbloom.Fragment_Login"
+        android:label="Fragment_Login" >
+        <action
+            android:id="@+id/action_fragment_Login_to_fragment_Registrasi2"
+            app:destination="@id/fragment_Registrasi" />
+    </fragment>
+</navigation>

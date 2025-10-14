@@ -1,0 +1,11 @@
+<resources>
+
+<style name="RoundedTextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.CornerRadius</item>
+</style>
+
+<style name="ShapeAppearance.App.CornerRadius" parent="">
+<item name="cornerFamily">rounded</item>
+<item name="cornerSize">20dp</item>
+</style>
+</resources>

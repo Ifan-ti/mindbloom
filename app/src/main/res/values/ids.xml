@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="btnOk" type="id" />
+    <item name="tvTitle" type="id" />
+    <item name="tvClock" type="id" />
+</resources>

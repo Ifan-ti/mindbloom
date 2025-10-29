@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "570306729143",
+    "firebase_url": "https://mind-bloom-27b7e-default-rtdb.firebaseio.com",
+    "project_id": "mind-bloom-27b7e",
+    "storage_bucket": "mind-bloom-27b7e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570306729143:android:a9802e7267419ad686e932",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570306729143-h8u5bvveovbmpu9874v92klgu333aco2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myapplication",
+            "certificate_hash": "02096ca527a7c4ed32f283668240fbd5e3f3b8e3"
+          }
+        },
+        {
+          "client_id": "570306729143-4q4qbooh9judvc26ntbfsf900uut2j4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrmYGYhjAjFMA8Kz5uXeexKo3EfyyZQ4w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570306729143-4q4qbooh9judvc26ntbfsf900uut2j4n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

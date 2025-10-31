@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/defaultbackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewDiaryHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:nestedScrollingEnabled="false"
+            android:visibility="gone"
+
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/riwayatDiary"
+            tools:layout_editor_absoluteX="97dp"
+
+
+            tools:listitem="@layout/aset_item_card_scroll"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/headerBackground"
+            android:layout_width="0dp"
+            android:layout_height="170dp"
+            android:background="@drawable/raunded"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/avatarImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="User Avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <ImageView
+            android:id="@+id/AppIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_app"
+            android:contentDescription="App Icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="15dp" />
+
+        <TextView
+            android:id="@+id/UsernameUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/AppIcon"
+            app:layout_constraintStart_toEndOf="@+id/avatarImage"
+            app:layout_constraintTop_toTopOf="@+id/avatarImage"
+            app:layout_constraintBottom_toBottomOf="@+id/avatarImage"
+            android:text="Hallo User"
+            android:textColor="#D5DEEF"
+            android:textSize="16sp" />
+
+        <EditText
+
+            android:id="@+id/SearchInput"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avatarImage"
+            android:layout_marginTop="10dp"
+
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_input_otp"
+            android:hint="Cari Artikel Menarik Hari ini"
+            android:inputType="text"
+            android:textColor="@color/default_blue"
+            android:textColorHint="@color/default_blue"
+            android:textSize="12sp"
+            android:padding="10dp"
+            tools:ignore="RtlSymmetry"
+            />
+            />
+
+        <ImageButton
+            android:id="@+id/btnSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/searchicon"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="@+id/SearchInput"
+            app:layout_constraintBottom_toBottomOf="@+id/SearchInput"
+            app:layout_constraintEnd_toEndOf="@+id/SearchInput"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnArtikel"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnDiary"
+            app:layout_constraintTop_toBottomOf="@+id/SearchInput"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="8dp"
+            android:text="Artikel"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="#D5DEEF"
+            android:background="@drawable/clickbtn"
+            app:backgroundTint="@null"
+            android:textStyle="normal" />
+
+        <Button
+            android:id="@+id/btnDiary"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnArtikel"
+            app:layout_constraintTop_toBottomOf="@+id/SearchInput"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="8dp"
+            android:text="Diary"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="#1D3455"
+            android:background="@drawable/frame_home"
+            app:backgroundTint="@null"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/rekomendasiArtikel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headerBackground"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:text="Rekomendasi Artikel"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="visible"
+            />
+
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerArticleSlider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintTop_toBottomOf="@+id/rekomendasiArtikel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/frame_home"
+            tools:listitem="@layout/aset_item_card_slide"
+            android:visibility="visible"
+            />
+
+        <LinearLayout
+            android:id="@+id/SlideIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/viewPagerArticleSlider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewDates"
+            android:layout_width="wrap_content"
+            android:layout_height="82dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="1dp"
+
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@+id/SlideIndicator"
+            android:orientation="horizontal"
+            tools:listitem="@layout/aset_item_date_box"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            />
+
+        <TextView
+            android:id="@+id/ArtikelPopuler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewDates"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:text="Artikel Populer"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="visible" />
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPopularArticles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/ArtikelPopuler"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/aset_item_card_scroll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="80dp"
+            android:visibility="visible"
+
+            />
+
+        <TextView
+            android:id="@+id/diaryHariIni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headerBackground"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:text="Diary Hari Ini"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerDiarySlider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintTop_toBottomOf="@+id/diaryHariIni"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+
+            android:background="@drawable/frame_home"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/riwayatDiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewDates"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:text="Riwayat Diary"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

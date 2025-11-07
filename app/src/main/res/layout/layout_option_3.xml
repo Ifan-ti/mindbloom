@@ -10,7 +10,7 @@
         android:id="@+id/txt_question"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="How do you identify your gender?"
+        android:text="How often do you write diaries?"
         android:textColor="@color/txt_blue"
         android:textSize="28dp"
         android:fontFamily="@font/inika_bold"
@@ -21,7 +21,7 @@
 
 
     <RadioGroup
-        android:id="@+id/radioGroupGender"
+        android:id="@+id/radioGroup3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -31,21 +31,27 @@
         android:layout_marginTop="50dp">
 
         <RadioButton
-            android:id="@+id/rb_female"
+            android:id="@+id/rb_new"
             style="@style/CustomRadioButton"
-            android:text="Female"
+            android:text="I'm new to it"
             android:layout_marginBottom="29dp"/>
 
         <RadioButton
-            android:id="@+id/rb_male"
+            android:id="@+id/rb_It_depens"
             style="@style/CustomRadioButton"
-            android:text="Male"
+            android:text="It depens"
             android:layout_marginBottom="29dp"/>
 
         <RadioButton
-            android:id="@+id/rb_other"
+            android:id="@+id/rb_Occasionally"
             style="@style/CustomRadioButton"
-            android:text="Other"
+            android:text="Occasionally"
+            android:layout_marginBottom="29dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_Frequntly"
+            style="@style/CustomRadioButton"
+            android:text="Frequntly"
             android:layout_marginBottom="29dp"/>
 
     </RadioGroup>
@@ -70,13 +76,13 @@
             android:layout_margin="2dp" />
 
         <View
-            android:layout_width="54dp"
+            android:layout_width="7dp"
             android:layout_height="7dp"
             android:background="@drawable/longcircle"
             android:layout_margin="2dp" />
 
         <View
-            android:layout_width="7dp"
+            android:layout_width="54dp"
             android:layout_height="7dp"
             android:background="@drawable/longcircle"
             android:layout_margin="2dp" />
@@ -100,8 +106,6 @@
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

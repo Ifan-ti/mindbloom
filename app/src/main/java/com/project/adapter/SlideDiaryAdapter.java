@@ -1,5 +1,6 @@
 package com.project.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.project.data.ArticleModel;
 import com.project.data.DiaryModel;
+import com.project.mindbloom.FormDetail;
 import com.project.mindbloom.R;
 
 import java.util.ArrayList;
@@ -48,10 +50,24 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
         // Mengisi data
         holder.tvTitle.setText(Diary.getTitle());
         holder.tvExcerpt.setText(Diary.getContent());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, FormDetail.class);
+
+                // 🔥 KIRIM ID DIARY
+                intent.putExtra(FormDetail.EXTRA_DIARY_ID, Diary.getIdDiary());
+
+                context.startActivity(intent);
+            }
+        });
+
     }
         @Override
         public int getItemCount () {
             return DiaryList.size();
+
         }
 
 

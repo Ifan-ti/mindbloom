@@ -27,6 +27,8 @@
         </activity>
 
         <activity android:name=".RegistrasiActivity"/>
+        <activity android:name=".FormDetail"
+            android:exported="false"/>
 
     </application>
 </manifest>

@@ -4,14 +4,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class ArticleModel {
 
-    @SerializedName("id")
-    private int id;
+
 
     @SerializedName("title")
     private String title;
 
+    @SerializedName("content")
+    private String content;
+
     @SerializedName("excerpt")
     private String excerpt;
+
+    @SerializedName("id")
+    private int id_articles;
+
+
 
     @SerializedName("cover_image_url")
     private String coverImageUrl;
@@ -21,6 +28,13 @@ public class ArticleModel {
 
     @SerializedName("name_tag")
     private String namaTag;
+
+    @SerializedName("created_at")
+    private String Date;
+
+    @SerializedName("author")
+    private String author;
+
 
     // Variabel sudah ada
 
@@ -47,6 +61,24 @@ public class ArticleModel {
     public String getNamaTag() {
         return namaTag;
     }
+
+    public int getIdArticles(){
+        return id_articles;
+    }
+
+    public String getContent(){
+        return content;
+    }
+
+    public String getDate(){
+        return Date;
+    }
+
+    public String getAuthor(){
+        return author;
+    }
+
+
 }
 
 

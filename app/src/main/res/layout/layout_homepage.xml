@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/defaultbackground">
+    android:background="@color/defaultbackground"
+    >
 
+
+<androidx.core.widget.NestedScrollView
+    android:id="@+id/mainScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:fillViewport="true"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+
+    android:clipToPadding="false"
+    android:paddingBottom="80dp"
+   >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -27,7 +41,6 @@
 
             tools:listitem="@layout/aset_item_card_scroll"
             tools:visibility="visible" />
-
         <View
             android:id="@+id/headerBackground"
             android:layout_width="0dp"
@@ -36,7 +49,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
         <ImageView
             android:id="@+id/avatarImage"
             android:layout_width="40dp"
@@ -47,7 +59,6 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:src="@drawable/ic_launcher_foreground" />
-
         <ImageView
             android:id="@+id/AppIcon"
             android:layout_width="40dp"
@@ -58,7 +69,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp" />
-
         <TextView
             android:id="@+id/UsernameUser"
             android:layout_width="wrap_content"
@@ -70,7 +80,6 @@
             android:text="Hallo User"
             android:textColor="#D5DEEF"
             android:textSize="16sp" />
-
         <EditText
 
             android:id="@+id/SearchInput"
@@ -92,8 +101,6 @@
             android:padding="10dp"
             tools:ignore="RtlSymmetry"
             />
-            />
-
         <ImageButton
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
@@ -104,7 +111,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/SearchInput"
             app:layout_constraintEnd_toEndOf="@+id/SearchInput"
             android:layout_marginEnd="8dp" />
-
         <Button
             android:id="@+id/btnArtikel"
             android:layout_width="0dp"
@@ -122,7 +128,6 @@
             android:background="@drawable/clickbtn"
             app:backgroundTint="@null"
             android:textStyle="normal" />
-
         <Button
             android:id="@+id/btnDiary"
             android:layout_width="0dp"
@@ -140,7 +145,6 @@
             android:background="@drawable/frame_home"
             app:backgroundTint="@null"
             android:textStyle="normal" />
-
         <TextView
             android:id="@+id/rekomendasiArtikel"
             android:layout_width="wrap_content"
@@ -154,9 +158,6 @@
             android:textSize="16sp"
             android:visibility="visible"
             />
-
-
-
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerArticleSlider"
             android:layout_width="match_parent"
@@ -169,7 +170,6 @@
             tools:listitem="@layout/aset_item_card_slide"
             android:visibility="visible"
             />
-
         <LinearLayout
             android:id="@+id/SlideIndicator"
             android:layout_width="wrap_content"
@@ -180,7 +180,6 @@
             app:layout_constraintTop_toBottomOf="@+id/viewPagerArticleSlider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewDates"
             android:layout_width="wrap_content"
@@ -197,7 +196,6 @@
             app:layout_constraintEnd_toEndOf="parent"
 
             />
-
         <TextView
             android:id="@+id/ArtikelPopuler"
             android:layout_width="wrap_content"
@@ -210,9 +208,6 @@
             android:textColor="#000000"
             android:textSize="16sp"
             android:visibility="visible" />
-
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewPopularArticles"
             android:layout_width="match_parent"
@@ -225,11 +220,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="80dp"
             android:visibility="visible"
 
             />
-
         <TextView
             android:id="@+id/diaryHariIni"
             android:layout_width="wrap_content"
@@ -275,5 +268,74 @@
 
 
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
+    <LinearLayout
+        android:id="@+id/bottomNavBar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="10dp"
+
+        android:background="@drawable/bg_navbar_float"
+        android:backgroundTint="#F0F3FA"
+        android:elevation="2dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        >
+
+        <ImageButton
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/nav_home_icon"
+            android:background="@android:color/transparent"
+            android:contentDescription="People" />
+        <ImageButton
+            android:id="@+id/navPeople"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/nav_people_icon"
+            android:background="@android:color/transparent"
+            android:contentDescription="People" />
+
+        <ImageButton
+            android:id="@+id/navCalendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/nav_articles_icon"
+            android:background="@android:color/transparent"
+            android:contentDescription="Calendar" />
+
+        <ImageButton
+            android:id="@+id/navChat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/nav_chat_icon"
+            android:background="@android:color/transparent"
+            android:contentDescription="Chat" />
+
+        <ImageButton
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/nav_profile_icon"
+            android:background="@android:color/transparent"
+            android:contentDescription="Profile" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

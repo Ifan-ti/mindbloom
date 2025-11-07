@@ -17,6 +17,14 @@ public class DiaryModel {
     @SerializedName("cover_image_url")
     private String coverImageUrl;
 
+    @SerializedName("id")
+    private String id_diary;
+    @SerializedName("author")
+    private String author;
+
+
+
+
 
 
 
@@ -30,9 +38,6 @@ public class DiaryModel {
     }
 
 
-    public String getNameTag() {
-        return nameTag;
-    }
 
 
     public String getEntryDate() {
@@ -40,6 +45,14 @@ public class DiaryModel {
     }
     public String getCoverImageUrl() {
         return coverImageUrl;
+    }
+
+    public String getIdDiary(){
+        return id_diary;
+    }
+
+    public String getAuthor(){
+        return author;
     }
 
 

@@ -62,6 +62,8 @@ public class Homepage_Activity extends AppCompatActivity {
     private List<DiaryModel> fullDiaryList = new ArrayList<>();
 
 
+
+
     private LayoutHomepageBinding binding;
     private dateAdapter tanggalAdapter;
     private List<dateModel> tanggalList = new ArrayList<>();
@@ -105,6 +107,7 @@ public class Homepage_Activity extends AppCompatActivity {
 
         setupTabListeners();
         setupSearchListener();
+        setupNavBarListeners();
 
 
     }
@@ -594,6 +597,44 @@ public class Homepage_Activity extends AppCompatActivity {
             // Perilaku "Back" normal (tutup aplikasi)
             super.onBackPressed();
         }
+    }
+
+    private void setupNavBarListeners() {
+
+        // Listener untuk Home
+        binding.navHome.setOnClickListener(v -> {
+            Log.d("NAV_BAR", "Tombol Home diklik");
+            // Tambahkan intent un tuk berpindah ke Activity Home jika perlu
+            // Contoh: startActivity(new Intent(this, Homepage_Activity.class));
+        });
+
+        // Listener untuk People/Komunitas
+        binding.navPeople.setOnClickListener(v -> {
+            Log.d("NAV_BAR", "Tombol People diklik");
+            // Tambahkan Intent ke Activity Komunitas
+        });
+
+        // Listener untuk Calendar/Diary
+        binding.navCalendar.setOnClickListener(v -> {
+            Log.d("NAV_BAR", "Tombol Calendar/Diary diklik");
+            // Panggil showDiaryView() jika ini seharusnya mengaktifkan tab Diary
+            showDiaryView();
+        });
+
+        // Listener untuk Chat
+        binding.navChat.setOnClickListener(v -> {
+            Log.d("NAV_BAR", "Tombol Chat diklik");
+            // Tambahkan Intent ke Activity Chat
+        });
+
+        // Listener untuk Profile
+        binding.navProfile.setOnClickListener(v -> {
+            Log.d("NAV_BAR", "Tombol Profile diklik");
+            // Tambahkan Intent ke Activity Profile
+        });
+
+        // Opsional: Untuk tombol-tombol next yang baru ditambahkan
+
     }
 
 }

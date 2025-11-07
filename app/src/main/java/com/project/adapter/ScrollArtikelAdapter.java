@@ -1,6 +1,7 @@
 package com.project.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.data.ArticleModel;
 import com.bumptech.glide.Glide;
+import com.project.mindbloom.FormDetail;
 import com.project.mindbloom.R; // R.drawable.icon_app ada di sini
 
 import java.util.List;
@@ -22,6 +24,9 @@ public class ScrollArtikelAdapter extends RecyclerView.Adapter<ScrollArtikelAdap
 
     private final Context context;
     private List<ArticleModel> articleList;
+
+
+
 
     // CONSTRUCTOR: Nama harus sama dengan class
     public ScrollArtikelAdapter(Context context) {
@@ -56,6 +61,22 @@ public class ScrollArtikelAdapter extends RecyclerView.Adapter<ScrollArtikelAdap
                 .placeholder(R.drawable.icon_app)
                 .error(R.drawable.icon_app)
                 .into(holder.ivArticleImage);
+
+
+        // 🔥 TAMBAHAN: Tambahkan listener klik di sini
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Buat Intent untuk pindah ke Activity Detail
+                Intent intent = new Intent(context, FormDetail.class);
+
+                // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
+                intent.putExtra(FormDetail.EXTRA_ARTICLE_ID, article.getIdArticles());
+
+                // Mulai Activity baru
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override // ANOTASI @Override wajib
@@ -75,4 +96,7 @@ public class ScrollArtikelAdapter extends RecyclerView.Adapter<ScrollArtikelAdap
             ivArticleImage = itemView.findViewById(R.id.ivArticleImage);
         }
     }
+
+
+
 }

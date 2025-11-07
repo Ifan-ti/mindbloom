@@ -4,10 +4,21 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-10-01T07:54:26.121693100Z">
+        <DropdownSelection timestamp="2025-10-27T11:33:43.676251200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=vghu85irlrqgkbgu" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\achmad ifan\.android\avd\Pixel_4.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="Homepage_Activity">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-11-04T07:00:45.895118200Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\achmad ifan\.android\avd\Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>

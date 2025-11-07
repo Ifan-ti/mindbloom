@@ -8,5 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="btn_account">#ededed</color>
-    <color name="txt_blue">#395886</color>
+    <color name="main_blue">#395886</color>
+    <color name="inactive_light_blue">#E1ECF4</color>
+    <color name="default_blue">#1D3455</color>
+
 </resources>

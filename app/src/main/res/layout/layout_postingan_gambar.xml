@@ -17,7 +17,6 @@
             android:id="@+id/imgProfile"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_profile_placeholder"
             android:background="@drawable/circle_bg_gray"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +55,6 @@
             android:layout_height="24dp"
             android:src="@drawable/logo_titik_tiga"
             android:contentDescription="More options"
-            android:tint="#808080"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -97,7 +95,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/logo_like"
-                android:tint="#808080" />
+                />
 
             <TextView
                 android:id="@+id/tvLikes"
@@ -113,7 +111,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/logo_comment"
-                android:tint="#808080" />
+                />
 
             <TextView
                 android:id="@+id/tvComments"

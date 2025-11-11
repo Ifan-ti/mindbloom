@@ -11,5 +11,6 @@
     <color name="main_blue">#395886</color>
     <color name="inactive_light_blue">#E1ECF4</color>
     <color name="default_blue">#1D3455</color>
+    <color name="inactive_btn">#628ECD</color>
 
 </resources>

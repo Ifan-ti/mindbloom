@@ -1,6 +1,6 @@
 package com.project.mindbloom;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,59 +11,42 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore; // <-- (1) Import Firestore
+import com.project.client.RetrofitClient;
+import com.project.client.SessionManager; // Pastikan import ini ada
+import com.project.request.RegisterRequest;
+import com.project.response.LoginResponse; // Penting: Menggunakan LoginResponse
+import com.project.service.ApiService;
 
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.util.zip.Inflater;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Registrasi extends Fragment {
 
-    private Fragment_Login.OnFragmentInteractionListener mListener;
-    private FirebaseAuth Maunt;
-    private FirebaseFirestore db;
+    private ApiService apiService;
+    private SessionManager sessionManager;
+
     private EditText EmailInput, PasswordInput, UsernameInput;
     private Button ContinueBtn;
     private TextView BtnSignIn;
 
-    public Fragment_Registrasi(){
+    public Fragment_Registrasi() {
     }
 
-    public interface OnFragmentInteractionListener {
-        void onNavigateToRegistration();
-        void onNavigateToLogin();
-    }
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof Fragment_Login.OnFragmentInteractionListener) {
-            mListener = (Fragment_Login.OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+    // --- Hapus semua kode OnFragmentInteractionListener dan onAttach di sini ---
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Maunt = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        apiService = RetrofitClient.getApiService(requireContext());
+        sessionManager = new SessionManager(requireContext());
     }
 
     @Override
-    public View onCreateView( LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_registrasi, container, false);
 
         EmailInput = view.findViewById(R.id.EmailInput);
@@ -75,99 +58,97 @@ public class Fragment_Registrasi extends Fragment {
         BtnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onNavigateToLogin(); // Panggil interface Activity
-                }
+                // Navigasi lokal: Kembali ke Fragment Login
+                navigateToLogin();
             }
         });
 
         ContinueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AttempRegisterUser();
+                attemptRegisterWithRetrofit();
             }
         });
         return view;
     }
 
-    private void AttempRegisterUser(){
-        String Username, Email, Password;
-        Username = UsernameInput.getText().toString().trim();
-        Email = EmailInput.getText().toString().trim();
-        Password = PasswordInput.getText().toString().trim();
+    private void attemptRegisterWithRetrofit() {
+        String username = UsernameInput.getText().toString().trim();
+        String email = EmailInput.getText().toString().trim();
+        String password = PasswordInput.getText().toString().trim();
 
-        if(Username.isEmpty()){
-            Toast.makeText(getContext(), "Silihankan Isi Username Anda", Toast.LENGTH_SHORT).show();
+        // Validasi
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(getContext(), "Semua field harus diisi", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(Email.isEmpty()){
-            Toast.makeText(getContext(), "Silihankan Isi Email Anda", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(Password.isEmpty()){
-            Toast.makeText(getContext(), "Silihankan Isi Password Anda", Toast.LENGTH_SHORT).show();
-            return;
-        }else if (Password.length() < 6) {
-            Toast.makeText(getContext(), "Silihankan Isi Password Lebih Dari 6 Karakter", Toast.LENGTH_SHORT).show();
+        if (password.length() < 6) {
+            PasswordInput.setError("Password minimal 6 karakter");
+            PasswordInput.requestFocus();
             return;
         }
 
-        RegisterUser(Email, Password, Username);
-
+        registerUser(username, email, password);
     }
-    private void RegisterUser(String Email, String Password, String Username){
-        Maunt.createUserWithEmailAndPassword( Email, Password)
-                .addOnCompleteListener(getActivity(), task -> {
-                    if (task.isSuccessful()){
-                        FirebaseUser firebaseUser = Maunt.getCurrentUser();
 
-                        if(firebaseUser != null){
-                            saveUserDataToFirestore(firebaseUser.getUid(), Username, Email);
-                            if (mListener != null) {
-                                mListener.onNavigateToLogin(); // Panggil interface Activity
-                            }
-                        }else {
-                            Toast.makeText(getContext(), "Registrasi Berhasil, tapi Id gagal disimpan", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Toast.makeText(getContext(), "Registrasi Berhasil", Toast.LENGTH_SHORT).show();
-                        return;
-                    }else{
-                        Toast.makeText(getContext(), "Registrasi Gagal", Toast.LENGTH_SHORT).show();
-                        return;
+    private void registerUser(String username, String email, String password) {
+        RegisterRequest request = new RegisterRequest(username, email, password);
+
+        // Panggilan API mengharapkan LoginResponse (sesuai backend baru)
+        apiService.register(request).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse loginResponse = response.body();
+
+                    if ("success".equals(loginResponse.getStatus())) {
+                        // --- LOGIKA AUTO-LOGIN DAN SIMPAN ID/TOKEN ---
+                        String token = loginResponse.getData().getToken();
+                        int userId = loginResponse.getData().getUser().getId(); // ID user berhasil dibawa
+                        String userEmail = loginResponse.getData().getUser().getEmail();
+
+                        sessionManager.saveLoginSession(token, userId, userEmail);
+
+                        Toast.makeText(getContext(), "Registrasi Berhasil!", Toast.LENGTH_SHORT).show();
+                        navigateToHomepage(); // Langsung pindah ke Homepage
+
+                    } else {
+                        // Pesan error dari server (misal: "Email sudah terdaftar" jika kode bukan 409)
+                        Toast.makeText(getContext(), loginResponse.getMessage(), Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    // Penanganan Respons Gagal HTTP (misal 409 Conflict)
+                    String errorMessage = "Registrasi gagal. Cek kembali data Anda.";
+                    if (response.code() == 409) {
+                        errorMessage = "Email sudah terdaftar. Silakan login.";
+                    } else if (response.code() == 400) {
+                        errorMessage = "Data tidak valid. Periksa isian.";
+                    }
+                    Log.e("REGISTER_FAIL", "Kode: " + response.code() + ", Pesan: " + errorMessage);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                }
+            }
 
-
-                });
-
-
-    }
-    private void saveUserDataToFirestore(String UserId, String username, String email) {
-
-        String DefaultRole = "User";
-
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("username", username);
-        userData.put("email", email);
-        userData.put("role", DefaultRole);
-
-
-
-        db.collection("User")
-                .document(UserId)
-                .set(userData)
-                .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(getContext(), "Data berhasil disimpan", Toast.LENGTH_SHORT).show();
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Data gagal disimpan", Toast.LENGTH_SHORT).show();
-
-                });
-
-
-
-
-
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.e("REGISTER_FATAL", "Koneksi Gagal: " + t.getMessage());
+                Toast.makeText(getContext(), "Koneksi gagal. Periksa internet atau server Anda.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
+    private void navigateToHomepage() {
+        if (getActivity() == null) return;
+        Intent intent = new Intent(getActivity(), Homepage_Activity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    private void navigateToLogin() {
+        if (getActivity() != null) {
+            // Kembali ke Fragment Login
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+    }
 }
-

@@ -300,7 +300,10 @@
             android:layout_weight="1"
             android:src="@drawable/nav_home_icon"
             android:background="@android:color/transparent"
-            android:contentDescription="People" />
+            app:tint="@color/inactive_btn"
+            android:contentDescription="People"
+
+            />
         <ImageButton
             android:id="@+id/navPeople"
             android:layout_width="0dp"

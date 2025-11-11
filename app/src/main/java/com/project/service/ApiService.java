@@ -1,13 +1,19 @@
 package com.project.service;
 
-import com.project.respone.ArticleDetailResponse;
-import com.project.respone.ArticlePopulerResponse;
-import com.project.respone.DiaryDetailResponse;
-import com.project.respone.DiaryRespone;
+import com.project.request.RegisterRequest;
+import com.project.request.LoginRequest;
+import com.project.response.ArticleDetailResponse;
+import com.project.response.ArticlePopulerResponse;
+import com.project.response.DiaryDetailResponse;
+import com.project.response.DiaryRespone;
+import com.project.response.LoginResponse;
+import com.project.response.UserResponse;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -26,4 +32,17 @@ public interface ApiService {
 
     @PATCH("api/articles/view/{id}")
     Call<Void> incrementArticleView(@Path("id") int articleId);
+
+    @GET("api/users/{id}")
+    Call<UserResponse> getUserById(@Path("id") int userId);
+
+    @POST("api/login")
+    Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
+    @POST("api/register")
+    Call<LoginResponse> register(@Body RegisterRequest registerRequest);
+
+    @GET("api/Diary/me")
+    Call<DiaryRespone> getMyDiary();
+
 }

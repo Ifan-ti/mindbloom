@@ -1,5 +1,5 @@
 // File: com/project/respone/ArticleDetailResponse.java
-package com.project.respone;
+package com.project.response;
 
 import com.project.data.ArticleModel;
 import com.google.gson.annotations.SerializedName;

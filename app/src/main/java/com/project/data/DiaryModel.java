@@ -36,10 +36,6 @@ public class DiaryModel {
     public String getContent() {
         return Content;
     }
-
-
-
-
     public String getEntryDate() {
         return entryDate;
     }
@@ -54,12 +50,4 @@ public class DiaryModel {
     public String getAuthor(){
         return author;
     }
-
-
-
-
-
-
-
-
 }

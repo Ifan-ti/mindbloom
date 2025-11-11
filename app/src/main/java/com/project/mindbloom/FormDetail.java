@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.project.client.RetrofitClient;
 import com.project.data.ArticleModel;
 import com.project.data.DiaryModel; // 🔥 Import DiaryModel
-import com.project.respone.ArticleDetailResponse;
-import com.project.respone.DiaryDetailResponse; // 🔥 Import DiaryDetailResponse
+import com.project.response.ArticleDetailResponse;
+import com.project.response.DiaryDetailResponse; // 🔥 Import DiaryDetailResponse
 import com.project.service.ApiService;
 
 import java.text.ParseException;
@@ -36,6 +36,7 @@ public class FormDetail extends AppCompatActivity {
     private TextView txtDate;
     private TextView txtCountView;
     private ImageView icon_count_view;
+    ApiService apiService = RetrofitClient.getApiService(FormDetail.this);
 
     int articleId;
 
@@ -95,7 +96,6 @@ public class FormDetail extends AppCompatActivity {
     // ==================================================
 
     private void fetchArticleDetails(int articleId) {
-        ApiService apiService = RetrofitClient.getApiService();
         Call<ArticleDetailResponse> call = apiService.getArticleDetail(articleId);
 
         call.enqueue(new Callback<ArticleDetailResponse>() {
@@ -160,7 +160,7 @@ public class FormDetail extends AppCompatActivity {
     // ==================================================
 
     private void fetchDiaryDetails(int diaryId) {
-        ApiService apiService = RetrofitClient.getApiService();
+
         // Panggil method getDiaryDetail (pastikan ini ada di ApiService)
         Call<DiaryDetailResponse> call = apiService.getDiaryDetail(diaryId);
 
@@ -221,7 +221,7 @@ public class FormDetail extends AppCompatActivity {
     }
 
     private void incrementViewCount(int articleId) {
-        ApiService apiService = RetrofitClient.getApiService();
+
         Call<Void> call = apiService.incrementArticleView(articleId);
 
         call.enqueue(new Callback<Void>() {

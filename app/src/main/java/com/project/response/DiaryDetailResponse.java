@@ -1,7 +1,6 @@
-package com.project.respone;
+package com.project.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.project.data.ArticleModel;
 import com.project.data.DiaryModel;
 
 public class DiaryDetailResponse {

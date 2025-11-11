@@ -1,5 +1,6 @@
 package com.project.mindbloom;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +10,8 @@ import android.widget.LinearLayout;
 import android.view.inputmethod.InputMethodManager;
 
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.content.Context;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,13 +39,15 @@ import com.project.adapter.ScrollArtikelAdapter;
 import com.project.adapter.SlideArtikelAdapter;
 
 import com.project.client.RetrofitClient;
+import com.project.client.SessionManager;
 import com.project.data.ArticleModel;
 import com.project.data.DiaryModel;
 import com.project.data.dateModel;
 
 import com.project.mindbloom.databinding.LayoutHomepageBinding;
-import com.project.respone.ArticlePopulerResponse;
-import com.project.respone.DiaryRespone;
+import com.project.response.ArticlePopulerResponse;
+import com.project.response.DiaryRespone;
+import com.project.response.UserResponse;
 import com.project.service.ApiService;
 
 import retrofit2.Call;
@@ -72,9 +74,24 @@ public class Homepage_Activity extends AppCompatActivity {
     private boolean isSearchMode = false;
 
 
+    ApiService apiService = RetrofitClient.getApiService(this);
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SessionManager sm = new SessionManager(this);
+        if (!sm.isLoggedIn()) {
+            Intent i = new Intent(this, ActivityMain.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+            return;
+        }
+
+        Intent loginIntent = getIntent();
+
         binding = LayoutHomepageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -101,13 +118,16 @@ public class Homepage_Activity extends AppCompatActivity {
 
 
         setupTanggalList();
-
         showArtikelView();
-        fetchArticles();
-
         setupTabListeners();
         setupSearchListener();
         setupNavBarListeners();
+
+        fetchUsername();
+
+        binding.navProfile.setOnClickListener(v -> {
+            startActivity(new Intent(Homepage_Activity.this, ProfileActivity.class));
+        });
 
 
     }
@@ -236,7 +256,6 @@ public class Homepage_Activity extends AppCompatActivity {
     // Homepage_Activity.java
 
     private void fetchArticles() {
-        ApiService apiService = RetrofitClient.getApiService();
         Call<ArticlePopulerResponse> call = apiService.getArticles();
 
         // HANYA SATU PANGGILAN API UNTUK MENGISI KEDUA ADAPTER DAN INDIKATOR
@@ -315,86 +334,72 @@ public class Homepage_Activity extends AppCompatActivity {
 // ...
 
     private void fetchDiary() {
-        ApiService apiService = RetrofitClient.getApiService();
-        Call<DiaryRespone> call = apiService.getDiary();
-
-        // Format tanggal Java untuk perbandingan
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String tanggalHariIni = today.format(formatter);
+        ApiService apiService = RetrofitClient.getApiService(this);
+        Call<DiaryRespone> call = apiService.getMyDiary();
 
         call.enqueue(new Callback<DiaryRespone>() {
             @Override
             public void onResponse(Call<DiaryRespone> call, Response<DiaryRespone> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
-                    // 1. Ambil data utama
-
-                    List<DiaryModel> allDiaries = response.body().getData();
-
-
-                    if (allDiaries != null && !allDiaries.isEmpty()) {
-                        Log.d("API_SUCCESS", "Total Diary: " + allDiaries.size());
-
-                        // --- 2. Siapkan data untuk "Riwayat Diary" (Sorted) ---
-                        List<DiaryModel> listRiwayat = new ArrayList<>(allDiaries);
-                        Collections.sort(listRiwayat, new Comparator<DiaryModel>() {
-                            @Override
-                            public int compare(DiaryModel a1, DiaryModel a2) {
-                                // Mengurutkan terbaru ke terlama (descending)
-                                // ASUMSI: getEntryDate() mengembalikan string "yyyy-MM-dd"
-                                return a2.getEntryDate().compareTo(a1.getEntryDate());
-                            }
-                        });
-
-                        // --- 3. Siapkan data untuk "Diary Hari Ini" (Filtered) ---
-                        List<DiaryModel> listDiaryHariIni = new ArrayList<>();
-                        for (DiaryModel diary : allDiaries) {
-                            try {
-                                // 🔥 2. Ambil string timestamp dari API
-                                String utcTimestamp = diary.getEntryDate();
-
-                                // 🔥 3. Parse string UTC ke objek Instant
-                                Instant instant = Instant.parse(utcTimestamp);
-
-                                // 🔥 4. Konversi ke zona waktu lokal HP (WIB)
-                                LocalDate entryDateLocal = instant.atZone(ZoneId.systemDefault()).toLocalDate();
-
-                                // 🔥 5. Bandingkan tanggalnya
-                                if (entryDateLocal.equals(today)) {
-                                    listDiaryHariIni.add(diary);
-                                }
-                            } catch (Exception e) {
-                                Log.e("DATE_PARSE_ERROR", "Gagal parse tanggal: " + diary.getEntryDate(), e);
-                            }
-                        }
-
-
-                        fullDiaryList = new ArrayList<>(listRiwayat);
-                        // --- 4. PERBAIKAN FATAL: Panggil 'setData' pada OBJEK Adapter ---
-                        // (Ganti nama variabel di bawah ini jika nama variabel global Anda berbeda)
-
-                        scrolldiaryadapter.setData(listRiwayat);
-                        slidediaryadaptert.setData(listDiaryHariIni);
-
-                        // --- 5. Panggil Indikator (Gunakan fungsi terpisah) ---
-                        // Ganti 'setupIndicators' jika Anda membuat fungsi baru untuk diary
-                        setupIndicators(listDiaryHariIni.size());
-
+                    List<DiaryModel> diaries = response.body().getData();
+                    if (diaries != null && !diaries.isEmpty()) {
+                        scrolldiaryadapter.setData(diaries);
+                        slidediaryadaptert.setData(diaries);
                     } else {
-                        Log.w("API_EMPTY", "Data diary kosong.");
+                        Toast.makeText(Homepage_Activity.this, "Diary kosong", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.e("API_FAIL", "Respon gagal (Diary): " + response.code());
+                    Toast.makeText(Homepage_Activity.this, "Gagal memuat diary", Toast.LENGTH_SHORT).show();
                 }
-            } // <-- PERBAIKAN FATAL: Kurung kurawal '}' yang hilang ditambahkan di sini
+            }
 
             @Override
             public void onFailure(Call<DiaryRespone> call, Throwable t) {
-                Log.e("API_ERROR", "Koneksi ke API Diary gagal: " + t.getMessage());
+                Toast.makeText(Homepage_Activity.this, "Koneksi gagal: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
+    private void fetchUsername()  {
+        SessionManager sessionManager = new SessionManager(this);
+
+        int userId = sessionManager.getUserId();
+
+        Call<UserResponse> call = apiService.getUserById(userId);
+        call.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    UserResponse userResponse = response.body();
+                    if ("success".equals(userResponse.getStatus())) {
+                        String username = userResponse.getData().getUsername();
+                        // Misal tampilkan di TextView
+                        binding.UsernameUser.setText("Hallo, " + username);
+                    } else {
+                        Toast.makeText(Homepage_Activity.this,
+                                "Gagal ambil username: " + userResponse.getStatus(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(Homepage_Activity.this,
+                            "Gagal memuat data user. Kode: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                    sessionManager.clearSession();
+                    Intent intent = new Intent(Homepage_Activity.this, ActivityMain.class);
+                    startActivity(intent);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(Homepage_Activity.this,
+                        "Koneksi gagal: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void updateIndicators(int selectedPosition) {
         for (int i = 0; i < articleIndicators.size(); i++) {
@@ -532,7 +537,6 @@ public class Homepage_Activity extends AppCompatActivity {
             scrolldiaryadapter.setData(filteredList);
         }
     }
-
     private void showSearchLayout() {
         isSearchMode = true;
 
@@ -560,10 +564,6 @@ public class Homepage_Activity extends AppCompatActivity {
         diaryParams.height = 0; // 0dp (Match Constraints)
         binding.recyclerViewDiaryHistory.setLayoutParams(diaryParams);
     }
-
-    /**
-     * Menyembunyikan keyboard (utilitas).
-     */
     private void hideKeyboard() {
         try {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -572,8 +572,6 @@ public class Homepage_Activity extends AppCompatActivity {
             // abaikan
         }
     }
-// Homepage_Activity.java
-
     @Override
     public void onBackPressed() {
         if (isSearchMode) {
@@ -598,7 +596,6 @@ public class Homepage_Activity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
     private void setupNavBarListeners() {
 
         // Listener untuk Home

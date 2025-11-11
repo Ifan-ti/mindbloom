@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         >
         <activity
-        android:name=".Homepage_Activity"
+        android:name=".ActivityMain"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,8 @@
         </intent-filter>
         </activity>
 
-        <activity android:name=".RegistrasiActivity"/>
+        <activity android:name=".Homepage_Activity"/>
+        <activity android:name=".ProfileActivity"/>
         <activity android:name=".FormDetail"
             android:exported="false"/>
 

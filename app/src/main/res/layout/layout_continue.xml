@@ -25,7 +25,7 @@
         android:textSize="24dp"
         android:gravity="center"
         android:fontFamily="@font/inika_bold"
-        android:textColor="@color/txt_blue"
+        android:textColor="@color/default_blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />

@@ -300,7 +300,7 @@
             android:layout_weight="1"
             android:src="@drawable/nav_home_icon"
             android:background="@android:color/transparent"
-            app:tint="@color/inactive_btn"
+            app:tint="@color/active_btn"
             android:contentDescription="People"
 
             />

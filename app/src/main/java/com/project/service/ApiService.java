@@ -7,11 +7,14 @@ import com.project.response.ArticlePopulerResponse;
 import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
 import com.project.response.LoginResponse;
+import com.project.response.NotificationResponse;
+import com.project.response.PostResponse;
 import com.project.response.UserResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -44,5 +47,15 @@ public interface ApiService {
 
     @GET("api/Diary/me")
     Call<DiaryRespone> getMyDiary();
+
+
+    @GET("api/posts")
+    Call<PostResponse> getPosts();
+
+    @GET("api/notifications")
+    Call<NotificationResponse> getNotifications(
+            @Header("Authorization") String authToken // Memerlukan "Bearer <token>"
+    );
+
 
 }

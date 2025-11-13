@@ -18,12 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -334,7 +334,18 @@ public class Homepage_Activity extends AppCompatActivity {
 // ...
 
     private void fetchDiary() {
-        ApiService apiService = RetrofitClient.getApiService(this);
+        // Ambil token dari SessionManager
+        SessionManager sessionManager = new SessionManager(this);
+        String token = sessionManager.getAuthToken();   // pastikan method ini ada di SessionManager
+
+        if (token == null) {
+            Toast.makeText(this, "Silakan login ulang (token tidak ditemukan)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Pakai ApiService global yang sudah kamu deklarasikan di atas
+        // ApiService apiService = RetrofitClient.getApiService(this); // boleh dihapus kalau sudah jadi field global
+
         Call<DiaryRespone> call = apiService.getMyDiary();
 
         call.enqueue(new Callback<DiaryRespone>() {
@@ -343,22 +354,36 @@ public class Homepage_Activity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     List<DiaryModel> diaries = response.body().getData();
                     if (diaries != null && !diaries.isEmpty()) {
+
+                        // Simpan ke fullDiaryList supaya fitur SEARCH diary jalan
+                        fullDiaryList = new ArrayList<>(diaries);
+
+                        // isi adapter untuk history & slider
                         scrolldiaryadapter.setData(diaries);
                         slidediaryadaptert.setData(diaries);
+
                     } else {
                         Toast.makeText(Homepage_Activity.this, "Diary kosong", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(Homepage_Activity.this, "Gagal memuat diary", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Homepage_Activity.this,
+                            "Gagal memuat diary. Code: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+
+                    Log.e("Diary_API", "Error body: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<DiaryRespone> call, Throwable t) {
-                Toast.makeText(Homepage_Activity.this, "Koneksi gagal: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Homepage_Activity.this,
+                        "Koneksi gagal: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+                Log.e("Diary_API", "onFailure: " + t.getMessage());
             }
         });
     }
+
 
     private void fetchUsername()  {
         SessionManager sessionManager = new SessionManager(this);
@@ -608,14 +633,15 @@ public class Homepage_Activity extends AppCompatActivity {
         // Listener untuk People/Komunitas
         binding.navPeople.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol People diklik");
-            // Tambahkan Intent ke Activity Komunitas
+            Intent intent = new Intent(Homepage_Activity.this, Community_Activity.class);
+            startActivity(intent);
         });
 
         // Listener untuk Calendar/Diary
         binding.navCalendar.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Calendar/Diary diklik");
             // Panggil showDiaryView() jika ini seharusnya mengaktifkan tab Diary
-            showDiaryView();
+
         });
 
         // Listener untuk Chat
@@ -632,6 +658,17 @@ public class Homepage_Activity extends AppCompatActivity {
 
         // Opsional: Untuk tombol-tombol next yang baru ditambahkan
 
+    }
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Ganti R.id.fragment_container dengan ID FrameLayout Anda
+        transaction.replace(R.id.fragment_container, fragment);
+
+        // (Opsional: tambahkan ke back stack jika ingin tombol 'back' mengembalikan fragment)
+        // transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
 }

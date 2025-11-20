@@ -28,6 +28,9 @@
 
         <activity android:name=".Homepage_Activity"/>
         <activity android:name=".ProfileActivity"/>
+
+        <activity android:name=".EditProfileActivity" />
+
         <activity android:name=".FormDetail"
             android:exported="false"/>
 

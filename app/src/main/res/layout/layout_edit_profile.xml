@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/defaultbackground">
+
+    <!-- HEADER ATAS -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerProfil"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ExtraText">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="65dp"
+            android:layout_height="70dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            android:src="@drawable/button_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/editProfil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Edit Profil"
+            android:textColor="#395886"
+            android:textSize="23sp"
+            app:layout_constraintBottom_toBottomOf="@id/btnBack"
+            app:layout_constraintStart_toEndOf="@id/btnBack"
+            app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+        <ImageView
+            android:id="@+id/imgAvatarEdit"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:background="@drawable/bg_round"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/btnBack"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Teks "Edit Foto" + icon kamera -->
+        <LinearLayout
+            android:id="@+id/layoutTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/imgAvatarEdit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/titleEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Foto"
+                android:textColor="#395886"
+                android:textSize="13sp"/>
+
+            <ImageButton
+                android:id="@+id/btnEditProfile"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="6dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/icon_camera"
+                tools:ignore="UseAppTint" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- KONTEN DI BAWAH HEADER -->
+    <LinearLayout
+        android:id="@+id/layoutAccountSettings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@id/headerProfil"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- ROW USERNAME -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
+
+            <!-- Label -->
+            <TextView
+                android:id="@+id/tvLabelUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="#395886"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <!-- Value (di kanan) -->
+            <TextView
+                android:id="@+id/tvValueUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="vantekim"
+                android:textColor="#395886"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/btnUsernameNext"
+                app:layout_constraintTop_toTopOf="@id/tvLabelUsername"
+                app:layout_constraintBottom_toBottomOf="@id/tvLabelUsername"/>
+
+            <!-- Icon chevron -->
+            <ImageView
+                android:id="@+id/btnUsernameNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_panah"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvLabelUsername"
+                app:layout_constraintBottom_toBottomOf="@id/tvLabelUsername"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E4EF" />
+
+        <!-- ROW BIO -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rowBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
+
+            <!-- Label -->
+            <TextView
+                android:id="@+id/tvLabelBio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bio"
+                android:textColor="#395886"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <!-- VALUE (DI KANAN) -->
+            <TextView
+                android:id="@+id/tvValueBio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You're growing beautifully"
+                android:textColor="#395886"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/btnBioNext"
+                app:layout_constraintTop_toTopOf="@id/tvLabelBio"
+                app:layout_constraintBottom_toBottomOf="@id/tvLabelBio"/>
+
+            <!-- ICON CHEVRON -->
+            <ImageView
+                android:id="@+id/btnBioNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_panah"
+                android:contentDescription="go to bio"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvLabelBio"
+                app:layout_constraintBottom_toBottomOf="@id/tvLabelBio"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E4EF" />
+
+        <!-- ROW ACCOUNT -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rowAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
+
+            <!-- LABEL -->
+            <TextView
+                android:id="@+id/tvLabelAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account"
+                android:textColor="#395886"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <!-- VALUE (KANAN) -->
+            <TextView
+                android:id="@+id/tvValueAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="vante.taevee@gmail.com"
+                android:textColor="#395886"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/btnMoreAccount"
+                app:layout_constraintTop_toTopOf="@id/tvLabelAccount"
+                app:layout_constraintBottom_toBottomOf="@id/tvLabelAccount"/>
+
+            <!-- MORE OPTIONS ICON (⋮) -->
+            <ImageButton
+                android:id="@+id/btnMoreAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_menu"
+                android:background="@android:color/transparent"
+                android:contentDescription="More account options"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvLabelAccount"
+                app:layout_constraintBottom_toBottomOf="@id/tvLabelAccount"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

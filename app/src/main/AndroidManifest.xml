@@ -28,6 +28,8 @@
 
         <activity android:name=".Homepage_Activity"/>
         <activity android:name=".ProfileActivity"/>
+        <activity android:name=".Community_Activity"/>
+        <activity android:name=".ChatbotActivity"/>
         <activity android:name=".FormDetail"
             android:exported="false"/>
 

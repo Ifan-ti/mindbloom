@@ -1,54 +1,72 @@
 package com.project.service;
 
+import com.project.request.ChatSaveRequest;
+import com.project.request.DeepSeekRequest;
 import com.project.request.RegisterRequest;
 import com.project.request.LoginRequest;
 import com.project.response.ArticleDetailResponse;
 import com.project.response.ArticlePopulerResponse;
+import com.project.response.ChatHistory;
+import com.project.response.DeepSeekResponse;
+import com.project.response.DefaultResponse;
 import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
 import com.project.response.LoginResponse;
 import com.project.response.NotificationResponse;
 import com.project.response.PostResponse;
+import com.project.response.SessionResponse;
 import com.project.response.UserResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
-    @GET("api/articles_populer")
+
+    //===================
+    //     USER-API
+    //===================
+    @GET("api/users/username/{id}")
+    Call<UserResponse> getUserById(@Path("id") int userId);
+
+    @POST("api/users/login")
+    Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
+    @POST("api/users/register")
+    Call<LoginResponse> register(@Body RegisterRequest registerRequest);
+
+    //===================
+    //     ARTICLES-API
+    //===================
+    @GET("api/articles/populer")
     Call<ArticlePopulerResponse> getArticles();
-
-    @GET("api/Diary")
-    Call<DiaryRespone> getDiary();
-
-    // 🔥 TAMBAHAN: Endpoint baru yang efisien
-    @GET("api/articles/{id}")
+    @GET("api/articles/Detail/{id}")
     Call<ArticleDetailResponse> getArticleDetail(@Path("id") int articleId);
-
-    @GET("api/Diary/{id}") // Endpoint untuk detail diary (dari server)
-    Call<DiaryDetailResponse> getDiaryDetail(@Path("id") int diaryId);
-
     @PATCH("api/articles/view/{id}")
     Call<Void> incrementArticleView(@Path("id") int articleId);
 
-    @GET("api/users/{id}")
-    Call<UserResponse> getUserById(@Path("id") int userId);
-
-    @POST("api/login")
-    Call<LoginResponse> login(@Body LoginRequest loginRequest);
-
-    @POST("api/register")
-    Call<LoginResponse> register(@Body RegisterRequest registerRequest);
-
+    //===================
+    //     DIARY-API
+    //===================
+    @GET("api/Diary/all")
+    Call<DiaryRespone> getDiary();
+    @GET("api/Diary/Detail/{id}") // Endpoint untuk detail diary (dari server)
+    Call<DiaryDetailResponse> getDiaryDetail(@Path("id") int diaryId);
     @GET("api/Diary/me")
-    Call<DiaryRespone> getMyDiary();
-
-
+    Call<DiaryRespone> getMyDiary(
+            @Header("Authorization") String authToken);
+    //===================
+    //     POSTING-API
+    //===================
     @GET("api/posts")
     Call<PostResponse> getPosts();
 
@@ -56,6 +74,21 @@ public interface ApiService {
     Call<NotificationResponse> getNotifications(
             @Header("Authorization") String authToken // Memerlukan "Bearer <token>"
     );
+    //===================
+    //     CHATBOT-API
+    //===================
+    @POST("api/chatbot/chat") // 👈 GANTI ke endpoint proxy Anda
+    Call<DeepSeekResponse> sendChatToProxy(@Body DeepSeekRequest request);
 
+    /**
+     * 2. Mengambil history chat dari database Anda
+     */
+    @GET("api/chatbot/history/{userId}") // 👈 Endpoint untuk history
+    Call<List<ChatHistory>> getChatHistory(@Path("userId") int userId);
 
+    /**
+     * 3. Menyimpan chat baru ke database Anda
+     */
+    @POST("api/chatbot/save") // 👈 Endpoint untuk menyimpan chat
+    Call<DefaultResponse> saveChat(@Body ChatSaveRequest request);
 }

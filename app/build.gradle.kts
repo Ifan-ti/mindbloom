@@ -57,9 +57,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
-    // --- Gemini (Google AI) ---
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
-
     // --- Navigasi ---
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
@@ -89,4 +86,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // --- SVG ---
+    implementation("com.caverock:androidsvg:1.4")
+
 }

@@ -23,7 +23,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,12 +76,14 @@ public class Homepage_Activity extends AppCompatActivity {
     private boolean isSearchMode = false;
 
 
-    ApiService apiService = RetrofitClient.getApiService(this);
+    private ApiService apiService;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        apiService = RetrofitClient.getApiService(this);
 
         SessionManager sm = new SessionManager(this);
         if (!sm.isLoggedIn()) {
@@ -125,9 +129,7 @@ public class Homepage_Activity extends AppCompatActivity {
 
         fetchUsername();
 
-        binding.navProfile.setOnClickListener(v -> {
-            startActivity(new Intent(Homepage_Activity.this, ProfileActivity.class));
-        });
+
 
 
     }
@@ -186,32 +188,43 @@ public class Homepage_Activity extends AppCompatActivity {
         binding.btnDiary.setOnClickListener(v -> showDiaryView());
     }
     private void showArtikelView() {
-        // 1. TAMPILKAN semua view Artikel
-        isSearchMode = false;
-
-        binding.recyclerViewDates.setVisibility(View.VISIBLE);
-
-        binding.rekomendasiArtikel.setVisibility(View.VISIBLE);
-        binding.viewPagerArticleSlider.setVisibility(View.VISIBLE);
-        binding.ArtikelPopuler.setVisibility(View.VISIBLE);
-        binding.recyclerViewPopularArticles.setVisibility(View.VISIBLE);
-
-        // 2. SEMBUNYIKAN semua view Diary (Menggunakan INVISIBLE)
-        binding.diaryHariIni.setVisibility(View.INVISIBLE);
-        binding.viewPagerDiarySlider.setVisibility(View.INVISIBLE);
-        binding.riwayatDiary.setVisibility(View.INVISIBLE);
-        binding.recyclerViewDiaryHistory.setVisibility(View.INVISIBLE);
-        binding.SlideIndicator.setVisibility(View.VISIBLE);
-
-        // 3. ATUR STYLE TOMBOL
-        binding.SearchInput.setText("");
+        // 1. ATUR STYLE TOMBOL & HINT
         binding.SearchInput.setHint("Cari Artikel Menarik Hari ini");
         binding.btnArtikel.setBackgroundResource(R.drawable.clickbtn);
         binding.btnArtikel.setTextColor(ContextCompat.getColor(this, R.color.inactive_light_blue));
-
         binding.btnDiary.setBackgroundResource(R.drawable.frame_home);
         binding.btnDiary.setTextColor(ContextCompat.getColor(this, R.color.main_blue));
 
+        // 2. ATUR VISIBILITY LIST
+        binding.recyclerViewPopularArticles.setVisibility(View.VISIBLE);
+        binding.recyclerViewDiaryHistory.setVisibility(View.INVISIBLE);
+
+        // 3. PERIKSA MODE SEARCH
+        if (isSearchMode) {
+            // Jika sedang mencari, JANGAN reset layout.
+            // Cukup panggil ulang filter untuk list artikel.
+            filterLists(binding.SearchInput.getText().toString());
+            return; // Selesai. Jangan jalankan kode di bawah.
+        }
+
+        // --- Kode di bawah ini HANYA berjalan jika TIDAK sedang search ---
+
+        isSearchMode = false; // Set ulang (meskipun sudah false)
+        binding.SearchInput.setText(""); // Hapus teks pencarian
+
+        // TAMPILKAN semua view Artikel
+        binding.recyclerViewDates.setVisibility(View.VISIBLE);
+        binding.rekomendasiArtikel.setVisibility(View.VISIBLE);
+        binding.viewPagerArticleSlider.setVisibility(View.VISIBLE);
+        binding.ArtikelPopuler.setVisibility(View.VISIBLE);
+        binding.SlideIndicator.setVisibility(View.VISIBLE);
+
+        // SEMBUNYIKAN semua view Diary
+        binding.diaryHariIni.setVisibility(View.INVISIBLE);
+        binding.viewPagerDiarySlider.setVisibility(View.INVISIBLE);
+        binding.riwayatDiary.setVisibility(View.INVISIBLE);
+
+        // Atur ulang tinggi layout (untuk mode non-search)
         ConstraintLayout.LayoutParams articleParams = (ConstraintLayout.LayoutParams) binding.recyclerViewPopularArticles.getLayoutParams();
         articleParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         binding.recyclerViewPopularArticles.setLayoutParams(articleParams);
@@ -220,35 +233,51 @@ public class Homepage_Activity extends AppCompatActivity {
     }
 
     private void showDiaryView() {
-        // 1. SEMBUNYIKAN semua view Artikel (Menggunakan INVISIBLE)
-        isSearchMode = false;
-
-        binding.recyclerViewDates.setVisibility(View.VISIBLE);
-
-        binding.rekomendasiArtikel.setVisibility(View.INVISIBLE);
-        binding.viewPagerArticleSlider.setVisibility(View.INVISIBLE);
-        binding.ArtikelPopuler.setVisibility(View.INVISIBLE);
-        binding.recyclerViewPopularArticles.setVisibility(View.INVISIBLE);
-
-        // 2. TAMPILKAN semua view Diary
-        binding.diaryHariIni.setVisibility(View.VISIBLE);
-        binding.viewPagerDiarySlider.setVisibility(View.VISIBLE);
-        binding.riwayatDiary.setVisibility(View.VISIBLE);
-        binding.recyclerViewDiaryHistory.setVisibility(View.VISIBLE);
-        binding.SlideIndicator.setVisibility(View.VISIBLE);
-
-        // 3. ATUR STYLE TOMBOL
-        binding.SearchInput.setText("");
+        // 1. ATUR STYLE TOMBOL & HINT
         binding.SearchInput.setHint("Cari Diary Yang Kamu Inginkan");
         binding.btnArtikel.setBackgroundResource(R.drawable.frame_home);
         binding.btnArtikel.setTextColor(ContextCompat.getColor(this, R.color.main_blue));
-
         binding.btnDiary.setBackgroundResource(R.drawable.clickbtn);
         binding.btnDiary.setTextColor(ContextCompat.getColor(this, R.color.inactive_light_blue));
 
-        ConstraintLayout.LayoutParams articleParams = (ConstraintLayout.LayoutParams) binding.recyclerViewPopularArticles.getLayoutParams();
-        articleParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        binding.recyclerViewPopularArticles.setLayoutParams(articleParams);
+        // 2. ATUR VISIBILITY LIST
+        binding.recyclerViewPopularArticles.setVisibility(View.INVISIBLE);
+        binding.recyclerViewDiaryHistory.setVisibility(View.VISIBLE);
+
+        // 3. PERIKSA MODE SEARCH
+        if (isSearchMode) {
+            // Jika sedang mencari, JANGAN reset layout.
+            // Cukup panggil ulang filter untuk list diary.
+            filterLists(binding.SearchInput.getText().toString());
+            return; // Selesai. Jangan jalankan kode di bawah.
+        }
+
+        // --- Kode di bawah ini HANYA berjalan jika TIDAK sedang search ---
+
+        isSearchMode = false;
+        binding.SearchInput.setText("");
+
+        // SEMBUNYIKAN semua view Artikel
+        binding.recyclerViewDates.setVisibility(View.VISIBLE);
+        binding.rekomendasiArtikel.setVisibility(View.INVISIBLE);
+        binding.viewPagerArticleSlider.setVisibility(View.INVISIBLE);
+        binding.ArtikelPopuler.setVisibility(View.INVISIBLE);
+
+        // TAMPILKAN semua view Diary
+        binding.diaryHariIni.setVisibility(View.VISIBLE);
+        binding.viewPagerDiarySlider.setVisibility(View.VISIBLE);
+        binding.riwayatDiary.setVisibility(View.VISIBLE);
+        binding.SlideIndicator.setVisibility(View.VISIBLE);
+
+        // 🔥 PERBAIKAN BUG TAMBAHAN:
+        // Di kode lama, Anda mengubah 'articleParams' padahal ini 'showDiaryView'.
+        // Seharusnya Anda mengubah 'diaryParams'.
+        ConstraintLayout.LayoutParams diaryParams = (ConstraintLayout.LayoutParams) binding.recyclerViewDiaryHistory.getLayoutParams();
+        diaryParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        binding.recyclerViewDiaryHistory.setLayoutParams(diaryParams);
+
+        binding.recyclerViewDiaryHistory.setNestedScrollingEnabled(false);
+        binding.recyclerViewDiaryHistory.setHasFixedSize(true);
 
         fetchDiary();
     }
@@ -333,45 +362,78 @@ public class Homepage_Activity extends AppCompatActivity {
 
 // ...
 
-    private void fetchDiary() {
-        // Ambil token dari SessionManager
-        SessionManager sessionManager = new SessionManager(this);
-        String token = sessionManager.getAuthToken();   // pastikan method ini ada di SessionManager
+// ... (import lain untuk Activity, Toast, Log, Retrofit, dsb.)
 
+    private void fetchDiary() {
+        SessionManager sessionManager = new SessionManager(this);
+        String token = sessionManager.getAuthToken();
         if (token == null) {
             Toast.makeText(this, "Silakan login ulang (token tidak ditemukan)", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Pakai ApiService global yang sudah kamu deklarasikan di atas
-        // ApiService apiService = RetrofitClient.getApiService(this); // boleh dihapus kalau sudah jadi field global
+        Call<DiaryRespone> call = apiService.getMyDiary("Bearer " + token);
 
-        Call<DiaryRespone> call = apiService.getMyDiary();
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String tanggalHariIni = today.format(formatter);
 
         call.enqueue(new Callback<DiaryRespone>() {
             @Override
             public void onResponse(Call<DiaryRespone> call, Response<DiaryRespone> response) {
-                if (response.isSuccessful() && response.body() != null) {
+
+                List<DiaryModel> listRiwayat = new ArrayList<>();
+                List<DiaryModel> listDiaryHariIni = new ArrayList<>();
+
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+
                     List<DiaryModel> diaries = response.body().getData();
-                    if (diaries != null && !diaries.isEmpty()) {
+                    fullDiaryList = new ArrayList<>(diaries);
+                    Log.d("API_SUCCESS", "Total Diary: " + fullDiaryList.size());
 
-                        // Simpan ke fullDiaryList supaya fitur SEARCH diary jalan
-                        fullDiaryList = new ArrayList<>(diaries);
+                    // --- 2. Siapkan data "Riwayat Diary" (Sorted) ---
+                    listRiwayat = new ArrayList<>(fullDiaryList);
+                    Collections.sort(listRiwayat, (a1, a2) -> {
+                        if (a1.getEntryDate() == null || a2.getEntryDate() == null) return 0;
+                        return a2.getEntryDate().compareTo(a1.getEntryDate());
+                    });
 
-                        // isi adapter untuk history & slider
-                        scrolldiaryadapter.setData(diaries);
-                        slidediaryadaptert.setData(diaries);
-
-                    } else {
-                        Toast.makeText(Homepage_Activity.this, "Diary kosong", Toast.LENGTH_SHORT).show();
+                    // --- 3. Siapkan data "Diary Hari Ini" (Filtered) ---
+                    for (DiaryModel diary : fullDiaryList) {
+                        if (diary.getEntryDate() != null && diary.getEntryDate().equals(tanggalHariIni)) {
+                            listDiaryHariIni.add(diary);
+                        }
                     }
-                } else {
+
+                } else if (response.code() != 404) {
+                    // Tangani error jika bukan "Not Found"
                     Toast.makeText(Homepage_Activity.this,
                             "Gagal memuat diary. Code: " + response.code(),
                             Toast.LENGTH_SHORT).show();
-
-                    Log.e("Diary_API", "Error body: " + response.code());
                 }
+                // Jika 404 atau data null, list akan otomatis kosong (sudah benar)
+
+
+                // --- 4. SET DATA KE ADAPTER ---
+                // Adapter akan menangani jika listRiwayat atau listDiaryHariIni kosong
+                scrolldiaryadapter.setData(listRiwayat);
+                slidediaryadaptert.setData(listDiaryHariIni);
+
+
+                // 🔥 5. PERBAIKAN: ATUR INDIKATOR
+                // Kita hanya ingin indikator muncul jika ada LEBIH DARI 1 diary.
+                // Adapter (di langkah 2) akan menampilkan 1 card "kosong",
+                // jadi kita cek list aslinya.
+                if (listDiaryHariIni.size() > 1) {
+                    binding.SlideIndicator.setVisibility(View.VISIBLE);
+                    setupIndicators(listDiaryHariIni.size());
+                } else {
+                    // Sembunyikan jika list kosong ATAU hanya ada 1 item
+                    binding.SlideIndicator.setVisibility(View.GONE);
+                }
+
+                // Pastikan ViewPager selalu terlihat
+                binding.viewPagerDiarySlider.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -383,8 +445,6 @@ public class Homepage_Activity extends AppCompatActivity {
             }
         });
     }
-
-
     private void fetchUsername()  {
         SessionManager sessionManager = new SessionManager(this);
 
@@ -635,6 +695,7 @@ public class Homepage_Activity extends AppCompatActivity {
             Log.d("NAV_BAR", "Tombol People diklik");
             Intent intent = new Intent(Homepage_Activity.this, Community_Activity.class);
             startActivity(intent);
+            overridePendingTransition(0, 0);
         });
 
         // Listener untuk Calendar/Diary
@@ -647,12 +708,16 @@ public class Homepage_Activity extends AppCompatActivity {
         // Listener untuk Chat
         binding.navChat.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Chat diklik");
+            startActivity(new Intent(Homepage_Activity.this, ChatbotActivity.class));
             // Tambahkan Intent ke Activity Chat
         });
 
         // Listener untuk Profile
         binding.navProfile.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Profile diklik");
+            startActivity(new Intent(Homepage_Activity.this, ProfileActivity.class));
+            overridePendingTransition(0, 0);
+
             // Tambahkan Intent ke Activity Profile
         });
 

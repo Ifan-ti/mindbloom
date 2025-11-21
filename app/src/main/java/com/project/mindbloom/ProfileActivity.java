@@ -2,34 +2,47 @@ package com.project.mindbloom;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.ImageButton;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.project.client.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private SessionManager sessionManager;
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_profile);
 
-        sessionManager = new SessionManager(this);
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        ImageButton btnEditProfile = findViewById(R.id.btnEditProfile);
 
-        Button btnLogout = findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(v -> {
-            // Hapus session
-            sessionManager.clearSession(); // atau sessionManager.clearSession();
+        btnBack.setOnClickListener(v -> finish());
 
-            // Arahkan ke Login_Activity dan clear back stack
-            Intent i = new Intent(ProfileActivity.this, ActivityMain.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-            // tidak perlu finish() karena CLEAR_TASK sudah membersihkan stack
+        btnEditProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
+
+        ImageButton navHome = findViewById(R.id.navHome);
+        ImageButton navPeople = findViewById(R.id.navPeople);
+        ImageButton navCalendar = findViewById(R.id.navCalendar);
+        ImageButton navChat = findViewById(R.id.navChat);
+        ImageButton navProfile = findViewById(R.id.navProfile);
+
+        navHome.setOnClickListener(v ->
+                startActivity(new Intent(ProfileActivity.this, Homepage_Activity.class))
+        );
+
+        navPeople.setOnClickListener(v ->
+                startActivity(new Intent(ProfileActivity.this, ProfileActivity.class))
+        );
+
+        // Jika kamu sudah berada di ProfileActivity, kamu bisa disable tombolnya
+        navProfile.setOnClickListener(v -> {
+            // Optional: tampilkan toast bahwa sudah di halaman profil
+            // Toast.makeText(this, "You're already here", Toast.LENGTH_SHORT).show();
         });
     }
 }
+
+

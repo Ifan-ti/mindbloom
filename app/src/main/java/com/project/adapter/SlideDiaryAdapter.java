@@ -1,18 +1,16 @@
 package com.project.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.project.data.ArticleModel;
 import com.project.data.DiaryModel;
 import com.project.mindbloom.FormDetail;
 import com.project.mindbloom.R;
@@ -20,69 +18,98 @@ import com.project.mindbloom.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.SliderViewHolder>{
+public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.SliderViewHolder> {
     private final Context context;
     private List<DiaryModel> DiaryList;
+
+    private static final int VIEW_TYPE_ITEM = 1;
+    private static final int VIEW_TYPE_EMPTY = 0;
 
     public SlideDiaryAdapter(Context context) {
         this.context = context;
         this.DiaryList = new ArrayList<>();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        // Logika ini sudah benar
+        return DiaryList.isEmpty() ? VIEW_TYPE_EMPTY : VIEW_TYPE_ITEM;
+    }
+
     public void setData(List<DiaryModel> newDiaryList) {
         this.DiaryList = newDiaryList;
-        // Sekarang notifyDataSetChanged() akan berfungsi karena sudah inherit
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public SlideDiaryAdapter.SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // 🔥 Menggunakan layout item yang sama (aset_item_articel_card) 🔥
+        // Logika ini sudah benar
         View view = LayoutInflater.from(context).inflate(R.layout.aset_item_card_slide, parent, false);
         return new SlideDiaryAdapter.SliderViewHolder(view);
     }
 
+    // 🔥 PERBAIKAN UTAMA ADA DI SINI 🔥
     @Override
-    public void onBindViewHolder(@NonNull SlideDiaryAdapter.SliderViewHolder holder, int position) {
-        DiaryModel Diary = DiaryList.get(position);
+    public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
 
-        // Mengisi data
-        holder.tvTitle.setText(Diary.getTitle());
-        holder.tvExcerpt.setText(Diary.getContent());
+        // Cek Tipe View SEBELUM mengambil data
+        if (getItemViewType(position) == VIEW_TYPE_EMPTY) {
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            // --- INI ADALAH CARD KOSONG ---
+            holder.tvTitle.setText("Belum Ada Diary");
+            holder.tvExcerpt.setText("Kamu belum menulis diary hari ini. Yuk, mulai tulis ceritamu!");
+            holder.tvSelengkapnya.setVisibility(View.GONE);
+            holder.itemView.setOnClickListener(null); // Matikan klik
+
+        } else {
+
+            // --- INI ADALAH CARD DIARY NORMAL ---
+            // Ambil data HANYA di dalam blok 'else'
+            DiaryModel diary = DiaryList.get(position);
+
+            holder.tvTitle.setText(diary.getTitle());
+            holder.tvExcerpt.setText(diary.getContent());
+
+            // Tampilkan kembali elemen yang disembunyikan
+            holder.tvSelengkapnya.setVisibility(View.VISIBLE);
+            holder.ivArticleImage.setVisibility(View.VISIBLE);
+
+            // TODO: Tambahkan kode Glide di sini jika diary punya gambar
+            // Glide.with(context).load(diary.getGambarUrl()).into(holder.ivArticleImage);
+
+            // Aktifkan klik
+            holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, FormDetail.class);
-
-                // 🔥 KIRIM ID DIARY
-                intent.putExtra(FormDetail.EXTRA_DIARY_ID, Diary.getIdDiary());
-
+                intent.putExtra(FormDetail.EXTRA_DIARY_ID, diary.getIdDiary());
                 context.startActivity(intent);
-            }
-        });
+            });
+        }
 
+        // HAPUS SEMUA KODE DUPLIKAT YANG ADA DI SINI
+        // (Kode 'holder.tvTitle.setText(Diary.getTitle());' dll. di luar if/else)
     }
-        @Override
-        public int getItemCount () {
-            return DiaryList.size();
 
+    // 🔥 PERBAIKAN KEDUA ADA DI SINI 🔥
+    @Override
+    public int getItemCount() {
+        // Jika list kosong, kembalikan 1 (untuk card "kosong")
+        // Jika tidak, kembalikan ukuran list
+        return DiaryList.isEmpty() ? 1 : DiaryList.size();
+    }
+
+
+    // ViewHolder (Tidak berubah, sudah benar)
+    public static class SliderViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitle, tvExcerpt, tvSelengkapnya;
+        ImageView ivArticleImage;
+
+        public SliderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTitle = itemView.findViewById(R.id.txtJudulArtikel);
+            tvExcerpt = itemView.findViewById(R.id.txtDescripsiArtikel);
+            tvSelengkapnya = itemView.findViewById(R.id.txtSelengkapnya);
+            ivArticleImage = itemView.findViewById(R.id.ivArticleImage);
         }
-
-
-        // ViewHolder untuk Item Slider (Menggunakan ID layout item yang sama)
-        public static class SliderViewHolder extends RecyclerView.ViewHolder {
-            TextView tvTitle, tvExcerpt, tvSelengkapnya;
-            ImageView ivArticleImage;
-
-            public SliderViewHolder(@NonNull View itemView) {
-                super(itemView);
-                // 🔥 MENCIPTAKAN ID DARI LAYOUT CARD ARTIKEL BARU ANDA 🔥
-                tvTitle = itemView.findViewById(R.id.txtJudulArtikel);
-                tvExcerpt = itemView.findViewById(R.id.txtDescripsiArtikel);
-                tvSelengkapnya = itemView.findViewById(R.id.txtSelengkapnya);
-                ivArticleImage = itemView.findViewById(R.id.ivArticleImage);
-            }
-        }
+    }
 }

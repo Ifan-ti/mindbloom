@@ -1,7 +1,7 @@
-package com.project.mindbloom. Fragment;
+package com.project.mindbloom.Fragment;
 
-import android.os. Bundle;
-import android.view. LayoutInflater;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment. app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.project.client.RetrofitClient;
 import com.project.client.SessionManager;
@@ -274,8 +274,10 @@ public class ExpertDetailFragment extends Fragment {
     /**
      * Open chat room
      */
+    // Sekitar line 280-310
     private void openChatRoom(String roomId, int expertId) {
-        //ExpertChatFragment chatFragment = new ExpertChatFragment();
+        // UNCOMMENT INI:
+        ExpertChatFragment chatFragment = new ExpertChatFragment();
         Bundle bundle = new Bundle();
         bundle.putString("ROOM_ID", roomId);
         bundle.putInt("USER_ID", userId);
@@ -283,10 +285,11 @@ public class ExpertDetailFragment extends Fragment {
         bundle.putString("EXPERT_NAME", txtName);
         bundle.putString("EXPERT_JOB", txtJob);
 
-        //chatFragment.setArguments(bundle);
+        chatFragment.setArguments(bundle);
 
+        // FIX FRAGMENT TRANSACTION:
         getParentFragmentManager().beginTransaction()
-                //.replace(R.id.fragment_container, chatFragment)
+                .replace(R.id.fragment_container, chatFragment)  // ← UNCOMMENT & FIX INI
                 .addToBackStack(null)
                 .commit();
     }

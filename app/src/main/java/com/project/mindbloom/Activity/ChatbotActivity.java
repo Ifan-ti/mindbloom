@@ -92,10 +92,11 @@ public class ChatbotActivity extends AppCompatActivity {
     }
     private void setupRecyclerView() {
         messageList = new ArrayList<>();
-        chatAdapter = new ChatAdapter(messageList);
+        // UBAH INI:
+        chatAdapter = new ChatAdapter(messageList, false); // ← Tambahkan parameter false untuk AI chat
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true); // Pesan baru selalu di bawah
+        layoutManager.setStackFromEnd(true);
 
         chatRecyclerView.setLayoutManager(layoutManager);
         chatRecyclerView.setAdapter(chatAdapter);
@@ -237,7 +238,7 @@ public class ChatbotActivity extends AppCompatActivity {
         chatRecyclerView.scrollToPosition(messageList.size() - 1);
     }
     private void showLoading() {
-        ChatMessage loadingMessage = new ChatMessage(true);
+        ChatMessage loadingMessage = new ChatMessage("", false, false);
         messageList.add(loadingMessage);
         loadingIndex = messageList.size() - 1;
         chatAdapter.notifyItemInserted(loadingIndex);

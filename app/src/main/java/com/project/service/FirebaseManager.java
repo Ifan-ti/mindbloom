@@ -3,8 +3,8 @@ package com.project.service;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google. firebase.firestore.DocumentSnapshot;
 import com.google. firebase.firestore.FirebaseFirestore;
@@ -12,12 +12,12 @@ import com. google.firebase.firestore.ListenerRegistration;
 import com. google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.model.firebase.ChatRoom;
-import com.project.request.ConsultationRequest;
+import com. project.request.ConsultationRequest;
 import com.project.model.firebase.FirebaseChatMessage;
 import com.project.model.firebase.UserSession;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util. ArrayList;
+import java.util. HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +25,7 @@ public class FirebaseManager {
     private static final String TAG = "FirebaseManager";
 
     private final FirebaseFirestore db;
+    private final FirebaseAuth auth;
     private ListenerRegistration messageListener;
     private ListenerRegistration roomListener;
 
@@ -32,7 +33,11 @@ public class FirebaseManager {
     private static FirebaseManager instance;
 
     private FirebaseManager() {
-        db = FirebaseFirestore. getInstance();
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+        // Ensure user is authenticated
+        ensureAuthenticated();
     }
 
     public static synchronized FirebaseManager getInstance() {
@@ -43,7 +48,25 @@ public class FirebaseManager {
     }
 
     // ============================================
-    // 1.  CONSULTATION REQUEST
+    // AUTHENTICATION
+    // ============================================
+
+    private void ensureAuthenticated() {
+        if (auth.getCurrentUser() == null) {
+            auth.signInAnonymously()
+                    .addOnSuccessListener(authResult -> {
+                        Log.d(TAG, "✅ Signed in anonymously: " + authResult.getUser(). getUid());
+                    })
+                    .addOnFailureListener(e -> {
+                        Log. e(TAG, "❌ Anonymous auth failed: " + e. getMessage());
+                    });
+        } else {
+            Log.d(TAG, "✅ Already authenticated: " + auth.getCurrentUser(). getUid());
+        }
+    }
+
+    // ============================================
+    // 1. CONSULTATION REQUEST
     // ============================================
 
     /**
@@ -52,7 +75,7 @@ public class FirebaseManager {
     public void requestConsultation(ConsultationRequest request, OnSuccessListener listener) {
         db.collection("consultation_requests")
                 .add(request)
-                .addOnSuccessListener(documentReference -> {
+                . addOnSuccessListener(documentReference -> {
                     String requestId = documentReference.getId();
                     Log.d(TAG, "Consultation requested with ID: " + requestId);
                     listener.onSuccess(requestId);
@@ -93,7 +116,7 @@ public class FirebaseManager {
 
                                             @Override
                                             public void onFailure(String error) {
-                                                listener. onError(error);
+                                                listener.onError(error);
                                             }
                                         });
                             }
@@ -115,8 +138,8 @@ public class FirebaseManager {
         db.collection("chat_rooms")
                 .add(chatRoom)
                 .addOnSuccessListener(documentReference -> {
-                    String roomId = documentReference.getId();
-                    Log.d(TAG, "Chat room created with ID: " + roomId);
+                    String roomId = documentReference. getId();
+                    Log. d(TAG, "Chat room created with ID: " + roomId);
 
                     // Update user session
                     updateUserSession(userId, roomId, expertId, "active");
@@ -124,7 +147,7 @@ public class FirebaseManager {
                     listener.onSuccess(roomId);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error creating chat room", e);
+                    Log. e(TAG, "Error creating chat room", e);
                     listener.onFailure(e.getMessage());
                 });
     }
@@ -142,7 +165,7 @@ public class FirebaseManager {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                        ChatRoom room = doc.toObject(ChatRoom.class);
+                        ChatRoom room = doc. toObject(ChatRoom.class);
                         if (room != null) {
                             room.setRoomId(doc.getId());
                             listener.onRoomFound(room);
@@ -151,9 +174,9 @@ public class FirebaseManager {
                         listener.onNoActiveRoom();
                     }
                 })
-                .addOnFailureListener(e -> {
+                . addOnFailureListener(e -> {
                     Log.e(TAG, "Error getting chat room", e);
-                    listener.onError(e.getMessage());
+                    listener. onError(e.getMessage());
                 });
     }
 
@@ -161,6 +184,12 @@ public class FirebaseManager {
      * Listen to chat room status changes
      */
     public void listenToChatRoomStatus(String roomId, OnRoomStatusListener listener) {
+        // Remove old listener if exists
+        if (roomListener != null) {
+            roomListener.remove();
+        }
+
+        // Create new listener
         roomListener = db.collection("chat_rooms")
                 .document(roomId)
                 .addSnapshotListener((snapshot, error) -> {
@@ -169,9 +198,11 @@ public class FirebaseManager {
                         return;
                     }
 
-                    if (snapshot != null && snapshot.exists()) {
+                    if (snapshot != null && snapshot. exists()) {
                         String status = snapshot.getString("status");
-                        listener.onStatusChanged(status);
+                        if (status != null) {
+                            listener.onStatusChanged(status);
+                        }
                     }
                 });
     }
@@ -196,7 +227,7 @@ public class FirebaseManager {
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error ending session", e);
-                    listener.onFailure(e.getMessage());
+                    listener. onFailure(e.getMessage());
                 });
     }
 
@@ -216,13 +247,13 @@ public class FirebaseManager {
                     Log.d(TAG, "Message sent: " + documentReference.getId());
 
                     // Update last message in room
-                    updateLastMessage(roomId, message.getMessage());
+                    updateLastMessage(roomId, message. getMessage());
 
                     listener.onSuccess(documentReference.getId());
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error sending message", e);
-                    listener. onFailure(e.getMessage());
+                    listener.onFailure(e. getMessage());
                 });
     }
 
@@ -230,10 +261,16 @@ public class FirebaseManager {
      * Listen to new messages in real-time
      */
     public void listenToMessages(String roomId, OnMessageListener listener) {
-        messageListener = db.collection("chat_rooms")
+        // Remove old listener if exists
+        if (messageListener != null) {
+            messageListener.remove();
+        }
+
+        // Create new listener
+        messageListener = db. collection("chat_rooms")
                 .document(roomId)
                 .collection("messages")
-                .orderBy("timestamp", Query.Direction. ASCENDING)
+                . orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshots, error) -> {
                     if (error != null) {
                         Log.e(TAG, "Listen failed.", error);
@@ -271,9 +308,9 @@ public class FirebaseManager {
                     }
                     listener.onMessagesReceived(messages);
                 })
-                . addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading history", e);
-                    listener.onError(e.getMessage());
+                .addOnFailureListener(e -> {
+                    Log. e(TAG, "Error loading history", e);
+                    listener. onError(e.getMessage());
                 });
     }
 
@@ -286,26 +323,26 @@ public class FirebaseManager {
         updates.put("lastMessage", message);
         updates.put("lastMessageTime", com.google.firebase.Timestamp. now());
 
-        db. collection("chat_rooms")
-                .document(roomId)
+        db.collection("chat_rooms")
+                . document(roomId)
                 .update(updates);
     }
 
     private void updateUserSession(int userId, String roomId, int expertId, String status) {
         UserSession session = new UserSession(roomId, expertId, status);
 
-        db.collection("user_sessions")
+        db. collection("user_sessions")
                 .document(String.valueOf(userId))
                 . set(session);
     }
 
     // ============================================
-    // 5.  CLEANUP
+    // 5. CLEANUP
     // ============================================
 
     public void removeMessageListener() {
         if (messageListener != null) {
-            messageListener.remove();
+            messageListener. remove();
             messageListener = null;
         }
     }

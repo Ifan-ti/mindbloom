@@ -83,7 +83,8 @@ public class ExpertChatFragment extends Fragment {
 
     private void setupRecyclerView() {
         messageList = new ArrayList<>();
-        chatAdapter = new ChatAdapter(messageList, true); // true = expert chat mode
+        // UBAH INI:
+        chatAdapter = new ChatAdapter(messageList, true); // ← Parameter true untuk expert chat
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         layoutManager.setStackFromEnd(true);
@@ -95,32 +96,16 @@ public class ExpertChatFragment extends Fragment {
     private void setupFirebase() {
         firebaseManager = FirebaseManager.getInstance();
 
+        // TAMBAHKAN NULL CHECK INI:
+        if (firebaseManager == null) {
+            Toast.makeText(requireContext(), "Firebase not initialized", Toast.LENGTH_SHORT).show();
+            requireActivity().onBackPressed();
+            return;
+        }
+
         // Listen to room status changes
         firebaseManager.listenToChatRoomStatus(roomId, status -> {
-            sessionStatus = status;
-            if ("closed".equals(status) && getActivity() != null) {
-                getActivity().runOnUiThread(this::handleSessionClosed);
-            }
-        });
-
-        // Listen to new messages in real-time
-        firebaseManager.listenToMessages(roomId, new FirebaseManager.OnMessageListener() {
-            @Override
-            public void onMessagesReceived(List<FirebaseChatMessage> messages) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> updateMessageList(messages));
-                }
-            }
-
-            @Override
-            public void onError(String error) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(requireContext(),
-                                    "Error: " + error, Toast.LENGTH_SHORT).show()
-                    );
-                }
-            }
+            // ... rest of code
         });
     }
 
@@ -145,7 +130,8 @@ public class ExpertChatFragment extends Fragment {
 
         for (FirebaseChatMessage fbMsg : firebaseMessages) {
             boolean isUser = fbMsg.getSenderType().equals("user");
-            ChatMessage chatMsg = new ChatMessage(fbMsg.getMessage(), isUser, false);
+            // UBAH INI:
+            ChatMessage chatMsg = new ChatMessage(fbMsg.getMessage(), isUser, false); // ← Tambahkan parameter false
             messageList.add(chatMsg);
         }
 
@@ -179,37 +165,15 @@ public class ExpertChatFragment extends Fragment {
             return;
         }
 
-        // Clear input
         binding.messageInput.setText("");
 
-        // Add to UI immediately (optimistic update)
-        ChatMessage userMsg = new ChatMessage(messageText, true, false);
+        // UBAH INI:
+        ChatMessage userMsg = new ChatMessage(messageText, true, false); // ← Tambahkan parameter false
         messageList.add(userMsg);
         chatAdapter.notifyItemInserted(messageList.size() - 1);
         scrollToBottom();
 
-        // Send to Firebase
-        FirebaseChatMessage fbMessage = new FirebaseChatMessage(userId, "user", messageText);
-        firebaseManager.sendMessage(roomId, fbMessage, new FirebaseManager.OnSuccessListener() {
-            @Override
-            public void onSuccess(String id) {
-                Log.d(TAG, "Message sent successfully");
-            }
-
-            @Override
-            public void onFailure(String error) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(requireContext(),
-                                "Gagal mengirim pesan", Toast.LENGTH_SHORT).show();
-
-                        // Remove from UI if failed
-                        messageList.remove(userMsg);
-                        chatAdapter.notifyDataSetChanged();
-                    });
-                }
-            }
-        });
+        // Send to Firebase...
     }
 
     private void handleSessionClosed() {

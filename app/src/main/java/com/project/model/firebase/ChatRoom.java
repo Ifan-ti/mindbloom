@@ -1,6 +1,6 @@
 package com.project.model.firebase;
 
-import com.google.firebase.Timestamp;
+import com.google.firebase. Timestamp;
 
 public class ChatRoom {
     private String roomId;
@@ -12,6 +12,9 @@ public class ChatRoom {
     private Timestamp lastMessageTime;
     private String userName;
     private String expertName;
+
+    // ❌ JANGAN ADA INI:
+    // private String messages; // ← HAPUS JIKA ADA!
 
     // Empty constructor
     public ChatRoom() {}
@@ -25,7 +28,7 @@ public class ChatRoom {
         this.lastMessageTime = Timestamp.now();
     }
 
-    // Getters and Setters
+    // Getters and Setters (TANPA messages!)
     public String getRoomId() { return roomId; }
     public void setRoomId(String roomId) { this.roomId = roomId; }
 

@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.project.data.NotificationModel;
+import com.project.model.NotificationModel;
 import com.project.mindbloom.R;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Menggunakan layout 'item_notifikasi.xml' baru Anda
-        View view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.aset_item_notification, parent, false);
         return new NotificationViewHolder(view);
     }
 

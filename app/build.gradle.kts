@@ -19,7 +19,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
+        multiDexEnabled = true // ← Tambahkan jika perlu
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -50,12 +50,19 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material) // dari version catalog
 
-    // --- Firebase (pakai BoM, jadi JANGAN tulis versi di tiap artefak) ---
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    // Existing dependencies
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+    // Firebase BOM (Bill of Materials)
+    implementation (platform("com.google.firebase:firebase-bom:32.7.0"))
+
+    // Firebase products
+    implementation ("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-auth")
+    implementation ("com.google.firebase:firebase-messaging") // untuk notifications
+
+    // Optional: Lifecycle (untuk LiveData)
+    implementation ("androidx.lifecycle:lifecycle-livedata:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
 
     // --- Navigasi ---
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
@@ -89,5 +96,11 @@ dependencies {
 
     // --- SVG ---
     implementation("com.caverock:androidsvg:1.4")
+
+    // --- CROP FOTO ---
+    implementation ("com.github.yalantis:ucrop:2.2.11")
+
+    // --- GRAFIK MOOD ---
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 }

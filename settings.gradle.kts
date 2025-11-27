@@ -17,6 +17,12 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    repositories {
+        google()
+        mavenCentral()
+        // PASTIKAN BARIS INI ADA:
+        maven("https://jitpack.io")
+    }
 }
 
 rootProject.name = "mindbloom"

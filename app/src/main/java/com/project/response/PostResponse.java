@@ -1,6 +1,6 @@
 package com.project.response;
 
-import com.project.data.PostModel;
+import com.project.model.PostModel;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 

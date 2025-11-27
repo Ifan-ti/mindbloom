@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.project.data.DiaryModel;
-import com.project.mindbloom.FormDetail;
+import com.project.model.DiaryModel;
+import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R;
 
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
 
             // Aktifkan klik
             holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, FormDetail.class);
-                intent.putExtra(FormDetail.EXTRA_DIARY_ID, diary.getIdDiary());
+                Intent intent = new Intent(context, FormDetailActivity.class);
+                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, diary.getIdDiary());
                 context.startActivity(intent);
             });
         }

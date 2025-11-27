@@ -4,6 +4,6 @@
 
     <solid android:color="#507BBE"/>   <!-- warna biru card -->
 
-    <corners android:radius="40dp"/>   <!-- sudut oval -->
+    <corners android:radius="20dp"/>   <!-- sudut oval -->
 
 </shape>

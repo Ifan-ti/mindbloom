@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "111124748095",
-    "project_id": "mind-bloom-e2025",
-    "storage_bucket": "mind-bloom-e2025.firebasestorage.app"
+    "project_number": "276039661600",
+    "project_id": "mindbloom-2025",
+    "storage_bucket": "mindbloom-2025.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:111124748095:android:3940b2d016ae2e17d2e58a",
+        "mobilesdk_app_id": "1:276039661600:android:93ef7ae864cdb8eda46445",
         "android_client_info": {
           "package_name": "com.project.mindbloom"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBF9iEEpFCNK-_uMDHMl1zvQ_yibpsUL2Y"
+          "current_key": "AIzaSyBtCkhc3htzsX21L_JrWzxbZl5SJiyUG5w"
         }
       ],
       "services": {

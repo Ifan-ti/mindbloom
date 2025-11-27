@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -18,7 +20,7 @@
         android:usesCleartextTraffic="true"
         >
         <activity
-        android:name=".ActivityMain"
+        android:name=".Activity.LoginFragmentActivity"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -26,12 +28,20 @@
         </intent-filter>
         </activity>
 
-        <activity android:name=".Homepage_Activity"/>
-        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".Activity.Homepage_Activity"/>
+        <activity android:name=".Activity.Community_Activity"/>
+        <activity android:name=".Activity.ChatbotActivity"/>
+        <activity android:name=".Activity.ProfileActivity"/>
+        <activity android:name=".Activity.EditProfileActivity"/>
+        <activity android:name=".Activity.ExpertFragmentActivity"/>
 
-        <activity android:name=".EditProfileActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".FormDetail"
+
+        <activity android:name=".Activity.FormDetailActivity"
             android:exported="false"/>
 
     </application>

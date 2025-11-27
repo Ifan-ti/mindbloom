@@ -18,6 +18,15 @@
         <item name="android:padding">12dp</item>
         <item name="android:layout_marginBottom">12dp</item>
     </style>
+    <style name="CircleStyle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="CustomRoundedDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/frame_home</item>
+        <item name="colorPrimary">@color/default_blue</item>
+
+    </style>
 
     
 </resources>

@@ -4,6 +4,9 @@ import com.project.request.ChatSaveRequest;
 import com.project.request.DeepSeekRequest;
 import com.project.request.RegisterRequest;
 import com.project.request.LoginRequest;
+import com.project.request.UpdateProfileRequest;
+
+
 import com.project.response.ArticleDetailResponse;
 import com.project.response.ArticlePopulerResponse;
 import com.project.response.ChatHistory;
@@ -11,24 +14,25 @@ import com.project.response.DeepSeekResponse;
 import com.project.response.DefaultResponse;
 import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
+import com.project.response.ExpertsDetailResponse;
+import com.project.response.ExpertsRensponse;
 import com.project.response.LoginResponse;
+import com.project.response.MoodResponse;
 import com.project.response.NotificationResponse;
 import com.project.response.PostResponse;
-import com.project.response.SessionResponse;
+import com.project.response.ProfileResponse;
 import com.project.response.UserResponse;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -43,6 +47,12 @@ public interface ApiService {
 
     @POST("api/users/register")
     Call<LoginResponse> register(@Body RegisterRequest registerRequest);
+    @POST("api/users/update") // Ganti dengan path file PHP Anda
+    Call<ResponseBody> updateProfile(@Body UpdateProfileRequest request);
+    @GET("api/users/experts")
+    Call<ExpertsRensponse> getExpert();
+    @GET("api/users/expertsDetail/{id}") // Endpoint untuk detail diary (dari server)
+    Call<ExpertsDetailResponse> getExpertsDetail(@Path("id") int diaryId);
 
     //===================
     //     ARTICLES-API
@@ -64,6 +74,10 @@ public interface ApiService {
     @GET("api/Diary/me")
     Call<DiaryRespone> getMyDiary(
             @Header("Authorization") String authToken);
+    @GET("api/Diary/Mood")
+    Call<MoodResponse> getDiaryMood(
+            @Header("Authorization") String authToken);
+
     //===================
     //     POSTING-API
     //===================
@@ -91,4 +105,12 @@ public interface ApiService {
      */
     @POST("api/chatbot/save") // 👈 Endpoint untuk menyimpan chat
     Call<DefaultResponse> saveChat(@Body ChatSaveRequest request);
+
+    //===================
+    //     CHATBOT-API
+    //===================
+    @GET("api/users/profile")
+    Call<ProfileResponse> getProfile(
+        @Header("Authorization") String authToken);
+
 }

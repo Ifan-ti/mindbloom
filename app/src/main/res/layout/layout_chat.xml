@@ -82,8 +82,8 @@
         />
     <ImageButton
         android:id="@+id/btn_inactive_psikolog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
 
         app:layout_constraintEnd_toEndOf="@+id/viewSelect"
         app:layout_constraintTop_toTopOf="@id/viewSelect"
@@ -98,7 +98,7 @@
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
+        android:id="@+id/RecyclerViewList"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"

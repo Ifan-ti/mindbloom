@@ -19,11 +19,13 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="65dp"
-            android:layout_height="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:minWidth="50dp"
-            android:minHeight="50dp"
+
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+
             android:src="@drawable/button_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,13 +36,28 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Edit Profil"
-            android:textColor="#395886"
+            android:textColor="@color/default_blue"
             android:textSize="23sp"
             app:layout_constraintBottom_toBottomOf="@id/btnBack"
             app:layout_constraintStart_toEndOf="@id/btnBack"
             app:layout_constraintTop_toTopOf="@id/btnBack" />
+        <ImageButton
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-        <ImageView
+            android:src="@drawable/icon_checklist"
+            android:background="@android:color/transparent"
+            app:tint="@color/default_blue"
+
+            app:layout_constraintTop_toTopOf="@id/btnBack"
+            app:layout_constraintBottom_toBottomOf="@id/btnBack"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+
+            />
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgAvatarEdit"
             android:layout_width="96dp"
             android:layout_height="96dp"
@@ -50,7 +67,10 @@
             android:layout_marginTop="24dp"
             app:layout_constraintTop_toBottomOf="@id/btnBack"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:shapeAppearanceOverlay="@style/CircleStyle"
+            />
 
         <!-- Teks "Edit Foto" + icon kamera -->
         <LinearLayout
@@ -69,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Edit Foto"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="13sp"/>
 
             <ImageButton
@@ -79,6 +99,7 @@
                 android:layout_marginStart="6dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/icon_camera"
+                app:tint="@color/default_blue"
                 tools:ignore="UseAppTint" />
         </LinearLayout>
 
@@ -91,8 +112,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="40dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         app:layout_constraintTop_toBottomOf="@id/headerProfil"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -110,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Username"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -122,7 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="vantekim"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@id/btnUsernameNext"
                 app:layout_constraintTop_toTopOf="@id/tvLabelUsername"
@@ -160,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bio"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -172,7 +193,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="You're growing beautifully"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@id/btnBioNext"
                 app:layout_constraintTop_toTopOf="@id/tvLabelBio"
@@ -210,7 +231,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -222,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="vante.taevee@gmail.com"
-                android:textColor="#395886"
+                android:textColor="@color/default_blue"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@id/btnMoreAccount"
                 app:layout_constraintTop_toTopOf="@id/tvLabelAccount"

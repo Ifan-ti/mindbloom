@@ -13,16 +13,24 @@ import com.project.modul.ChatMessage;
 
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter. MessageViewHolder> {
 
     public static final int VIEW_TYPE_USER = 1;
     public static final int VIEW_TYPE_BOT = 2;
-    public static final int VIEW_TYPE_LOADING = 3;
+    public static final int VIEW_TYPE_EXPERT = 3; // ← Tambahan untuk expert
+    public static final int VIEW_TYPE_LOADING = 4;
 
     private List<ChatMessage> messageList;
+    private boolean isExpertChat; // ← Flag untuk mode expert chat
 
     public ChatAdapter(List<ChatMessage> messageList) {
         this.messageList = messageList;
+        this.isExpertChat = false;
+    }
+
+    public ChatAdapter(List<ChatMessage> messageList, boolean isExpertChat) {
+        this.messageList = messageList;
+        this.isExpertChat = isExpertChat;
     }
 
     @Override
@@ -31,6 +39,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
         if (msg.isLoading()) return VIEW_TYPE_LOADING;
         if (msg.isUser()) return VIEW_TYPE_USER;
+
+        // Jika expert chat, tampilkan layout expert, bukan bot
+        if (isExpertChat) return VIEW_TYPE_EXPERT;
+
         return VIEW_TYPE_BOT;
     }
 
@@ -39,11 +51,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == VIEW_TYPE_USER)
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_user, parent, false);
+            view = LayoutInflater.from(parent.getContext()). inflate(R.layout.aset_item_chat_user, parent, false);
         else if (viewType == VIEW_TYPE_LOADING)
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_loading, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.aset_item_chat_loading, parent, false);
+        else if (viewType == VIEW_TYPE_EXPERT)
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout. aset_item_chat_expert, parent, false);
         else
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_bot, parent, false);
+            view = LayoutInflater.from(parent.getContext()). inflate(R.layout.aset_item_chat_bot, parent, false);
 
         return new MessageViewHolder(view);
     }
@@ -59,12 +73,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     }
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
-
         TextView messageText;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            messageText = itemView.findViewById(R.id.messageText);
+            messageText = itemView.findViewById(R.id. messageText);
         }
     }
 }

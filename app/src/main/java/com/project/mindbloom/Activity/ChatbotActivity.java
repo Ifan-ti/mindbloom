@@ -1,7 +1,5 @@
 package com.project.mindbloom.Activity;
 
-import static android.view.View.INVISIBLE;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.project.adapter.ChatAdapter;
+import com.project.adapter.ChatBotAdapter;
 import com.project.client.RetrofitClient; // 👈 GANTI
 import com.project.client.SessionManager; // 👈 BARU
 import com.project.mindbloom.R;
@@ -36,9 +34,9 @@ public class ChatbotActivity extends AppCompatActivity {
 
     private RecyclerView chatRecyclerView;
     private EditText messageInput;
-    private ImageButton sendButton, expertbutton_inactive, expertbutton_active, aibutton_inactive;
+    private ImageButton sendButton, btn_inactive_experts;
 
-    private ChatAdapter chatAdapter;
+    private ChatBotAdapter chatBotAdapter;
     private List<ChatMessage> messageList;
 
     private ApiService apiService; // 👈 Dulu: deepSeekService
@@ -56,15 +54,12 @@ public class ChatbotActivity extends AppCompatActivity {
         chatRecyclerView = findViewById(R.id.RecyclerViewList);
         messageInput = findViewById(R.id.messageInput);
         sendButton = findViewById(R.id.sendButton);
-        expertbutton_inactive = findViewById(R.id.btn_inactive_psikolog);
-        expertbutton_active = findViewById(R.id.btn_active_psikolog);
-        aibutton_inactive = findViewById(R.id.btn_active_psikolog);
-
-
+        btn_inactive_experts = findViewById(R.id.btn_inactive_psikolog);
 
         // 1. Setup Klien API ke server NGROK Anda
         sessionManager = new SessionManager(this);
         apiService = RetrofitClient.getApiService(this); // 👈 GANTI
+
         // 2. Ambil User ID dari Sesi
         // Pastikan user sudah login sebelum masuk ke activity ini
         if (!sessionManager.isLoggedIn()) {
@@ -84,23 +79,26 @@ public class ChatbotActivity extends AppCompatActivity {
         // 3. Muat History Chat (Fitur "Seperti WA")
         loadChatHistory();
         setUpBtn();
-        hideBtn();
     }
-    private void hideBtn(){
-        expertbutton_active.setVisibility(INVISIBLE);
-        aibutton_inactive.setVisibility(INVISIBLE);
-    }
+
     private void setupRecyclerView() {
         messageList = new ArrayList<>();
-        // UBAH INI:
-        chatAdapter = new ChatAdapter(messageList, false); // ← Tambahkan parameter false untuk AI chat
+        chatBotAdapter = new ChatBotAdapter(messageList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(true); // Pesan baru selalu di bawah
 
         chatRecyclerView.setLayoutManager(layoutManager);
-        chatRecyclerView.setAdapter(chatAdapter);
+        chatRecyclerView.setAdapter(chatBotAdapter);
     }
+    private void setUpBtn(){
+        btn_inactive_experts.setOnClickListener(v -> {
+        startActivity(new Intent(ChatbotActivity.this, ExpertFragmentActivity.class));
+        });
+        sendButton.setOnClickListener(v -> sendMessage());
+
+    }
+
     /**
      * BARU: Memuat history chat dari server
      */
@@ -143,6 +141,7 @@ public class ChatbotActivity extends AppCompatActivity {
             }
         });
     }
+
     private void sendMessage() {
         String userMessage = messageInput.getText().toString().trim();
         if (userMessage.isEmpty()) return;
@@ -154,6 +153,7 @@ public class ChatbotActivity extends AppCompatActivity {
         disableSendButton();
         callChatProxy(userMessage); // 👈 GANTI nama fungsi
     }
+
     /**
      * DIPERBARUI: Memanggil server proxy NGROK Anda
      */
@@ -225,29 +225,25 @@ public class ChatbotActivity extends AppCompatActivity {
     // --- Fungsi Helper (addMessage, showLoading, hideLoading) ---
     // (Tidak ada perubahan di fungsi-fungsi ini, Anda bisa pakai kode lama Anda)
 
-    private void setUpBtn(){
-        expertbutton_inactive.setOnClickListener(v -> {
-            startActivity(new Intent(ChatbotActivity.this, ExpertFragmentActivity.class));
-        });
-        sendButton.setOnClickListener(v -> sendMessage());
-    }
     private void addMessage(String message, boolean isUser) {
         if (message == null || message.trim().isEmpty()) return;
-        messageList.add(new ChatMessage(message, isUser, false));
-        chatAdapter.notifyItemInserted(messageList.size() - 1);
+        messageList.add(new ChatMessage(message, isUser));
+        chatBotAdapter.notifyItemInserted(messageList.size() - 1);
         chatRecyclerView.scrollToPosition(messageList.size() - 1);
     }
+
     private void showLoading() {
-        ChatMessage loadingMessage = new ChatMessage("", false, false);
+        ChatMessage loadingMessage = new ChatMessage(true);
         messageList.add(loadingMessage);
         loadingIndex = messageList.size() - 1;
-        chatAdapter.notifyItemInserted(loadingIndex);
+        chatBotAdapter.notifyItemInserted(loadingIndex);
         chatRecyclerView.scrollToPosition(loadingIndex);
     }
+
     private void hideLoading() {
         if (loadingIndex != -1 && loadingIndex < messageList.size()) {
             messageList.remove(loadingIndex);
-            chatAdapter.notifyItemRemoved(loadingIndex);
+            chatBotAdapter.notifyItemRemoved(loadingIndex);
             loadingIndex = -1;
         }
     }
@@ -255,6 +251,7 @@ public class ChatbotActivity extends AppCompatActivity {
         sendButton.setEnabled(false);
         sendButton.setAlpha(0.5f); // Efek visual "non-aktif"
     }
+
     /**
      * Aktifkan kembali tombol kirim
      */

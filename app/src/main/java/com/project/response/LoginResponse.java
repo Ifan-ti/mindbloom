@@ -8,13 +8,13 @@ public class LoginResponse {
     // Field ini (status, message, data) harus SAMA PERSIS
     // dengan respons JSON dari API backend Anda
 
-    @SerializedName("status")
+    // @SerializedName("status")
     private String status;
 
-    @SerializedName("message")
+    // @SerializedName("message")
     private String message;
 
-    @SerializedName("data")
+//    @SerializedName("data")
     private LoginResponseData data; // Objek data yang berisi token dan user
 
     // Getter

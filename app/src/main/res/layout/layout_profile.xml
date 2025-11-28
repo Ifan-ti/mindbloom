@@ -273,7 +273,7 @@
                             />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_login"
+                            android:id="@+id/btn_logout"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
 

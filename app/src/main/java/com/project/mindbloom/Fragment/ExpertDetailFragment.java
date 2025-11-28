@@ -1,6 +1,7 @@
 package com.project.mindbloom.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.project.client.RetrofitClient;
 import com.project.client.SessionManager;
 import com.project.model.ExpertsDetailModel;
+import com.project.model.firebase.ChatRoom;
 import com.project.request.ConsultationRequest;
 import com.project.mindbloom.R;
 import com.project.mindbloom.databinding.LayoutExpertsProfileBinding;
@@ -28,6 +34,7 @@ import retrofit2.Response;
 public class ExpertDetailFragment extends Fragment {
     private static final String TAG = "ExpertDetailFragment";
     private ApiService apiService;
+    private ListenerRegistration requestListener;
     private FirebaseManager firebaseManager;
     private SessionManager sessionManager;
 
@@ -67,7 +74,8 @@ public class ExpertDetailFragment extends Fragment {
 
         fetchDetailExperts(expertId);
         setupChatButton();
-        checkExistingSession(); // Check if user already has active session
+        checkExistingSession();
+          // Check if user already has active session
     }
 
     private void fetchDetailExperts(int id) {
@@ -109,17 +117,28 @@ public class ExpertDetailFragment extends Fragment {
     /**
      * Check if user already has active chat session
      */
+    /**
+     * Check if user already has active chat session
+     */
     private void checkExistingSession() {
-        firebaseManager.getActiveChatRoom(userId, new FirebaseManager.OnChatRoomListener() {
+        // 1. Matikan tombol dulu biar user ga asal klik
+        binding.btnChat.setEnabled(false);
+        binding.btnChat.setText("Memeriksa sesi...");
+
+        // 2. Cek apakah ada Chat Room yang statusnya "active"
+        // Perhatikan penambahan parameter expertId disini
+        firebaseManager.getActiveChatRoom(userId, expertId, new FirebaseManager.OnChatRoomListener() {
             @Override
-            public void onRoomFound(com.project.model.firebase.ChatRoom room) {
-                // User sudah punya active session
+            public void onRoomFound(ChatRoom room) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        // Update button text
+                        // JIKA ADA: Langsung set tombol ke Chat Room
                         binding.btnChat.setText("Lanjutkan Chat");
+                        binding.btnChat.setEnabled(true);
+
+                        // Ganti fungsi klik tombol langsung masuk room
                         binding.btnChat.setOnClickListener(v -> {
-                            openChatRoom(room.getRoomId(), room.getExpertId());
+                            openChatRoom(room.getRoomId(), expertId);
                         });
                     });
                 }
@@ -127,12 +146,20 @@ public class ExpertDetailFragment extends Fragment {
 
             @Override
             public void onNoActiveRoom() {
-                // No active room, normal flow
+                // JIKA TIDAK ADA: Baru cek apakah ada Request Pending
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        checkPendingRequest(); // Pindah ke pengecekan request
+                    });
+                }
             }
 
             @Override
             public void onError(String error) {
-                // Error checking, ignore and proceed normal
+                // Kalau error, asumsi tidak ada room, coba cek request
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> checkPendingRequest());
+                }
             }
         });
     }
@@ -140,20 +167,99 @@ public class ExpertDetailFragment extends Fragment {
     /**
      * Request consultation to expert
      */
+    /**
+     * Request consultation to expert
+     */
     private void requestConsultation() {
         // Validate user login
         if (userId <= 0) {
-            Toast.makeText(requireContext(), "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show();
+            Toast. makeText(requireContext(), "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Disable button while processing
         binding.btnChat.setEnabled(false);
+        binding.btnChat.setText("Memeriksa.. .");
+
+        // ← TAMBAHKAN: Check if already has pending request
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("consultation_requests")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("expertId", expertId)
+                .whereEqualTo("status", "pending")
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (! queryDocumentSnapshots.isEmpty()) {
+                        // Already has pending request
+                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                        String requestId = doc.getId();
+
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                pendingRequestId = requestId;
+                                binding.btnChat.setText("Menunggu konfirmasi...");
+                                showWaitingDialog();
+                                listenToRequestStatus(requestId);
+
+                                Toast.makeText(requireContext(),
+                                        "Anda sudah memiliki request yang sedang diproses",
+                                        Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    } else {
+                        // No pending request, create new one
+                        sendNewRequest();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // If error, proceed with new request
+                    sendNewRequest();
+                });
+    }
+
+    /**
+     * Update button state berdasarkan status
+     */
+    private void updateButtonState(String state) {
+        if (getActivity() == null) return;
+
+        getActivity().runOnUiThread(() -> {
+            switch (state) {
+                case "checking":
+                    binding.btnChat. setText("Memeriksa sesi...");
+                    binding.btnChat.setEnabled(false);
+                    // Optional: ubah warna button
+                    break;
+
+                case "pending":
+                    binding.btnChat.setText("Menunggu konfirmasi...");
+                    binding.btnChat.setEnabled(false);
+                    break;
+
+                case "active":
+                    binding.btnChat. setText("Lanjutkan Chat");
+                    binding.btnChat. setEnabled(true);
+                    break;
+
+                case "normal":
+                default:
+                    binding.btnChat.setText("Chat");
+                    binding.btnChat.setEnabled(true);
+                    break;
+            }
+        });
+    }
+    /**
+     * Send new consultation request
+     */
+
+    private void sendNewRequest() {
         binding.btnChat.setText("Mengirim request...");
 
         // Create consultation request
         ConsultationRequest request = new ConsultationRequest(userId, expertId, "online");
-        request.setUserName(sessionManager.getAuthToken()); // Optional: set user name if available
+        request.setUserName(sessionManager.getAuthToken());
         request.setExpertName(txtName);
 
         // Send request to Firebase
@@ -189,13 +295,39 @@ public class ExpertDetailFragment extends Fragment {
     /**
      * Show waiting dialog while request is pending
      */
+    /**
+     * Show waiting dialog while request is pending
+     */
     private void showWaitingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Menunggu Konfirmasi");
-        builder.setMessage("Request chat Anda sedang menunggu konfirmasi dari " + txtName + "...");
-        builder.setCancelable(false);
-        builder.setNegativeButton("Batalkan", (dialog, which) -> {
+        builder.setMessage("Request chat Anda sedang menunggu konfirmasi dari " + txtName + ".. .");
+
+        // ← UBAH INI: setCancelable(true) supaya bisa di-dismiss
+        builder.setCancelable(true);
+
+        builder. setNegativeButton("Sembunyikan", (dialog, which) -> {
+            // Hanya hide dialog, tidak cancel request
+            dialog.dismiss();
+
+            // Update button text
+            binding.btnChat.setText("Menunggu konfirmasi.. .");
+            binding.btnChat.setEnabled(false);
+
+            Toast.makeText(requireContext(),
+                    "Request masih berjalan di background",
+                    Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNeutralButton("Batalkan Request", (dialog, which) -> {
             cancelRequest();
+        });
+
+        // ← TAMBAHKAN: Handle ketika user tap di luar dialog
+        builder.setOnDismissListener(dialog -> {
+            // Keep button showing waiting state
+            binding.btnChat.setText("Menunggu konfirmasi...");
+            binding.btnChat.setEnabled(false);
         });
 
         waitingDialog = builder.create();
@@ -203,11 +335,117 @@ public class ExpertDetailFragment extends Fragment {
     }
 
     /**
+     * Check if user has pending request for this expert
+     */
+    private void checkPendingRequest() {
+        FirebaseFirestore db = FirebaseFirestore. getInstance();
+
+        db. collection("consultation_requests")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("expertId", expertId)
+                .whereEqualTo("status", "pending")
+                .orderBy("requestedAt", Query. Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (getActivity() == null) return;
+
+                    getActivity().runOnUiThread(() -> {
+                        if (! queryDocumentSnapshots.isEmpty()) {
+                            // Ada pending request
+                            DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                            String requestId = doc.getId();
+
+                            // Resume listening to this request
+                            pendingRequestId = requestId;
+                            binding.btnChat.setText("Menunggu konfirmasi...");
+                            binding.btnChat.setEnabled(false);
+
+                            // Auto-show dialog (optional)
+                            showWaitingDialog();
+                            listenToRequestStatus(requestId);
+
+                            Toast.makeText(requireContext(),
+                                    "Melanjutkan request sebelumnya...",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // No pending request, show normal button
+                            binding.btnChat. setText("Chat");
+                            binding.btnChat.setEnabled(true);
+                        }
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            binding.btnChat.setText("Chat");
+                            binding.btnChat.setEnabled(true);
+                        });
+                    }
+                });
+    }
+    /**
      * Listen to consultation request status changes
      */
+    /**
+     * Listen to consultation request status changes
+     */
+    //public ListenerRegistration listenToRequestStatus(String requestId, FirebaseManager.OnRequestStatusChangeListener listener) {
+      //  Log.d(TAG, "🎧 Setting up listener for request: " + requestId);
+
+        //return db.collection("consultation_requests")  // ← RETURN INI!
+          //      .document(requestId)
+            //    .addSnapshotListener((snapshot, error) -> {
+                    //if (error != null) {
+              //          Log.e(TAG, "❌ Listen failed: " + error.getMessage());
+                //        listener.onError(error.getMessage());
+                  //      return;
+                 //   }
+
+                    //if (snapshot != null && snapshot.exists()) {
+                      //  String status = snapshot.getString("status");
+                       // Log.d(TAG, "📢 Request status: " + status);
+
+                     //   listener.onStatusChanged(status);
+
+                        // If approved, create chat room
+                       // if ("approved".equals(status)) {
+                           // Log.d(TAG, "✅ Status is APPROVED, creating chat room...");
+
+                            //ConsultationRequest req = snapshot.toObject(ConsultationRequest.class);
+                            //if (req != null) {
+                              //  Log.d(TAG, "   User ID: " + req.getUserId());
+                                //Log.d(TAG, "   Expert ID: " + req.getExpertId());
+
+                               // createChatRoom(req.getUserId(), req.getExpertId(),
+                                 //       new OnSuccessListener() {
+                                   //         @Override
+                                     //       public void onSuccess(String roomId) {
+                                       //         Log.d(TAG, "✅ Chat room created: " + roomId);
+                                         //       listener.onRoomCreated(roomId) ;
+                                           // }
+
+//                                            @Override
+  //                                          public void onFailure(String error) {
+    //                                            Log.e(TAG, "❌ Failed to create room: " + error);
+      //                                          listener.onError(error);
+        //                                    }
+          //                              });
+            //                } else {
+              //                  Log.e(TAG, "❌ Failed to parse ConsultationRequest");
+                //            }
+                  //      }
+                    //} else {
+                      //  Log.w(TAG, "⚠️ Snapshot is null or doesn't exist");
+                    //}
+                //});
+    //}
     private void listenToRequestStatus(String requestId) {
-        firebaseManager.listenToRequestStatus(requestId,
-                new FirebaseManager.OnRequestStatusChangeListener() {
+        if (requestListener != null) {
+            requestListener.remove();
+            Log.d(TAG, "🗑️ Removed old request listener");
+        }
+        firebaseManager.listenToRequestStatus(requestId, new FirebaseManager.OnRequestStatusChangeListener() {
                     @Override
                     public void onStatusChanged(String status) {
                         if (getActivity() == null) return;
@@ -276,20 +514,19 @@ public class ExpertDetailFragment extends Fragment {
      */
     // Sekitar line 280-310
     private void openChatRoom(String roomId, int expertId) {
-        // UNCOMMENT INI:
-        ExpertChatFragment chatFragment = new ExpertChatFragment();
+        ExpertChatFragment chatFragment = new ExpertChatFragment(); // Panggil fragment yang baru dibuat
         Bundle bundle = new Bundle();
+
+        // Kirim data penting ke ruang chat
         bundle.putString("ROOM_ID", roomId);
         bundle.putInt("USER_ID", userId);
         bundle.putInt("EXPERT_ID", expertId);
         bundle.putString("EXPERT_NAME", txtName);
-        bundle.putString("EXPERT_JOB", txtJob);
 
         chatFragment.setArguments(bundle);
 
-        // FIX FRAGMENT TRANSACTION:
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, chatFragment)  // ← UNCOMMENT & FIX INI
+                .replace(R.id.fragment_container, chatFragment)
                 .addToBackStack(null)
                 .commit();
     }

@@ -152,6 +152,18 @@ public class ProfileActivity extends AppCompatActivity {
             intent.putExtra("email", email);
             startActivity(intent);
         });
+        binding.btnLogout.setOnClickListener(v -> {
+            Log.d("NAV_LOGOUT", "Tombol Logout diklik");
+            // Hapus sesi login
+            SessionManager sessionManager = new SessionManager(ProfileActivity.this);
+            sessionManager.clearSession();
+
+            // Kembali ke LoginActivity
+            Intent intent = new Intent(ProfileActivity.this, LoginFragmentActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Hapus semua aktivitas sebelumnya
+            startActivity(intent);
+            finish(); // Akhiri ProfileActivity
+        });
     }
     private void getMoodData() {
         // Ambil User ID dari Session/SharedPreference kamu
@@ -324,6 +336,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Opsional: Untuk tombol-tombol next yang baru ditambahkan
 
     }
+
 
 
 }

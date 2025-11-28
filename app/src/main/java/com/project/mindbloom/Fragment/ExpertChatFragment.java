@@ -1,44 +1,40 @@
 package com.project.mindbloom.Fragment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.project.adapter.ChatAdapter;
-import com.project.mindbloom.R;
-import com.project.mindbloom.databinding.LayoutChatBinding;
-import com.project.model.firebase.FirebaseChatMessage;
-import com.project.modul.ChatMessage;
-import com.project.service.FirebaseManager;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.project.adapter.ChatExpertsAdapter;
+import com.project.mindbloom.databinding.LayoutChatBinding; // Pastikan nama file XML layout_chat kamu benar
+import com.project.model.MessageModel;
+import com.project.model.firebase.ChatRoom;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ExpertChatFragment extends Fragment {
-    private static final String TAG = "ExpertChatFragment";
 
     private LayoutChatBinding binding;
-    private List<ChatMessage> messageList;
-    private ChatAdapter chatAdapter;
+    private FirebaseFirestore db;
+    private ChatExpertsAdapter ChatExpertsAdapter;
+    private ListenerRegistration chatListener;
 
-    // Firebase
-    private FirebaseManager firebaseManager;
     private String roomId;
     private int userId;
     private int expertId;
     private String expertName;
-    private String expertJob;
-    private String sessionStatus = "active";
 
     @Nullable
     @Override
@@ -50,171 +46,113 @@ public class ExpertChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        db = FirebaseFirestore.getInstance();
 
-        // Get data from arguments
+        // 1. Ambil Data dari Bundle (dikirim dari ExpertDetailFragment)
         if (getArguments() != null) {
             roomId = getArguments().getString("ROOM_ID");
-            userId = getArguments().getInt("USER_ID", 0);
-            expertId = getArguments().getInt("EXPERT_ID", 0);
-            expertName = getArguments().getString("EXPERT_NAME", "Expert");
-            expertJob = getArguments().getString("EXPERT_JOB", "");
+            userId = getArguments().getInt("USER_ID");
+            expertId = getArguments().getInt("EXPERT_ID");
+            expertName = getArguments().getString("EXPERT_NAME");
         }
 
-        if (TextUtils.isEmpty(roomId) || userId == 0) {
-            Toast.makeText(requireContext(), "Invalid room data", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
-            return;
-        }
-
-        setupViews();
+        // 2. Setup RecyclerView
         setupRecyclerView();
-        setupFirebase();
-        loadChatHistory();
-        setupListeners();
-    }
 
-    private void setupViews() {
-        // Hide AI/Psikolog toggle for expert chat
-        binding.viewSelect.setVisibility(View.GONE);
+        // 3. Tombol Kirim
+        binding.sendButton.setOnClickListener(v -> sendMessage());
 
-        // You can set expert name in toolbar if you have it
-        // binding.tvExpertName.setText(expertName);
+        // 4. Tombol Back
+        binding.btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+
+        // 5. Mulai dengarkan chat
+        listenToMessages();
     }
 
     private void setupRecyclerView() {
-        messageList = new ArrayList<>();
-        // UBAH INI:
-        chatAdapter = new ChatAdapter(messageList, true); // ← Parameter true untuk expert chat
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
-        layoutManager.setStackFromEnd(true);
-
-        binding.RecyclerViewList.setLayoutManager(layoutManager);
-        binding.RecyclerViewList.setAdapter(chatAdapter);
-    }
-
-    private void setupFirebase() {
-        firebaseManager = FirebaseManager.getInstance();
-
-        // TAMBAHKAN NULL CHECK INI:
-        if (firebaseManager == null) {
-            Toast.makeText(requireContext(), "Firebase not initialized", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
-            return;
-        }
-
-        // Listen to room status changes
-        firebaseManager.listenToChatRoomStatus(roomId, status -> {
-            // ... rest of code
-        });
-    }
-
-    private void loadChatHistory() {
-        firebaseManager.loadChatHistory(roomId, new FirebaseManager.OnMessageListener() {
-            @Override
-            public void onMessagesReceived(List<FirebaseChatMessage> messages) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> updateMessageList(messages));
-                }
-            }
-
-            @Override
-            public void onError(String error) {
-                Log.e(TAG, "Error loading history: " + error);
-            }
-        });
-    }
-
-    private void updateMessageList(List<FirebaseChatMessage> firebaseMessages) {
-        messageList.clear();
-
-        for (FirebaseChatMessage fbMsg : firebaseMessages) {
-            boolean isUser = fbMsg.getSenderType().equals("user");
-            // UBAH INI:
-            ChatMessage chatMsg = new ChatMessage(fbMsg.getMessage(), isUser, false); // ← Tambahkan parameter false
-            messageList.add(chatMsg);
-        }
-
-        chatAdapter.notifyDataSetChanged();
-        scrollToBottom();
-    }
-
-    private void setupListeners() {
-        // Send button
-        binding.sendButton.setOnClickListener(v -> sendMessage());
-
-        // Back button
-        binding.btnBack.setOnClickListener(v -> onBackPressed());
-
-        // Enter key to send (optional)
-        binding.messageInput.setOnEditorActionListener((v, actionId, event) -> {
-            sendMessage();
-            return true;
-        });
+        ChatExpertsAdapter = new ChatExpertsAdapter(requireContext(), userId);
+        binding.RecyclerViewList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.RecyclerViewList.setAdapter(ChatExpertsAdapter);
     }
 
     private void sendMessage() {
         String messageText = binding.messageInput.getText().toString().trim();
+        if (messageText.isEmpty()) return;
 
-        if (TextUtils.isEmpty(messageText)) {
-            return;
-        }
+        // Buat object pesan
+        MessageModel message = new MessageModel(
+                String.valueOf(userId),
+                messageText,
+                new Timestamp(new Date())
+        );
 
-        if (!"active".equals(sessionStatus)) {
-            Toast.makeText(requireContext(), "Sesi chat telah berakhir", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        binding.messageInput.setText("");
-
-        // UBAH INI:
-        ChatMessage userMsg = new ChatMessage(messageText, true, false); // ← Tambahkan parameter false
-        messageList.add(userMsg);
-        chatAdapter.notifyItemInserted(messageList.size() - 1);
-        scrollToBottom();
-
-        // Send to Firebase...
-    }
-
-    private void handleSessionClosed() {
-        binding.messageInput.setEnabled(false);
-        binding.sendButton.setEnabled(false);
-
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Sesi Berakhir")
-                .setMessage(expertName + " telah mengakhiri sesi chat ini.")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    requireActivity().onBackPressed();
+        // Simpan ke Sub-collection "messages" di dalam dokumen Room
+        db.collection("chat_rooms")
+                .document(roomId)
+                .collection("messages")
+                .add(message)
+                .addOnSuccessListener(documentReference -> {
+                    binding.messageInput.setText(""); // Kosongkan input
                 })
-                .setCancelable(false)
-                .show();
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Gagal mengirim pesan", Toast.LENGTH_SHORT).show();
+                });
     }
 
-    private void scrollToBottom() {
-        if (messageList.size() > 0) {
-            binding.RecyclerViewList.smoothScrollToPosition(messageList.size() - 1);
-        }
-    }
-
-    private void onBackPressed() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Keluar dari Chat")
-                .setMessage("Apakah Anda yakin ingin keluar?  Chat akan tetap tersimpan.")
-                .setPositiveButton("Ya", (dialog, which) -> {
-                    requireActivity().onBackPressed();
+    public void getActiveChatRoom(int userId, int expertId, OnChatRoomListener listener) {
+        db.collection("chat_rooms")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("expertId", expertId)
+                .whereEqualTo("status", "active") // Kita cari yang statusnya masih active
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        // Ditemukan room aktif!
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                        ChatRoom room = doc.toObject(ChatRoom.class);
+                        room.setRoomId(doc.getId()); // Simpan ID dokumen
+                        listener.onRoomFound(room);
+                    } else {
+                        // Tidak ada room aktif
+                        listener.onNoActiveRoom();
+                    }
                 })
-                .setNegativeButton("Tidak", null)
-                .show();
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    // Interface untuk listener (jika belum ada)
+    public interface OnChatRoomListener {
+        void onRoomFound(ChatRoom room);
+        void onNoActiveRoom();
+        void onError(String error);
+    }
+    private void listenToMessages() {
+        // Real-time listener ke sub-collection "messages"
+        chatListener = db.collection("chat_rooms")
+                .document(roomId)
+                .collection("messages")
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) return;
+
+                    if (value != null) {
+                        for (DocumentChange change : value.getDocumentChanges()) {
+                            if (change.getType() == DocumentChange.Type.ADDED) {
+                                MessageModel message = change.getDocument().toObject(MessageModel.class);
+                                ChatExpertsAdapter.addMessage(message);
+                                // Scroll ke paling bawah saat ada pesan baru
+                                binding.RecyclerViewList.smoothScrollToPosition(ChatExpertsAdapter.getItemCount() - 1);
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Clean up listeners
-        if (firebaseManager != null) {
-            firebaseManager.removeMessageListener();
-            firebaseManager.removeRoomListener();
-        }
+        if (chatListener != null) chatListener.remove(); // Hentikan listener biar hemat baterai
         binding = null;
     }
 }

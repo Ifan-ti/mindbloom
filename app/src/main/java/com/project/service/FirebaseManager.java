@@ -155,29 +155,33 @@ public class FirebaseManager {
     /**
      * Get active chat room for user
      */
-    public void getActiveChatRoom(int userId, OnChatRoomListener listener) {
+    public void getActiveChatRoom(int userId, int expertId, OnChatRoomListener listener) {
         db.collection("chat_rooms")
-                . whereEqualTo("userId", userId)
-                .whereEqualTo("status", "active")
-                .orderBy("createdAt", Query. Direction.DESCENDING)
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("expertId", expertId)
+                .whereEqualTo("status", "active") // Kita cari yang statusnya masih active
                 .limit(1)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                        ChatRoom room = doc. toObject(ChatRoom.class);
-                        if (room != null) {
-                            room.setRoomId(doc.getId());
-                            listener.onRoomFound(room);
-                        }
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        // Ditemukan room aktif!
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                        ChatRoom room = doc.toObject(ChatRoom.class);
+                        room.setRoomId(doc.getId()); // Simpan ID dokumen
+                        listener.onRoomFound(room);
                     } else {
+                        // Tidak ada room aktif
                         listener.onNoActiveRoom();
                     }
                 })
-                . addOnFailureListener(e -> {
-                    Log.e(TAG, "Error getting chat room", e);
-                    listener. onError(e.getMessage());
-                });
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+    // Interface untuk listener (jika belum ada)
+    public interface OnChatRoomListener {
+        void onRoomFound(ChatRoom room);
+        void onNoActiveRoom();
+        void onError(String error);
     }
 
     /**
@@ -366,12 +370,6 @@ public class FirebaseManager {
     public interface OnRequestStatusChangeListener {
         void onStatusChanged(String status);
         void onRoomCreated(String roomId);
-        void onError(String error);
-    }
-
-    public interface OnChatRoomListener {
-        void onRoomFound(ChatRoom room);
-        void onNoActiveRoom();
         void onError(String error);
     }
 

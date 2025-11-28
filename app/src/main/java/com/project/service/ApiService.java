@@ -1,5 +1,6 @@
 package com.project.service;
 
+import com.project.model.RequestChatModel;
 import com.project.request.ChatSaveRequest;
 import com.project.request.DeepSeekRequest;
 import com.project.request.RegisterRequest;
@@ -21,6 +22,7 @@ import com.project.response.MoodResponse;
 import com.project.response.NotificationResponse;
 import com.project.response.PostResponse;
 import com.project.response.ProfileResponse;
+import com.project.response.StatusResponse;
 import com.project.response.UserResponse;
 
 import java.util.List;
@@ -33,6 +35,7 @@ import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -41,7 +44,6 @@ public interface ApiService {
     //===================
     @GET("api/users/username/{id}")
     Call<UserResponse> getUserById(@Path("id") int userId);
-
     @POST("api/users/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
@@ -112,5 +114,20 @@ public interface ApiService {
     @GET("api/users/profile")
     Call<ProfileResponse> getProfile(
         @Header("Authorization") String authToken);
+
+    //===================
+    //     CHAT-API
+    //===================
+    // ApiService.java
+
+    // 1. Kirim Request
+    @POST("api/chat/sendrequest") // Sesuaikan path index.php kamu
+    Call<DefaultResponse> sendConsultationRequest(@Body RequestChatModel data);
+
+    // 2. Cek Status
+    @GET("api/chat/cekrequest")
+    Call<StatusResponse> checkRequestStatus(@Query("expert_id") int expertId);
+    
+
 
 }

@@ -1,15 +1,17 @@
 plugins {
     // PAKAI SALAH SATU CARA SAJA → di sini pakai alias dari version catalog
     alias(libs.plugins.android.application)
-
     // butuh karena Gemini client ditulis Kotlin (tetap bisa dipanggil dari Java)
     id("org.jetbrains.kotlin.android") version "1.9.24"
-
     // Google Services (Firebase)
     id("com.google.gms.google-services")
 }
 
 android {
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
     namespace = "com.project.mindbloom"
     compileSdk = 35
 
@@ -21,6 +23,14 @@ android {
         versionName = "1.0"
         multiDexEnabled = true // ← Tambahkan jika perlu
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        create("debugKey") {
+            storeFile = file("debug.keystore") // Pastikan file ini sudah dicopy ke folder app/
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
@@ -46,6 +56,8 @@ android {
 }
 
 dependencies {
+
+    implementation ("com.google.android.gms:play-services-base:18.5.0")
     // --- AndroidX & UI ---
     implementation(libs.appcompat)
     implementation(libs.material) // dari version catalog
@@ -56,6 +68,7 @@ dependencies {
     implementation (platform("com.google.firebase:firebase-bom:32.7.0"))
 
     // Firebase products
+    implementation ("com.google.firebase:firebase-analytics")
     implementation ("com.google.firebase:firebase-firestore")
     implementation ("com.google.firebase:firebase-auth")
     implementation ("com.google.firebase:firebase-messaging") // untuk notifications

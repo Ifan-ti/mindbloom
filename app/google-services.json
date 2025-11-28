@@ -12,7 +12,20 @@
           "package_name": "com.project.mindbloom"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "276039661600-1qmn9te10lubg4joign3c7d7gk2u2um2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.mindbloom",
+            "certificate_hash": "f735f71670f3c5cc23d10db1dd9c1b238f3c8753"
+          }
+        },
+        {
+          "client_id": "276039661600-b7djkahvgmm371v5mlmeo7jj3gae9746.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBtCkhc3htzsX21L_JrWzxbZl5SJiyUG5w"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276039661600-b7djkahvgmm371v5mlmeo7jj3gae9746.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

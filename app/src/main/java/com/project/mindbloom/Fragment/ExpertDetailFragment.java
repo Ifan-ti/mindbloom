@@ -19,11 +19,14 @@ import com.google.firebase.firestore.Query;
 import com.project.client.RetrofitClient;
 import com.project.client.SessionManager;
 import com.project.model.ExpertsDetailModel;
+import com.project.model.RequestChatModel;
 import com.project.model.firebase.ChatRoom;
 import com.project.request.ConsultationRequest;
 import com.project.mindbloom.R;
 import com.project.mindbloom.databinding.LayoutExpertsProfileBinding;
+import com.project.response.DefaultResponse;
 import com.project.response.ExpertsDetailResponse;
+import com.project.response.StatusResponse;
 import com.project.service.ApiService;
 import com.project.service.FirebaseManager;
 
@@ -74,6 +77,7 @@ public class ExpertDetailFragment extends Fragment {
 
         fetchDetailExperts(expertId);
         setupChatButton();
+        checkStatusFromMysql();
         checkExistingSession();
           // Check if user already has active session
     }
@@ -255,14 +259,65 @@ public class ExpertDetailFragment extends Fragment {
      */
 
     private void sendNewRequest() {
-        binding.btnChat.setText("Mengirim request...");
+        // 1. Ubah tampilan tombol jadi loading
+        binding.btnChat.setText("Memproses...");
+        binding.btnChat.setEnabled(false);
 
-        // Create consultation request
+        // 2. Siapkan data untuk dikirim ke PHP
+        RequestChatModel requestData = new RequestChatModel(expertId);
+
+        // 3. PANGGIL MYSQL (Lewat Retrofit)
+        apiService.sendConsultationRequest(requestData).enqueue(new Callback<DefaultResponse>() {
+            @Override
+            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                // Cek apakah server merespon dengan sukses (Code 200/201)
+                if (response.isSuccessful() && response.body() != null) {
+
+                    String status = response.body().getStatus();
+                    String message = response.body().getMessage();
+
+                    if ("success".equals(status)) {
+                        // ✅ MYSQL SUKSES!
+                        // Sekarang lanjut update ke Firebase agar notifikasi muncul realtime
+                        sendRequestToFirebase();
+                    } else {
+                        // ❌ Gagal di sisi logic (misal: sudah ada request pending)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                        resetButtonState();
+                    }
+                } else {
+                    // ❌ Error Server (404, 500, dll)
+                    Toast.makeText(requireContext(), "Gagal terhubung ke server", Toast.LENGTH_SHORT).show();
+                    resetButtonState();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                // ❌ Error Koneksi Internet
+                Toast.makeText(requireContext(), "Error koneksi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                resetButtonState();
+            }
+        });
+    }
+
+    // Helper untuk mengembalikan tombol ke semula jika gagal
+    private void resetButtonState() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                binding.btnChat.setText("Chat");
+                binding.btnChat.setEnabled(true);
+            });
+        }
+    }
+
+    private void sendRequestToFirebase() {
+        // Siapkan data untuk Firebase
         ConsultationRequest request = new ConsultationRequest(userId, expertId, "online");
-        request.setUserName(sessionManager.getAuthToken());
+        request.setUserName(sessionManager.getAuthToken()); // Sesuaikan kalau token ini bukan nama user
         request.setExpertName(txtName);
 
-        // Send request to Firebase
+        // Panggil Firebase Manager
         firebaseManager.requestConsultation(request, new FirebaseManager.OnSuccessListener() {
             @Override
             public void onSuccess(String requestId) {
@@ -270,6 +325,7 @@ public class ExpertDetailFragment extends Fragment {
 
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
+                        // Update UI jadi Menunggu
                         binding.btnChat.setText("Menunggu konfirmasi...");
                         showWaitingDialog();
                         listenToRequestStatus(requestId);
@@ -281,17 +337,13 @@ public class ExpertDetailFragment extends Fragment {
             public void onFailure(String error) {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        binding.btnChat.setEnabled(true);
-                        binding.btnChat.setText("Chat");
-                        Toast.makeText(requireContext(),
-                                "Gagal mengirim request: " + error,
-                                Toast.LENGTH_SHORT).show();
+                        resetButtonState();
+                        Toast.makeText(requireContext(), "Gagal ke Firebase: " + error, Toast.LENGTH_SHORT).show();
                     });
                 }
             }
         });
     }
-
     /**
      * Show waiting dialog while request is pending
      */
@@ -334,6 +386,38 @@ public class ExpertDetailFragment extends Fragment {
         waitingDialog.show();
     }
 
+    private void checkStatusFromMysql() {
+        apiService.checkRequestStatus(expertId).enqueue(new Callback<StatusResponse>() {
+            @Override
+            public void onResponse(Call<StatusResponse> call, Response<StatusResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Ambil data dari StatusResponse.java
+                    String reqStatus = response.body().getData().getRequestStatus();
+                    String roomId = response.body().getData().getRoomId();
+
+                    if ("approved".equals(reqStatus) && roomId != null) {
+                        // SUDAH DISETUJUI -> Langsung masuk chat
+                        binding.btnChat.setText("Lanjutkan Chat");
+                        binding.btnChat.setOnClickListener(v -> openChatRoom(roomId, expertId));
+                        binding.btnChat.setEnabled(true);
+                    } else if ("pending".equals(reqStatus)) {
+                        // MASIH PENDING
+                        binding.btnChat.setText("Menunggu Konfirmasi");
+                        binding.btnChat.setEnabled(false);
+                    } else {
+                        // BELUM ADA REQUEST / REJECTED
+                        binding.btnChat.setText("Chat");
+                        binding.btnChat.setEnabled(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StatusResponse> call, Throwable t) {
+                // Fallback: Jika MySQL gagal dicek, biarkan user mencoba klik chat manual
+            }
+        });
+    }
     /**
      * Check if user has pending request for this expert
      */

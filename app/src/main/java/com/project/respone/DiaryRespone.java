@@ -1,20 +1,22 @@
 package com.project.respone;
 
-import com.google.gson.annotations.SerializedName;
-import com.project.data.ArticleModel;
-import com.project.data.DiaryModel;
-
+import com.project.respone.DiaryRespone;
 import java.util.List;
 
 public class DiaryRespone {
-    @SerializedName("status")
     private String status;
+    private int count;
+    private List<Diary> data;
 
-    @SerializedName("data")
-    private List<DiaryModel> data;
-    public List<DiaryModel> getData() {
+    public String getStatus() {
+        return status;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<Diary> getData() {
         return data;
     }
-
-
-    }
+}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F8FC"
@@ -11,8 +12,7 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_back"
-        android:tint="#2C2C54"
+        android:src="@drawable/button_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="05 Sep 2025 ▼"
+        android:text="05 Sep 2025"
         android:textColor="#3D5AF1"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/btnBack"
@@ -45,7 +45,7 @@
         android:id="@+id/imgMood"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/mood1"
+        android:src="@drawable/moodhappy"
         app:layout_constraintTop_toTopOf="@id/tvDate"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -53,52 +53,57 @@
         android:id="@+id/moodPopup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/popup_mood"
+        android:elevation="6dp"
         android:orientation="vertical"
         android:padding="12dp"
-        android:background="@drawable/popup_mood"
         android:visibility="gone"
-        android:elevation="6dp"
-        app:layout_constraintTop_toBottomOf="@id/imgMood"
-        app:layout_constraintEnd_toEndOf="@id/imgMood">
+        app:layout_constraintEnd_toEndOf="@id/imgMood"
+        app:layout_constraintTop_toBottomOf="@id/imgMood">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="29dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+
             android:text="How are you feeling?"
+
             android:textColor="#333333"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/moodHappy"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/mood1"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/moodhappy" />
 
             <ImageView
-                android:id="@+id/moodCalm"
+                android:id="@+id/moodNeutral"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/mood2"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/moodneutral" />
 
             <ImageView
                 android:id="@+id/moodSad"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/mood3"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/moodsad" />
 
             <ImageView
                 android:id="@+id/moodAngry"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/mood4" />
+                android:src="@drawable/moodangry" />
         </LinearLayout>
     </LinearLayout>
 

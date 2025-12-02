@@ -11,32 +11,31 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_back"
+        android:src="@drawable/button_back"
         android:contentDescription="Back"
-        app:tint="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Tombol Posting -->
+
+    <!-- Label Foto -->
     <Button
         android:id="@+id/btnPosting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Posting"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="#3B5998"
+        android:text="Post"
         android:textColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintMarginTop="32dp"
-        app:layout_constraintMarginEnd="16dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-    <!-- Label Foto -->
     <TextView
         android:id="@+id/tvFoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Foto"
+        android:text="Photo"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
@@ -60,10 +59,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="32dp"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/icon_add"
             android:contentDescription="Add Photo"
             android:scaleType="centerInside"
-            android:tint="#6E7B8B" />
+            app:tint="@color/default_blue" />
     </androidx.cardview.widget.CardView>
 
     <!-- Caption -->

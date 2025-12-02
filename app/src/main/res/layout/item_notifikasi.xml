@@ -3,81 +3,76 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:background="@android:color/white"
-    android:layout_marginBottom="8dp">
-
-    <!-- Titik merah -->
-    <View
-        android:id="@+id/viewDot"
-        android:layout_width="6dp"
-        android:layout_height="6dp"
-        android:backgroundTint="#FF3B30"
-        android:background="@drawable/bg_dot_red"
-        app:layout_constraintTop_toTopOf="@+id/imgProfile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintMarginStart="4dp"
-        app:layout_constraintMarginTop="8dp"/>
+    android:paddingVertical="8dp">
 
     <!-- Foto profil -->
     <ImageView
         android:id="@+id/imgProfile"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_profile_placeholder"
-        android:scaleType="centerCrop"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/circle_bg_gray"
-        app:layout_constraintStart_toEndOf="@+id/viewDot"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Nama dan waktu -->
+    <!-- Tombol Menu (3 titik) -->
+    <ImageButton
+        android:id="@+id/btnMenu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/logo_titik_tiga"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#555555" />
+
+    <!-- Nama -->
     <TextView
         android:id="@+id/tvNama"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="Anonimus"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toEndOf="@+id/imgProfile"
-        app:layout_constraintTop_toTopOf="@+id/imgProfile"
-        app:layout_constraintMarginStart="8dp" />
+        app:layout_constraintEnd_toStartOf="@id/btnMenu"
+        app:layout_constraintStart_toEndOf="@id/imgProfile"
+        app:layout_constraintTop_toTopOf="@id/imgProfile" />
 
+    <!-- Waktu -->
     <TextView
         android:id="@+id/tvWaktu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5 jam"
-        android:textSize="12sp"
+        android:text="20 Jam"
         android:textColor="#888888"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toEndOf="@+id/tvNama"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvNama"
-        app:layout_constraintMarginStart="8dp" />
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/tvNama"
+        app:layout_constraintTop_toBottomOf="@id/tvNama" />
 
-    <!-- Deskripsi aksi -->
-    <TextView
-        android:id="@+id/tvdesk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Memberikan komentar"
-        android:textColor="#444444"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/tvNama"
-        app:layout_constraintTop_toBottomOf="@+id/tvNama"
-        app:layout_constraintMarginTop="2dp" />
-
-    <!-- Pesan komentar -->
+    <!-- Isi Komentar -->
     <TextView
         android:id="@+id/tvKomentar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Semangat Kakk"
-        android:textColor="#888888"
+        android:layout_marginTop="4dp"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
         android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@+id/tvdesk"
-        app:layout_constraintTop_toBottomOf="@+id/tvdesk"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintMarginTop="2dp" />
+        app:layout_constraintStart_toStartOf="@id/tvNama"
+        app:layout_constraintTop_toBottomOf="@id/tvWaktu" />
 
+    <!-- Garis pemisah -->
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="8dp"
+        android:background="#DDDDDD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvKomentar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

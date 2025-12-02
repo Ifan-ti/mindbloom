@@ -1,3 +1,5 @@
+package com.project.adapter;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +14,12 @@ import com.project.mindbloom.R;
 
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class comunitasAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private List<Post> postList;
 
-    public PostAdapter(Context context, List<Post> postList) {
+    public comunitasAdapter(Context context, List<Post> postList) {
         this.context = context;
         this.postList = postList;
     }

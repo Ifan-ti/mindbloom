@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "https://brenna-nonimbricate-randall.ngrok-free.dev/";
+    private static final String BASE_URL = "https://unlacquered-unbankable-alia.ngrok-free.dev/MINDBLOOM/api/";
     private static Retrofit retrofit;
 
     public static Retrofit getClient() {

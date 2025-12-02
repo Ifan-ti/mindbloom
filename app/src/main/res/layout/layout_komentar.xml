@@ -47,7 +47,7 @@
 
         <EditText
             android:id="@+id/etKomentar"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Tulis komentar..."
             android:textSize="14sp"
@@ -63,7 +63,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_send"
+            android:src="@drawable/send_icon"
             app:tint="#2196F3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

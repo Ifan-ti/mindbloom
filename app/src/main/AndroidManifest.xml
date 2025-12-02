@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         >
         <activity
-        android:name=".uploadDiaryActivity"
+        android:name=".ActivityMain"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

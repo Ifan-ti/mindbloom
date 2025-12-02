@@ -343,7 +343,7 @@ public class Homepage_Activity extends AppCompatActivity {
                             public int compare(DiaryModel a1, DiaryModel a2) {
                                 // Mengurutkan terbaru ke terlama (descending)
                                 // ASUMSI: getEntryDate() mengembalikan string "yyyy-MM-dd"
-                                return a2.getEntryDate().compareTo(a1.getEntryDate());
+                                return a2.getEntry_date().compareTo(a1.getEntry_date());
                             }
                         });
 
@@ -352,7 +352,7 @@ public class Homepage_Activity extends AppCompatActivity {
                         for (DiaryModel diary : allDiaries) {
                             try {
                                 // 🔥 2. Ambil string timestamp dari API
-                                String utcTimestamp = diary.getEntryDate();
+                                String utcTimestamp = diary.getEntry_date();
 
                                 // 🔥 3. Parse string UTC ke objek Instant
                                 Instant instant = Instant.parse(utcTimestamp);
@@ -365,7 +365,7 @@ public class Homepage_Activity extends AppCompatActivity {
                                     listDiaryHariIni.add(diary);
                                 }
                             } catch (Exception e) {
-                                Log.e("DATE_PARSE_ERROR", "Gagal parse tanggal: " + diary.getEntryDate(), e);
+                                Log.e("DATE_PARSE_ERROR", "Gagal parse tanggal: " + diary.getEntry_date(), e);
                             }
                         }
 

@@ -33,10 +33,12 @@ public class comunitasAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == Post.TYPE_IMAGE) {
-            View view = LayoutInflater.from(context).inflate(R.layout.layout_postingan_gambar, parent, false);
+            View view = LayoutInflater.from(context)
+                    .inflate(R.layout.layout_postingan_gambar, parent, false);
             return new ImagePostViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.layout_postingan_teks, parent, false);
+            View view = LayoutInflater.from(context)
+                    .inflate(R.layout.layout_postingan_teks, parent, false);
             return new TextPostViewHolder(view);
         }
     }
@@ -46,22 +48,27 @@ public class comunitasAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Post post = postList.get(position);
 
         if (holder instanceof ImagePostViewHolder) {
-            ImagePostViewHolder imageHolder = (ImagePostViewHolder) holder;
-            imageHolder.tvUsername.setText(post.getUsername());
-            imageHolder.tvTime.setText(post.getTime());
-            imageHolder.tvDescription.setText(post.getDescription());
-            imageHolder.imgPost.setImageResource(post.getImageResId());
-        } else if (holder instanceof TextPostViewHolder) {
-            TextPostViewHolder textHolder = (TextPostViewHolder) holder;
-            textHolder.tvUsername.setText(post.getUsername());
-            textHolder.tvTime.setText(post.getTime());
-            textHolder.tvDescription.setText(post.getDescription());
+            ImagePostViewHolder h = (ImagePostViewHolder) holder;
+
+            h.tvUsername.setText(post.getUsername());
+            h.tvTime.setText(post.getTime());
+            h.tvDescription.setText(post.getDescription());
+
+            if (post.getImageResId() != 0) {
+                h.imgPost.setImageResource(post.getImageResId());
+            }
+        } else {
+            TextPostViewHolder h = (TextPostViewHolder) holder;
+
+            h.tvUsername.setText(post.getUsername());
+            h.tvTime.setText(post.getTime());
+            h.tvDescription.setText(post.getDescription());
         }
     }
 
     @Override
     public int getItemCount() {
-        return postList.size();
+        return postList != null ? postList.size() : 0;
     }
 
     public static class ImagePostViewHolder extends RecyclerView.ViewHolder {

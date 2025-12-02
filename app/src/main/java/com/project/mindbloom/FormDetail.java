@@ -200,7 +200,7 @@ public class FormDetail extends AppCompatActivity {
                 // 1. Ini adalah format INPUT (dari database: 2025-10-30T17:00:00.000Z)
                 SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
                 parser.setTimeZone(TimeZone.getTimeZone("UTC"));
-                Date date = parser.parse(diary.getEntryDate());
+                Date date = parser.parse(diary.getEntry_date());
 
                 // 2. Ini adalah format OUTPUT (yang Anda inginkan: 2025-10-30)
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -211,7 +211,7 @@ public class FormDetail extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
                 // Jika gagal format, tampilkan tanggal aslinya
-                txtDate.setText(diary.getEntryDate());
+                txtDate.setText(diary.getEntry_date());
             }
             txtCountView.setVisibility(TextView.INVISIBLE);
             icon_count_view.setVisibility(ImageView.INVISIBLE);

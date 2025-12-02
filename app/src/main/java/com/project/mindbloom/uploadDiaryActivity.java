@@ -104,12 +104,15 @@ public class uploadDiaryActivity extends AppCompatActivity {
             return;
         }
 
+        int userId = 1; // sementara DI SET 1, nanti pakai dari session login
+
         DiaryUploadModel diary = new DiaryUploadModel(
+                userId,
                 title,
                 content,
-                selectedMood,
-                date
+                selectedMood
         );
+
 
         RetrofitClient.getApiService().uploadDiary(diary)
                 .enqueue(new Callback<DiaryPostResponse>() {

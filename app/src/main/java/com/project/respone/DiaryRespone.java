@@ -1,22 +1,18 @@
 package com.project.respone;
 
+import com.project.data.DiaryModel;
 import com.project.respone.DiaryRespone;
 import java.util.List;
 
 public class DiaryRespone {
     private String status;
-    private int count;
-    private List<Diary> data;
+    private List<DiaryModel> data;
 
     public String getStatus() {
         return status;
     }
 
-    public int getCount() {
-        return count;
-    }
-
-    public List<Diary> getData() {
+    public List<DiaryModel> getData() {
         return data;
     }
 }

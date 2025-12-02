@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F8FC"
     android:padding="16dp">
 
+    <!-- BACK BUTTON -->
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="36dp"
@@ -16,6 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- SAVE BUTTON -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
@@ -26,10 +27,11 @@
         android:textStyle="bold"
         android:paddingHorizontal="20dp"
         android:paddingVertical="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/btnBack"
-        app:layout_constraintBottom_toBottomOf="@id/btnBack"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/btnBack" />
 
+    <!-- DATE -->
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
@@ -37,10 +39,11 @@
         android:text="05 Sep 2025"
         android:textColor="#3D5AF1"
         android:textSize="14sp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="@id/btnBack"
-        app:layout_constraintTop_toBottomOf="@id/btnBack"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
+    <!-- MOOD SELECT ICON -->
     <ImageView
         android:id="@+id/imgMood"
         android:layout_width="80dp"
@@ -49,34 +52,35 @@
         app:layout_constraintTop_toTopOf="@id/tvDate"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- FLOATING POPUP (TIDAK MENGGANGGU TOMBOL) -->
     <LinearLayout
         android:id="@+id/moodPopup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/popup_mood"
-        android:elevation="6dp"
+        android:elevation="10dp"
         android:orientation="vertical"
         android:padding="12dp"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/imgMood"
-        app:layout_constraintTop_toBottomOf="@id/imgMood">
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/imgMood"
+        app:layout_constraintEnd_toEndOf="@id/imgMood">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="29dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-
             android:text="How are you feeling?"
-
             android:textColor="#333333"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/moodHappy"
@@ -104,10 +108,11 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/moodangry" />
+
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Input Judul -->
+    <!-- TITLE INPUT -->
     <EditText
         android:id="@+id/etTitle"
         android:layout_width="0dp"
@@ -122,6 +127,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- CONTENT INPUT -->
     <EditText
         android:id="@+id/etContent"
         android:layout_width="0dp"

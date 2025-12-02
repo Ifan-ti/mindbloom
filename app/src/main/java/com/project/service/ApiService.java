@@ -17,22 +17,23 @@ import retrofit2.http.Path;
 
 public interface ApiService {
 
+    @POST("api/diary/create")
+    Call<DiaryPostResponse> uploadDiary(@Body DiaryUploadModel diary);
+
+    @GET("api/diary/list")
+    Call<DiaryRespone> getDiary();
+
+    @GET("api/diary/detail/{id}")
+    Call<DiaryDetailResponse> getDiaryDetail(@Path("id") int diaryId);
+
     @GET("api/articles_populer")
     Call<ArticlePopulerResponse> getArticles();
-
-    @GET("api/Diary")
-    Call<DiaryRespone> getDiary();
 
     @GET("api/articles/{id}")
     Call<ArticleDetailResponse> getArticleDetail(@Path("id") int articleId);
 
-    @GET("api/Diary/{id}")
-    Call<DiaryDetailResponse> getDiaryDetail(@Path("id") int diaryId);
-
-    @POST("api/Diary")
-    Call<DiaryPostResponse> uploadDiary(@Body DiaryUploadModel diary);
-
     @PATCH("api/articles/view/{id}")
     Call<Void> incrementArticleView(@Path("id") int articleId);
 }
+
 

@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide; // Pastikan Anda sudah menambahkan dependensi Glide
 import com.project.client.TimeUtil;
-import com.project.data.PostModel;
+import com.project.model.PostModel;
 import com.project.mindbloom.R;
 import java.util.List;
 

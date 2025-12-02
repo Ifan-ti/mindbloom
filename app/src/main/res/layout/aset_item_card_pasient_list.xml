@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+
+    android:background="@drawable/frame_home">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgAvatarList"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_rounded"
+        android:elevation="11dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+
+        app:shapeAppearanceOverlay="@style/CircleStyle"
+         />
+
+    <TextView
+        android:id="@+id/tvNamaPasient"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="@id/imgAvatarList"
+        app:layout_constraintStart_toEndOf="@id/imgAvatarList"
+        android:layout_marginStart="15dp"
+
+        android:text="Nama Pasient"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/default_blue"
+        />
+    <TextView
+        android:id="@+id/tvLastMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvNamaPasient"
+        app:layout_constraintStart_toStartOf="@id/tvNamaPasient"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="15dp"
+        android:text="Last message from pasient"
+        android:textSize="12sp"
+        android:textColor="@color/default_blue"
+        />
+
+    <TextView
+        android:id="@+id/tvWaktu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tvNamaPasient"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="15dp"
+        android:text="12:45 PM"
+        android:textSize="10sp"
+        android:textColor="@color/default_blue"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

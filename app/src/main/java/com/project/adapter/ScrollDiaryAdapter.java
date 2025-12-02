@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bumptech.glide.Glide;
-import com.project.data.DiaryModel;
-import com.project.mindbloom.FormDetail;
+import com.project.model.DiaryModel;
+import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R;
 
 public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.DiaryViewHolder> {
@@ -57,10 +57,10 @@ public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, FormDetail.class);
+                Intent intent = new Intent(context, FormDetailActivity.class);
 
                 // 🔥 KIRIM ID DIARY
-                intent.putExtra(FormDetail.EXTRA_DIARY_ID, Diary.getIdDiary());
+                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, Diary.getIdDiary());
 
                 context.startActivity(intent);
             }

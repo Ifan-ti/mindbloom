@@ -11,6 +11,7 @@ public class SessionManager {
     private static final String KEY_AUTH_TOKEN = "authToken";
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USER_EMAIL = "userEmail";
+    private static final String KEY_ROLE_ID = "role_id";
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -22,11 +23,12 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void saveLoginSession(String token, int userId, String email) {
+    public void saveLoginSession(String token, int userId, String email, int roleId) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.putInt(KEY_USER_ID, userId);
         editor.putString(KEY_USER_EMAIL, email);
+        editor.putInt(KEY_ROLE_ID, roleId);
         editor.commit(); // Gunakan apply() untuk proses background
     }
 
@@ -36,6 +38,9 @@ public class SessionManager {
 
     public String getAuthToken() {
         return pref.getString(KEY_AUTH_TOKEN, null);
+    }
+    public int getRoleId() {
+        return pref.getInt(KEY_ROLE_ID, -1);
     }
 
     public int getUserId() {

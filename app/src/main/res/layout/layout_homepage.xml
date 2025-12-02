@@ -168,7 +168,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"
-            android:background="@drawable/frame_home"
             tools:listitem="@layout/aset_item_card_slide"
             android:visibility="visible"
             />
@@ -252,7 +251,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"
 
-            android:background="@drawable/frame_home"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -318,7 +316,7 @@
             android:contentDescription="People" />
 
         <ImageButton
-            android:id="@+id/navCalendar"
+            android:id="@+id/nav_diary"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

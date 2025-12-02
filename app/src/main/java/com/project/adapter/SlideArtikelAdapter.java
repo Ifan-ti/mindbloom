@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.project.data.ArticleModel;
-import com.project.mindbloom.FormDetail;
+import com.project.model.ArticleModel;
+import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R;
 
 import java.util.ArrayList;
@@ -64,10 +64,10 @@ public class SlideArtikelAdapter extends RecyclerView.Adapter<SlideArtikelAdapte
             @Override
             public void onClick(View v) {
                 // Buat Intent untuk pindah ke Activity Detail
-                Intent intent = new Intent(context, FormDetail.class);
+                Intent intent = new Intent(context, FormDetailActivity.class);
 
                 // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
-                intent.putExtra(FormDetail.EXTRA_ARTICLE_ID, article.getIdArticles());
+                intent.putExtra(FormDetailActivity.EXTRA_ARTICLE_ID, article.getIdArticles());
 
                 // Mulai Activity baru
                 context.startActivity(intent);

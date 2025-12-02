@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:background="@color/defaultbackground"
+    >
+
+    <TextView
+        android:id="@+id/tvTiltle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+
+        android:text="MindBloom"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/default_blue"
+        />
+
+    <EditText
+
+        android:id="@+id/SearchInput"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTiltle"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/bg_input_otp"
+        android:hint="Cari User"
+        android:inputType="text"
+        android:textColor="@color/default_blue"
+        android:textColorHint="@color/default_blue"
+        android:textSize="12sp"
+        android:padding="10dp"
+        />
+    <ImageButton
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/searchicon"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@+id/SearchInput"
+        app:layout_constraintBottom_toBottomOf="@+id/SearchInput"
+        app:layout_constraintEnd_toEndOf="@+id/SearchInput"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/viewFilterApproved"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+
+        android:background="@drawable/frame_home"
+        app:backgroundTint="@color/active_btn"
+        android:text="Approved"
+        android:textColor="@color/inactive_light_blue"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        android:textAllCaps="false"
+        android:paddingBottom="0dp"
+        android:paddingTop="0dp"
+        android:gravity="center"
+
+        app:layout_constraintTop_toBottomOf="@id/SearchInput"
+        app:layout_constraintStart_toStartOf="@id/SearchInput"
+        android:layout_marginTop="10dp"
+        />
+    <Button
+        android:id="@+id/viewFilterRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+
+        android:background="@drawable/frame_home"
+        app:backgroundTint="@color/active_btn"
+        android:text="Request"
+        android:textColor="@color/inactive_light_blue"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        android:textAllCaps="false"
+        android:paddingBottom="0dp"
+        android:paddingTop="0dp"
+        android:gravity="center"
+
+        app:layout_constraintTop_toBottomOf="@id/SearchInput"
+        app:layout_constraintStart_toEndOf="@id/viewFilterApproved"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvListPasient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/viewFilterApproved"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="5dp"
+        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomNavBar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:paddingHorizontal="10dp"
+        android:background="@drawable/bg_navbar_float"
+        android:backgroundTint="#F0F3FA"
+        android:elevation="12dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/navChat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/nav_chat_icon"
+            android:background="@android:color/transparent"
+            android:contentDescription="Chat"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/navProfile"/>
+
+        <ImageButton
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/nav_profile_icon"
+            app:tint="@color/active_btn"
+            android:background="@android:color/transparent"
+            android:contentDescription="Profile"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/navChat"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

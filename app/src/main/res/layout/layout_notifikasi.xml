@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_notification"
+        tools:listitem="@layout/aset_item_notification"
         android:clipToPadding="false" />
 
     <!-- =================== BOTTOM NAVIGATION =================== -->

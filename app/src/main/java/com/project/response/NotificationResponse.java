@@ -1,6 +1,6 @@
 package com.project.response;
 
-import com.project.data.NotificationModel;
+import com.project.model.NotificationModel;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 

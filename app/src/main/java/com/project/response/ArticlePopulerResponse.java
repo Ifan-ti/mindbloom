@@ -3,7 +3,7 @@ package com.project.response;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-import com.project.data.ArticleModel;
+import com.project.model.ArticleModel;
 
 
 public class ArticlePopulerResponse {

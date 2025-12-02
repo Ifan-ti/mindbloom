@@ -2,7 +2,7 @@
 package com.project.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.project.data.LoginModel; // <-- PENTING: Impor kelas LoginModel Anda
+import com.project.model.LoginModel; // <-- PENTING: Impor kelas LoginModel Anda
 
 public class LoginResponseData {
 

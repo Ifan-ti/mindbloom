@@ -59,12 +59,21 @@ public class Fragment_Login extends Fragment {
         // Cek jika sudah login (token masih ada), langsung ke Homepage
         if (sessionManager.isLoggedIn()) {
             if (isNetworkAvailable()) {
-                navigateToHomepage();
+                if(sessionManager.getRoleId() == 2 ) {
+                        navigateToHomepage();
+                } else if (sessionManager.getRoleId() == 3) {
+                    if (getActivity() != null) {
+                        // Pindah ke Fragment Registrasi
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new PatientDetailFragment())
+                                .addToBackStack(null) // Penting untuk tombol back
+                                .commit();
+                    }
+                }
             } else {
                 sessionManager.clearSession(); // hapus sesi lama kalau offline
             }
         }
-
         // Inisialisasi Views (Pastikan ID di layout_signin.xml benar)
         etEmail = view.findViewById(R.id.EmailInput);
         etPassword = view.findViewById(R.id.PasswordInput);
@@ -123,14 +132,25 @@ public class Fragment_Login extends Fragment {
                         String token = loginResponse.getData().getToken();
                         userId = loginResponse.getData().getUser().getId();
                         String userEmail = loginResponse.getData().getUser().getEmail();
+                        int RoleId = loginResponse.getData().getUser().getRoleId();
 
                         // 4. Simpan Sesi (Token & ID User)
-                        sessionManager.saveLoginSession(token, userId, userEmail);
+                        sessionManager.saveLoginSession(token, userId, userEmail, RoleId);
                         Toast.makeText(getContext(), "Login Berhasil!", Toast.LENGTH_SHORT).show();
 
-                        // 5. Navigasi ke Homepage
+                        if (loginResponse.getData().getUser().getRoleId() == 2) {
                             navigateToHomepage();
 
+                        } else if (loginResponse.getData().getUser().getRoleId() == 3){
+                            if (getActivity() != null) {
+                                // Pindah ke Fragment Registrasi
+                                getActivity().getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_container, new PatientDetailFragment())
+                                        .addToBackStack(null) // Penting untuk tombol back
+                                        .commit();
+                            }
+
+                        }
 
 
                     } else {

@@ -1,30 +1,28 @@
+// File: com/project/response/StatusResponse.java
+
 package com.project.response;
 
 import com.google.gson.annotations.SerializedName;
 
 public class StatusResponse {
-
     @SerializedName("status")
     private String status;
 
-    @SerializedName("message") // Jaga-jaga kalau error, PHP kirim message
-    private String message;
-
     @SerializedName("data")
-    private StatusData data;
+    private Data data;
 
-    // Getter
     public String getStatus() { return status; }
-    public String getMessage() { return message; }
-    public StatusData getData() { return data; }
+    public Data getData() { return data; }
 
-    // --- INNER CLASS untuk objek "data" ---
-    public static class StatusData {
+    public class Data {
         @SerializedName("request_status")
-        private String requestStatus; // pending, approved, rejected, none
+        private String requestStatus;
 
+        // 🔥🔥 INI YANG BIKIN ERROR SEBELUMNYA 🔥🔥
+        // PHP kirim "room_id", tapi Java bacanya "roomId".
+        // Tanpa @SerializedName, hasilnya jadi NULL.
         @SerializedName("room_id")
-        private String roomId; // Bisa null kalau belum approved
+        private String roomId;
 
         public String getRequestStatus() { return requestStatus; }
         public String getRoomId() { return roomId; }

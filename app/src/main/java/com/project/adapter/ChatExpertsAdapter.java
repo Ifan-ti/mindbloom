@@ -1,6 +1,7 @@
 package com.project.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class ChatExpertsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+
     private static final int VIEW_TYPE_MY_MESSAGE = 1;
     private static final int VIEW_TYPE_OTHER_MESSAGE = 2;
 
@@ -21,6 +23,16 @@ public class ChatExpertsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<MessageModel> messageList;
     private int currentUserId; // ID User yang sedang login
 
+    public boolean hasMessageWithId(int messageId) {
+        if (messageId == 0) return false;
+
+        for (MessageModel msg : messageList) {
+            if (msg.getId() == messageId) {
+                return true;
+            }
+        }
+        return false;
+    }
     public ChatExpertsAdapter(Context context, int currentUserId) {
         this.context = context;
         this.currentUserId = currentUserId;
@@ -28,11 +40,18 @@ public class ChatExpertsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void setMessages(List<MessageModel> messages) {
-        this.messageList = messages;
+        this.messageList. clear();
+        this.messageList.addAll(messages);
         notifyDataSetChanged();
     }
 
     public void addMessage(MessageModel message) {
+        // Cek duplikasi by ID
+        if (hasMessageWithId(message.getId())) {
+            Log.w("ChatAdapter", "Message ID " + message.getSenderId() + " already exists");
+            return;
+        }
+
         this.messageList.add(message);
         notifyItemInserted(messageList.size() - 1);
     }
@@ -40,11 +59,12 @@ public class ChatExpertsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         MessageModel message = messageList.get(position);
-        // Cek apakah pengirim adalah user yang sedang login (konversi ke String jika perlu)
-        if (message.getSenderId().equals(String.valueOf(currentUserId))) {
-            return VIEW_TYPE_MY_MESSAGE;
+
+        // Bandingkan int dengan int langsung
+        if (message.getSenderId() == currentUserId) {
+            return VIEW_TYPE_MY_MESSAGE; // Chat Kanan (Saya)
         } else {
-            return VIEW_TYPE_OTHER_MESSAGE;
+            return VIEW_TYPE_OTHER_MESSAGE; // Chat Kiri (Lawan)
         }
     }
 

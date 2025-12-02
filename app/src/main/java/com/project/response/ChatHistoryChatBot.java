@@ -3,7 +3,7 @@ package com.project.response;
 import com.google.gson.annotations.SerializedName;
 
 // Model untuk mengambil data dari endpoint history
-public class ChatHistory {
+public class ChatHistoryChatBot {
 
     @SerializedName("prompt")
     private String prompt;

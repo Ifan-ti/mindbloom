@@ -18,7 +18,7 @@ import com.project.mindbloom.R;
 import com.project.modul.ChatMessage;
 import com.project.request.ChatSaveRequest; // 👈 BARU
 import com.project.request.DeepSeekRequest;
-import com.project.response.ChatHistory; // 👈 BARU
+import com.project.response.ChatHistoryChatBot; // 👈 BARU
 import com.project.response.DeepSeekResponse;
 import com.project.response.DefaultResponse; // 👈 BARU
 import com.project.service.ApiService;
@@ -105,13 +105,13 @@ public class ChatbotActivity extends AppCompatActivity {
     private void loadChatHistory() {
         showLoading(); // Tampilkan loading saat memuat history
 
-        apiService.getChatHistory(userId).enqueue(new Callback<List<ChatHistory>>() {
+        apiService.getChatHistory(userId).enqueue(new Callback<List<ChatHistoryChatBot>>() {
             @Override
-            public void onResponse(Call<List<ChatHistory>> call, Response<List<ChatHistory>> response) {
+            public void onResponse(Call<List<ChatHistoryChatBot>> call, Response<List<ChatHistoryChatBot>> response) {
                 hideLoading(); // Sembunyikan loading
 
                 if (response.isSuccessful() && response.body() != null) {
-                    List<ChatHistory> historyList = response.body();
+                    List<ChatHistoryChatBot> historyList = response.body();
 
                     if (historyList.isEmpty()) {
                         // Jika tidak ada history, sapa
@@ -119,7 +119,7 @@ public class ChatbotActivity extends AppCompatActivity {
                         addMessage("Ceritakan apa yang ada di hatimu.", false);
                     } else {
                         // Tampilkan semua history
-                        for (ChatHistory chat : historyList) {
+                        for (ChatHistoryChatBot chat : historyList) {
                             addMessage(chat.getPrompt(), true); // Pesan User
                             addMessage(chat.getResponse(), false); // Pesan Bot
                         }
@@ -133,7 +133,7 @@ public class ChatbotActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<ChatHistory>> call, Throwable t) {
+            public void onFailure(Call<List<ChatHistoryChatBot>> call, Throwable t) {
                 hideLoading();
                 Log.e("CHAT_HISTORY", "Koneksi history gagal: " + t.getMessage());
                 addMessage("Hai, aku Boomy!", false);

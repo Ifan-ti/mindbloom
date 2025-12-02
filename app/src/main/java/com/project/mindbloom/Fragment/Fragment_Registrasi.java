@@ -108,8 +108,9 @@ public class Fragment_Registrasi extends Fragment {
                         String token = loginResponse.getData().getToken();
                         int userId = loginResponse.getData().getUser().getId(); // ID user berhasil dibawa
                         String userEmail = loginResponse.getData().getUser().getEmail();
+                        int role_Id = loginResponse.getData().getUser().getRoleId();
 
-                        sessionManager.saveLoginSession(token, userId, userEmail);
+                        sessionManager.saveLoginSession(token, userId, userEmail, role_Id);
 
                         Toast.makeText(getContext(), "Registrasi Berhasil!", Toast.LENGTH_SHORT).show();
                         navigateToHomepage(); // Langsung pindah ke Homepage

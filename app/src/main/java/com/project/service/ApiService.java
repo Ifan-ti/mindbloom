@@ -1,6 +1,5 @@
 package com.project.service;
 
-import com.project.model.RequestChatModel;
 import com.project.request.ChatSaveRequest;
 import com.project.request.DeepSeekRequest;
 import com.project.request.RegisterRequest;
@@ -10,7 +9,8 @@ import com.project.request.UpdateProfileRequest;
 
 import com.project.response.ArticleDetailResponse;
 import com.project.response.ArticlePopulerResponse;
-import com.project.response.ChatHistory;
+import com.project.response.ChatHistoryChatBot;
+import com.project.response.ChatHistoryResponse;
 import com.project.response.DeepSeekResponse;
 import com.project.response.DefaultResponse;
 import com.project.response.DiaryDetailResponse;
@@ -20,12 +20,14 @@ import com.project.response.ExpertsRensponse;
 import com.project.response.LoginResponse;
 import com.project.response.MoodResponse;
 import com.project.response.NotificationResponse;
+import com.project.response.PatientDetailResponse;
 import com.project.response.PostResponse;
 import com.project.response.ProfileResponse;
 import com.project.response.StatusResponse;
 import com.project.response.UserResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -100,7 +102,7 @@ public interface ApiService {
      * 2. Mengambil history chat dari database Anda
      */
     @GET("api/chatbot/history/{userId}") // 👈 Endpoint untuk history
-    Call<List<ChatHistory>> getChatHistory(@Path("userId") int userId);
+    Call<List<ChatHistoryChatBot>> getChatHistory(@Path("userId") int userId);
 
     /**
      * 3. Menyimpan chat baru ke database Anda
@@ -118,16 +120,35 @@ public interface ApiService {
     //===================
     //     CHAT-API
     //===================
-    // ApiService.java
+    @POST("api/consultation/send")
+    Call<DefaultResponse> sendMessage(@Body Map<String, Object> body);
+    // Untuk Request Konsultasi
+    @POST("api/consultation/request")
+    Call<DefaultResponse> sendConsultationRequest(@Body Map<String, Object> body);
 
-    // 1. Kirim Request
-    @POST("api/chat/sendrequest") // Sesuaikan path index.php kamu
-    Call<DefaultResponse> sendConsultationRequest(@Body RequestChatModel data);
+    // Untuk Cek Status (Query param uid & eid)
+    @GET("api/consultation/status")
+    Call<StatusResponse> checkRequestStatus(@Query("uid") int userId, @Query("eid") int expertId);
+    @GET("api/consultation/history")
+    Call<ChatHistoryResponse> getChatHistory(@Query("room_id") String roomId);
+    @POST("api/consultation/approve-by-user")
+    Call<DefaultResponse> approveRequestByUser(@Body Map<String, Object> body);
 
-    // 2. Cek Status
-    @GET("api/chat/cekrequest")
-    Call<StatusResponse> checkRequestStatus(@Query("expert_id") int expertId);
-    
+    //===================
+    //     PATIENT-API
+    //===================
+    // Di ApiService.java
+    @GET("api/patient/detail")
+    Call<PatientDetailResponse> getPatienDetail(@Header("Authorization") String token);
+// ✅ UBAH return type ke PatientDetailResponse
+//
+// ===================
+    //     PATIENT-API
+    //===================
+    // Di ApiService.java
+    @GET("api/expert-chat/status")
+    Call<StatusResponse> checkRequestStatusExpert(@Query("uid") int patientId, @Query("eid") int expertId);
+
 
 
 }

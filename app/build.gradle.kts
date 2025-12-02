@@ -24,14 +24,6 @@ android {
         multiDexEnabled = true // ← Tambahkan jika perlu
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    signingConfigs {
-        create("debugKey") {
-            storeFile = file("debug.keystore") // Pastikan file ini sudah dicopy ke folder app/
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
-    }
 
     buildTypes {
         release {
@@ -64,14 +56,10 @@ dependencies {
 
     // Existing dependencies
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
-    // Firebase BOM (Bill of Materials)
-    implementation (platform("com.google.firebase:firebase-bom:32.7.0"))
+    // Pusher
+    implementation ("com.pusher:pusher-java-client:2.4.2")
+    implementation("com.google.code.gson:gson:2.10.1")
 
-    // Firebase products
-    implementation ("com.google.firebase:firebase-analytics")
-    implementation ("com.google.firebase:firebase-firestore")
-    implementation ("com.google.firebase:firebase-auth")
-    implementation ("com.google.firebase:firebase-messaging") // untuk notifications
 
     // Optional: Lifecycle (untuk LiveData)
     implementation ("androidx.lifecycle:lifecycle-livedata:2.6.2")
@@ -115,5 +103,7 @@ dependencies {
 
     // --- GRAFIK MOOD ---
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    implementation ("androidx.cardview:cardview:1.0.0 ")
 
 }

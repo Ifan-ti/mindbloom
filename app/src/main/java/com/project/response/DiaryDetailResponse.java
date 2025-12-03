@@ -1,4 +1,4 @@
-package com.project.response;
+package com.project.respone;
 
 import com.google.gson.annotations.SerializedName;
 import com.project.model.DiaryModel;

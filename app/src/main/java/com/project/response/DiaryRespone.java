@@ -1,5 +1,6 @@
-package com.project.response;
+package com.project.respone;
 
+import com.project.respone.DiaryRespone;
 import com.google.gson.annotations.SerializedName;
 import com.project.model.DiaryModel;
 
@@ -11,9 +12,12 @@ public class DiaryRespone {
 
     @SerializedName("data")
     private List<DiaryModel> data;
+
+    public String getStatus() {
+        return status;
+    }
+
     public List<DiaryModel> getData() {
         return data;
     }
-
-
-    }
+}

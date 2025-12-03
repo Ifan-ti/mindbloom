@@ -19,36 +19,51 @@
 
     <ImageView
         android:id="@+id/imgProfile"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="4dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/circle_bg_gray"
-        android:contentDescription=""
         android:scaleType="centerCrop"
-        app:layout_constraintStart_toEndOf="@+id/viewDot"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Tombol Menu (3 titik) -->
+    <ImageButton
+        android:id="@+id/btnMenu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/logo_titik_tiga"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#555555" />
+
+    <!-- Nama -->
     <TextView
         android:id="@+id/tvNama"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text=""
-        android:textColor="#000000"
+        android:text="Anonimus"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imgProfile"
-        app:layout_constraintTop_toTopOf="@+id/imgProfile" />
+        app:layout_constraintEnd_toStartOf="@id/btnMenu"
+        app:layout_constraintStart_toEndOf="@id/imgProfile"
+        app:layout_constraintTop_toTopOf="@id/imgProfile" />
 
     <TextView
         android:id="@+id/tvWaktu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text=""
-        android:textColor="#888888"
+        android:text="5 jam"
         android:textSize="12sp"
+        android:textColor="#888888"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@+id/tvNama"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvNama"
-        app:layout_constraintStart_toEndOf="@+id/tvNama" />
+        app:layout_constraintMarginStart="8dp" />
 
     <TextView
         android:id="@+id/tvdesk"
@@ -65,12 +80,22 @@
         android:id="@+id/tvKomentar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text=""
+        android:text="Semangat Kakk"
         android:textColor="#888888"
         android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvdesk"
-        app:layout_constraintTop_toBottomOf="@+id/tvdesk" />
+        app:layout_constraintTop_toBottomOf="@+id/tvdesk"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintMarginTop="2dp" />
 
+    <!-- Garis pemisah -->
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="8dp"
+        android:background="#DDDDDD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvKomentar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

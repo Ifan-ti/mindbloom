@@ -11,6 +11,10 @@
     <color name="main_blue">#395886</color>
     <color name="inactive_light_blue">#E1ECF4</color>
     <color name="default_blue">#1D3455</color>
+    <color name="active_btn">#628ECD</color>
+    <color name="txt_blue">#2196F3</color>
+
+
     <color name="defaul_background">#F0F3FA</color>
     <color name="active_btn">#628ECD</color>
     <color name="gray">#2E2F37</color>

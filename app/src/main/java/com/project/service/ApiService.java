@@ -1,5 +1,12 @@
 package com.project.service;
 
+import com.project.data.DiaryUploadModel;
+import com.project.respone.ArticleDetailResponse;
+import com.project.respone.ArticlePopulerResponse;
+import com.project.respone.DiaryDetailResponse;
+import com.project.respone.DiaryRespone;
+import com.project.response.DiaryPostResponse;
+
 import com.project.request.ChatSaveRequest;
 import com.project.request.DeepSeekRequest;
 import com.project.request.RegisterRequest;

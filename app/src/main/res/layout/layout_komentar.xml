@@ -47,7 +47,7 @@
 
         <EditText
             android:id="@+id/etKomentar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Tulis komentar..."
             android:textSize="14sp"
@@ -56,14 +56,15 @@
             android:imeOptions="actionSend"
             android:maxLines="3"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
         <ImageButton
             android:id="@+id/btnKirim"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/send_icon"
             app:tint="#2196F3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/fragment_Registrasi"
-        android:name="com.project.mindbloom.Fragment_Registrasi"
+        android:name="com.project.mindbloom.Fragment.Fragment_Registrasi"
         android:label="Fragment_Registrasi" >
         <action
             android:id="@+id/action_fragment_Registrasi_to_fragment_Login"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_Login"
-        android:name="com.project.mindbloom.Fragment_Login"
+        android:name="com.project.mindbloom.Fragment.Fragment_Login"
         android:label="Fragment_Login" >
         <action
             android:id="@+id/action_fragment_Login_to_fragment_Registrasi2"

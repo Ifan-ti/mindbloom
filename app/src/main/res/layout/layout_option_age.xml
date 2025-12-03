@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Which age group do you belong to?"
-        android:textColor="@color/txt_blue"
+        android:textColor="@color/default_blue"
         android:textSize="28dp"
         android:fontFamily="@font/inika_bold"
         app:layout_constraintTop_toTopOf="parent"

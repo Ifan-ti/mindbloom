@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-import com.project.data.dateModel;
+import com.project.model.dateModel;
 import com.project.mindbloom.R;
 
 public class dateAdapter extends RecyclerView.Adapter<dateAdapter.ViewHolder> {

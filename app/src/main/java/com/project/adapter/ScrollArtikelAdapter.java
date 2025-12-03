@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.project.data.ArticleModel;
+import com.project.model.ArticleModel;
 import com.bumptech.glide.Glide;
-import com.project.mindbloom.FormDetail;
+import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R; // R.drawable.icon_app ada di sini
 
 import java.util.List;
@@ -68,10 +68,10 @@ public class ScrollArtikelAdapter extends RecyclerView.Adapter<ScrollArtikelAdap
             @Override
             public void onClick(View v) {
                 // Buat Intent untuk pindah ke Activity Detail
-                Intent intent = new Intent(context, FormDetail.class);
+                Intent intent = new Intent(context, FormDetailActivity.class);
 
                 // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
-                intent.putExtra(FormDetail.EXTRA_ARTICLE_ID, article.getIdArticles());
+                intent.putExtra(FormDetailActivity.EXTRA_ARTICLE_ID, article.getIdArticles());
 
                 // Mulai Activity baru
                 context.startActivity(intent);

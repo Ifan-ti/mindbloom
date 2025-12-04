@@ -92,6 +92,8 @@ public class SlideArtikelAdapter extends RecyclerView.Adapter<SlideArtikelAdapte
                 // Buat Intent untuk pindah ke Activity Detail
                 Intent intent = new Intent(context, FormDetailActivity.class);
 
+                intent.putExtra(FormDetailActivity.EXTRA_ARTICLE_ID, article.getId_articles());
+
                 // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
 
                 intent.putExtra("title", article.getTitle());

@@ -13,7 +13,7 @@ import java.util.Locale;
 
 import com.project.mindbloom.R;
 import com.project.model.DiaryModel;
-import com.project.data.DiaryUploadModel;
+import com.project.model.DiaryUploadModel;
 import com.project.response.DiaryPostResponse;
 
 import retrofit2.Call;
@@ -147,14 +147,13 @@ public class uploadDiaryActivity extends AppCompatActivity {
             return;
         }
 
-        int userId = 1;
-
         DiaryUploadModel diary = new DiaryUploadModel(
-                userId,
                 title,
                 content,
                 selectedMood
         );
+        Toast.makeText(this, "Judul"+title, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "content"+content, Toast.LENGTH_SHORT).show();
 
 
         RetrofitClient.getApiService(this).uploadDiary(diary)
@@ -194,7 +193,6 @@ public class uploadDiaryActivity extends AppCompatActivity {
         }
 
         DiaryUploadModel diary = new DiaryUploadModel(
-                1,
                 title,
                 content,
                 selectedMood

@@ -21,8 +21,10 @@ import java.util.List;
 // FIX 1: Class harus extend RecyclerView.Adapter dan menggunakan ViewHolder kustom
 public class PatientDetailAdapter extends RecyclerView.Adapter<PatientDetailAdapter.PatientDetailViewHolder> {
 
+
     private final Context context;
     private List<PatientDetailModel> patientDetailList;
+    private List<PatientDetailModel> originalList;
 
     // FIX 2: Listener harus menggunakan interface kustom
     private onItemClickListener listener;
@@ -41,11 +43,17 @@ public class PatientDetailAdapter extends RecyclerView.Adapter<PatientDetailAdap
     public PatientDetailAdapter(Context context) {
         this.context = context;
         this.patientDetailList = new ArrayList<>();
+        this.originalList = new ArrayList<>();
     }
 
     public void setData(List<PatientDetailModel> newPatientDetailList) {
-        this.patientDetailList = newPatientDetailList;
-        // Wajib dipanggil agar RecyclerView me-refresh data
+        if (newPatientDetailList != null) {
+            this.originalList = new ArrayList<>(newPatientDetailList); // ✅ PENTING!
+            this.patientDetailList = new ArrayList<>(newPatientDetailList);
+        } else {
+            this.originalList = new ArrayList<>();
+            this.patientDetailList = new ArrayList<>();
+        }
         notifyDataSetChanged();
     }
 
@@ -56,6 +64,34 @@ public class PatientDetailAdapter extends RecyclerView.Adapter<PatientDetailAdap
         View view = LayoutInflater.from(context).inflate(R.layout.aset_item_card_pasient_list, parent, false);
         // FIX 6: Return ViewHolder yang baru dibuat
         return new PatientDetailViewHolder(view);
+    }
+
+
+    public void filter(String query) {
+        if (originalList == null) {
+            return;
+        }
+
+        if (query == null) query = "";
+        String q = query.trim(). toLowerCase();
+
+        if (q.isEmpty()) {
+            // Query kosong → tampilkan semua data
+            patientDetailList = new ArrayList<>(originalList);
+        } else {
+            // Ada query → filter berdasarkan nama atau username
+            List<PatientDetailModel> filtered = new ArrayList<>();
+            for (PatientDetailModel p : originalList) {
+                String name = p.getName() != null ? p.getName().toLowerCase() : "";
+                String username = p.getUsername() != null ?  p.getUsername().toLowerCase() : "";
+
+                if (name.contains(q) || username.contains(q)) {
+                    filtered.add(p);
+                }
+            }
+            patientDetailList = filtered;
+        }
+        notifyDataSetChanged();
     }
 
     // FIX 7: Argumen pertama harus PatientDetailViewHolder

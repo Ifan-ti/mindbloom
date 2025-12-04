@@ -1,5 +1,6 @@
 package com.project.mindbloom.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.project.adapter.ExpertListAdapter;
 import com.project.client.RetrofitClient;
+import com.project.mindbloom.Activity.ChatbotActivity;
 import com.project.model.ExpertsModel;
 import com.project.mindbloom.R;
 import com.project.mindbloom.databinding.LayoutExpertsListBinding;
@@ -73,6 +75,7 @@ public class ExpertsListFragment extends Fragment {
 
         // ✅ Fetch data
         fetchList();
+        Nav();
     }
 
     private void fetchList() {  // ✅ Ganti nama dari fechList ke fetchList (typo fix)
@@ -161,4 +164,13 @@ public class ExpertsListFragment extends Fragment {
                     .commit();
         }
     }
+
+    public void Nav(){
+        binding.btnInactiveAi.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ChatbotActivity.class);
+            startActivity(intent);
+        });
+    }
+
+
 }

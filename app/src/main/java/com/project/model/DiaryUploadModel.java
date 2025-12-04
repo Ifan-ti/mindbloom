@@ -1,4 +1,4 @@
-package com.project.data;
+package com.project.model;
 
 public class DiaryUploadModel {
     private int user_id;
@@ -6,8 +6,7 @@ public class DiaryUploadModel {
     private String content;
     private String mood_tag;
 
-    public DiaryUploadModel(int user_id, String title, String content, String mood_tag) {
-        this.user_id = user_id;
+    public DiaryUploadModel( String title, String content, String mood_tag) {
         this.title = title;
         this.content = content;
         this.mood_tag = mood_tag;

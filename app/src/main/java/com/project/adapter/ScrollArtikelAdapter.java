@@ -96,6 +96,9 @@ public class ScrollArtikelAdapter extends RecyclerView.Adapter<ScrollArtikelAdap
 
                 // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
 
+                intent.putExtra(FormDetailActivity.EXTRA_ARTICLE_ID, article.getId_articles());
+
+
                 intent.putExtra("title", article.getTitle());
                 intent.putExtra("content", article.getContent());
                 intent.putExtra("author", article.getAuthor());

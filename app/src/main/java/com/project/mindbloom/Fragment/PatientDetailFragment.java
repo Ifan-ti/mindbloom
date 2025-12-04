@@ -50,6 +50,8 @@ public class PatientDetailFragment extends Fragment {
     private ApiService apiService;
     private SessionManager sessionManager;
 
+    private boolean isSearchMode = false;
+
     // ✅ TAMBAHKAN FIELD PUSHER
     private Pusher pusher;
     private Channel expertChannel;
@@ -58,6 +60,7 @@ public class PatientDetailFragment extends Fragment {
     private static final String PUSHER_CLUSTER = "ap1";
     private SubscriptionEventListener incomingRequestListener;
     private SubscriptionEventListener approvedExpertListener;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,11 +82,119 @@ public class PatientDetailFragment extends Fragment {
 
         // ✅ TAMBAHKAN: Setup Pusher untuk listen incoming-request
         setupPusherListener();
+        setupSearchFunctionality();
+        setupBackPressHandler();
+        Nav();
+    }
 
-        binding.navProfile.setOnClickListener(v -> {
+    // Tambahkan di bagian onViewCreated(), setelah setupRecyclerView()
 
+    private void setupSearchFunctionality() {
+
+        // 1. Listener saat EditText mendapat fokus (diklik)
+        binding.SearchInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showSearchLayout(); // Masuk mode search
+            }
+        });
+
+        // 2. Listener saat user mengetik
+        binding.SearchInput.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                // Filter data berdasarkan teks yang diketik
+                if (patientdetailadapter != null) {
+                    patientdetailadapter.filter(s.toString());
+                }
+            }
+        });
+
+        // 3. Listener tombol search
+        binding.btnSearch.setOnClickListener(v -> {
+            String query = binding.SearchInput.getText().toString();
+            if (patientdetailadapter != null) {
+                patientdetailadapter.filter(query);
+            }
+            hideKeyboard();
         });
     }
+
+    // ✅ METHOD BARU: Tampilkan Layout Search Mode
+    private void showSearchLayout() {
+        isSearchMode = true;
+
+        // Sembunyikan elemen yang tidak perlu saat search
+        // (Sesuaikan dengan layout Anda jika ada elemen lain yang perlu disembunyikan)
+
+        // Ubah tinggi RecyclerView jadi match_parent (memenuhi layar)
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.rvListPasient.getLayoutParams();
+        params.height = 0; // 0dp = match_constraint
+        binding.rvListPasient.setLayoutParams(params);
+    }
+
+    // ✅ METHOD BARU: Kembalikan Layout Normal
+    private void hideSearchLayout() {
+        isSearchMode = false;
+
+        // Kembalikan tinggi RecyclerView ke wrap_content
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
+                (androidx.constraintlayout. widget.ConstraintLayout. LayoutParams) binding.rvListPasient.getLayoutParams();
+        params.height = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        binding. rvListPasient.setLayoutParams(params);
+
+        // Reset search input
+        binding.SearchInput.setText("");
+        binding.SearchInput.clearFocus();
+        hideKeyboard();
+
+        // ✅ PERBAIKAN: Panggil filter dengan string kosong (akan restore originalList)
+        if (patientdetailadapter != null) {
+            patientdetailadapter. filter(""); // Restore data original
+        }
+    }
+    private void setupBackPressHandler() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new androidx.activity.OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (isSearchMode) {
+                            // Jika dalam mode search, keluar dari mode search
+                            hideSearchLayout();
+                        } else {
+                            // Jika tidak, lanjutkan behavior back normal
+                            setEnabled(false); // Disable callback ini
+                            requireActivity().onBackPressed(); // Panggil back normal
+                        }
+                    }
+                }
+        );
+    }
+
+    // ✅ METHOD BARU: Sembunyikan Keyboard
+    private void hideKeyboard() {
+        try {
+            android.view.inputmethod.InputMethodManager imm =
+                    (android.view.inputmethod.InputMethodManager) requireContext()
+                            .getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            if (imm != null && getView() != null) {
+                imm.hideSoftInputFromWindow(binding.SearchInput.getWindowToken(), 0);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error hiding keyboard: " + e.getMessage());
+        }
+    }
+
+    // ✅ OVERRIDE: Handle tombol Back
 
     private void setupRecyclerView() {
         patientdetailadapter = new PatientDetailAdapter(getContext());
@@ -400,6 +511,24 @@ public class PatientDetailFragment extends Fragment {
         }
 
         binding = null;
+    }
+
+    public void Nav(){
+        binding. navProfile.setOnClickListener(v -> navigateToFragment(new ProfilExpertFragment()));
+        binding.navChat.setOnClickListener(v -> navigateToFragment(new PatientDetailFragment()));
+    }
+
+    private void navigateToFragment(Fragment fragment) {
+        try {
+            if (getActivity() != null && isAdded()) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
 }

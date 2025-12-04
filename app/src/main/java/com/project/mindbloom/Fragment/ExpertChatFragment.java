@@ -1,5 +1,6 @@
 package com.project.mindbloom.Fragment;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 
 import android.os.Bundle;
@@ -96,6 +97,13 @@ public class ExpertChatFragment extends Fragment {
         if (roomId != null) {
             loadChatHistory();
         }
+
+        binding.viewSelect.setVisibility(GONE);
+        binding.btnInactiveAi.setVisibility(GONE);
+        binding.btnActivePsikolog.setVisibility(GONE);
+        binding.btnInactivePsikolog.setVisibility(GONE);
+        binding.btnActiveAi.setVisibility(GONE);
+
         setupRecyclerView();
         setupPusher(); // <--- SETUP PUSHER DI SINI
         setupListeners();

@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName;
 public class ExpertsModel {
     @SerializedName("id")
     private int id;
-
+    @SerializedName("user_id")
+    private int user_id;
     @SerializedName("fullName")
     private String name;
 
@@ -29,6 +30,10 @@ public class ExpertsModel {
     // Getters
     public int getId() {
         return id;
+    }
+
+    public int getUser_id() {
+        return user_id;
     }
 
     public String getName() {

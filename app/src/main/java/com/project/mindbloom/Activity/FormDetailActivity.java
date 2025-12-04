@@ -8,14 +8,16 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.project.client.SessionManager;
+import com. project.client.ViewTracker;
+
 import com.project.client.RetrofitClient;
-import com.project.model.ArticleModel;
 import com.project.model.DiaryModel; // 🔥 Import DiaryModel
 import com.project.mindbloom.R;
 import com.project.response.DiaryDetailResponse; // 🔥 Import DiaryDetailResponse
+import com.project.response.ViewCountResponse;
 import com.project.service.ApiService;
 
 import java.text.ParseException;
@@ -38,9 +40,9 @@ public class FormDetailActivity extends AppCompatActivity {
 
     private ImageView icon_count_view, ivCover;
     ApiService apiService = RetrofitClient.getApiService(FormDetailActivity.this);
+    private ViewTracker viewTracker;
 
     int articleId;
-
 
 
     @Override
@@ -48,6 +50,8 @@ public class FormDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Pastikan layout_form_detail adalah nama file XML Anda yang benar
         setContentView(R.layout.layout_form_detail);
+
+        viewTracker = new ViewTracker(this);
 
         txtTitle = findViewById(R.id.txtTilte);
         txtContent = findViewById(R.id.txtContent);
@@ -57,6 +61,13 @@ public class FormDetailActivity extends AppCompatActivity {
         icon_count_view = findViewById(R.id.icon_count_view);
         txtPeninjau = findViewById(R.id.tvPeninjau);
         ivCover = findViewById(R.id.iv_imcageCover);
+
+        Intent intent = getIntent();
+        articleId = intent.getIntExtra(EXTRA_ARTICLE_ID, -1);
+
+        if (articleId != -1) {
+            checkAndIncrementViewCount(articleId);
+        }
 
 
         fetchArticleDetails();
@@ -70,6 +81,10 @@ public class FormDetailActivity extends AppCompatActivity {
     // == BAGIAN UNTUK MEMUAT ARTIKEL
     // ==================================================
 
+
+
+
+
     private void fetchArticleDetails() {
         Intent intent = getIntent();
 
@@ -77,8 +92,8 @@ public class FormDetailActivity extends AppCompatActivity {
         txtAuthor.setText(intent.getStringExtra("author"));
         txtContent.setText(intent.getStringExtra("content"));
         txtDate.setText(intent.getStringExtra("created_at"));
-        txtCountView.setText(intent.getIntExtra("readcount",0) + " kali dibaca");
-        txtPeninjau.setText("Peninjau : " + intent.getStringExtra("peninjau"));
+        txtCountView.setText(String.valueOf(intent.getIntExtra("readcount", 0)));
+        txtPeninjau.setText("Reviewer : " + intent.getStringExtra("peninjau"));
 
         String base64ImageString = intent.getStringExtra("cover");
 
@@ -170,24 +185,53 @@ public class FormDetailActivity extends AppCompatActivity {
 
 
     }
+
+    private void checkAndIncrementViewCount(int articleId) {
+        // Gunakan ViewTracker di device agar tidak memanggil API berulang kali dari device yang sama
+        if (!viewTracker.isArticleViewed(articleId)) {
+            // Belum pernah dibaca dari device ini, panggil API INCREMENT
+            incrementViewCount(articleId);
+
+            // Tandai sebagai sudah dibaca (lokal)
+            viewTracker.markArticleAsViewed(articleId);
+
+            Log.d("ViewCount", "✅ Artikel ID " + articleId + " baru pertama kali dibaca di device ini.  Increment view count (server).");
+        } else {
+            Log.d("ViewCount", "⚠️ Artikel ID " + articleId + " sudah pernah dibaca di device ini. Skip API increment.");
+        }
+    }
+
     private void incrementViewCount(int articleId) {
+        SessionManager sessionManager = new SessionManager(this);
 
-        Call<Void> call = apiService.incrementArticleView(articleId);
+        String token = sessionManager.getAuthToken();
+        if (token == null || token.isEmpty()) {
+            Log.w("FormDetail", "Token null/empty. Tidak bisa increment view count di server.");
+            return;
+        }
 
-        call.enqueue(new Callback<Void>() {
+        Call<ViewCountResponse> call = apiService.incrementArticleView(articleId, "Bearer " + token);
+
+        call.enqueue(new Callback<ViewCountResponse>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.d("FormDetail", "View count berhasil di-increment.");
+            public void onResponse(Call<ViewCountResponse> call, Response<ViewCountResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ViewCountResponse resp = response.body();
+                    if (resp.isAlreadyViewed()) {
+                        Log.d("FormDetail", "⚠️ Server menyatakan artikel sudah pernah dilihat oleh user ini. Tidak menambah count.");
+                    } else {
+                        Log.d("FormDetail", "✅ View count berhasil di-increment di server");
+                    }
                 } else {
-                    Log.w("FormDetail", "Gagal increment view count: " + response.code());
+                    Log.w("FormDetail", "⚠️ Gagal increment view count: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("FormDetail", "Error koneksi saat increment view count: " + t.getMessage());
+            public void onFailure(Call<ViewCountResponse> call, Throwable t) {
+                Log.e("FormDetail", "❌ Error koneksi: " + t.getMessage());
             }
         });
     }
+
 }

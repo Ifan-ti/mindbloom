@@ -1,5 +1,8 @@
 package com.project.mindbloom.Fragment;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -101,11 +104,15 @@ public class ExpertDetailFragment extends Fragment {
 
         // 5. Listener Tombol Back
         binding.btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+
+        binding.bottomNavBar.setVisibility(GONE);
+
     }
 
     private void setupUI() {
         binding.tvName.setText(txtName);
         binding.tvJob.setText(txtJob);
+        binding.bottomNavBar.setVisibility(VISIBLE);
         // Default tombol disable dulu sampe loading selesai
         binding.btnChat.setEnabled(false);
         binding.btnChat.setText("Memuat...");

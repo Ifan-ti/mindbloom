@@ -1,6 +1,10 @@
 package com.project.service;
 
-import com.project.data.DiaryUploadModel;
+import com.project.model.DiaryUploadModel;
+import com.project.request.ForgotPasswordRequest;
+import com.project.request.ResetPasswordRequest;
+import com.project.request.VerifyOTPRequest;
+import com.project.response.ApiResponse;
 import com.project.response.ArticleDetailResponse;
 import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
@@ -26,11 +30,14 @@ import com.project.response.ExpertsRensponse;
 import com.project.response.LoginResponse;
 import com.project.response.MoodResponse;
 import com.project.response.NotificationResponse;
+import com.project.response.OTPResponse;
 import com.project.response.PatientDetailResponse;
 import com.project.response.PostResponse;
 import com.project.response.ProfileResponse;
 import com.project.response.StatusResponse;
 import com.project.response.UserResponse;
+import com.project.response.VerifyOTPResponse;
+import com.project.response.ViewCountResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -62,7 +69,7 @@ public interface ApiService {
     Call<ResponseBody> updateProfile(@Body UpdateProfileRequest request);
     @GET("api/users/experts")
     Call<ExpertsRensponse> getExpert();
-    @GET("api/users/expertsDetail/{id}") // Endpoint untuk detail diary (dari server)
+    @GET("api/users/expertsDetail/{id}")
     Call<ExpertsDetailResponse> getExpertsDetail(@Path("id") int diaryId);
 
     //===================
@@ -74,8 +81,9 @@ public interface ApiService {
     Call<ArticlesResponse> getArticlesNew();
     @GET("api/articles/Detail/{id}")
     Call<ArticleDetailResponse> getArticleDetail(@Path("id") int articleId);
+    // Increment view count artikel
     @PATCH("api/articles/view/{id}")
-    Call<Void> incrementArticleView(@Path("id") int articleId);
+    Call<ViewCountResponse> incrementArticleView(@Path("id") int articleId, @Header("Authorization") String authToken);
 
     //===================
     //     DIARY-API
@@ -90,7 +98,7 @@ public interface ApiService {
     @GET("api/Diary/Mood")
     Call<MoodResponse> getDiaryMood(
             @Header("Authorization") String authToken);
-    @POST("diary/upload")
+    @POST("api/Diary/upload")
     Call<DiaryPostResponse> uploadDiary(@Body DiaryUploadModel diary);
 
     @PUT("diary/update/{id}")
@@ -166,6 +174,19 @@ public interface ApiService {
     // Di ApiService.java
     @GET("api/expert-chat/status")
     Call<StatusResponse> checkRequestStatusExpert(@Query("uid") int patientId, @Query("eid") int expertId);
+
+    // ===================
+    // OTP - API
+    // ===================
+
+    @POST("api/forgot-password/request")
+    Call<OTPResponse> requestOTP(@Body ForgotPasswordRequest request);
+
+    @POST("api/forgot-password/verify-otp")
+    Call<VerifyOTPResponse> verifyOTP(@Body VerifyOTPRequest request);
+
+    @POST("api/forgot-password/reset")
+    Call<ApiResponse> resetPassword(@Body ResetPasswordRequest request);
 
 
 

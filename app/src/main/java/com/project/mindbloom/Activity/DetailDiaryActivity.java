@@ -1,30 +1,26 @@
 package com.project.mindbloom.Activity;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.project.client.RetrofitClient;
 import com.project.mindbloom.R;
+import com.project.request.AftercareRequest;
+import com.project.response.AfterCareResponse;
+import com.project.service.ApiService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetailDiaryActivity extends AppCompatActivity {
 
     private TextView tvDate, tvTitle, tvContent, tvAftercare;
     private ImageView imgMood;
-    private ImageButton btnBack;
-    private Button btnEdit;
-
     private int diaryId;
-    private String mood;
-
-    // Tambahkan variabel agar bisa diakses di btnEdit
-    private String date;
-    private String title;
     private String content;
-    private String aftercare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,58 +32,62 @@ public class DetailDiaryActivity extends AppCompatActivity {
         tvContent = findViewById(R.id.txtContent);
         tvAftercare = findViewById(R.id.txtAftercare);
         imgMood = findViewById(R.id.imgMood);
-        btnBack = findViewById(R.id.btnBack);
-        btnEdit = findViewById(R.id.btnEdit);
 
-        // Ambil data dari intent
-        diaryId   = getIntent().getIntExtra("diaryId", -1);
-        date      = getIntent().getStringExtra("date");
-        title     = getIntent().getStringExtra("title");
-        content   = getIntent().getStringExtra("content");
-        mood      = getIntent().getStringExtra("mood");
-        aftercare = getIntent().getStringExtra("aftercare");
+        diaryId = getIntent().getIntExtra("diaryId", -1);
+        String date = getIntent().getStringExtra("date");
+        String title = getIntent().getStringExtra("title");
+        content = getIntent().getStringExtra("content");
+        String mood = getIntent().getStringExtra("mood");
 
-        // Set UI
         tvDate.setText(date);
         tvTitle.setText(title);
         tvContent.setText(content);
-        tvAftercare.setText(aftercare);
+        tvAftercare.setText("Sedang memuat aftercare...");
 
-        // Set mood icon
-        if (mood != null) {
-            switch (mood) {
-                case "happy":
-                    imgMood.setImageResource(R.drawable.moodhappy);
-                    break;
-                case "neutral":
-                    imgMood.setImageResource(R.drawable.moodneutral);
-                    break;
-                case "sad":
-                    imgMood.setImageResource(R.drawable.moodsad);
-                    break;
-                case "angry":
-                    imgMood.setImageResource(R.drawable.moodangry);
-                    break;
-            }
+        setMoodImage(mood);
+
+        // Panggil API Aftercare
+        getAftercareFromAI();
+    }
+
+    private void setMoodImage(String mood) {
+        if (mood == null) return;
+        switch (mood) {
+            case "happy": imgMood.setImageResource(R.drawable.moodhappy); break;
+            case "neutral": imgMood.setImageResource(R.drawable.moodneutral); break;
+            case "sad": imgMood.setImageResource(R.drawable.moodsad); break;
+            case "angry": imgMood.setImageResource(R.drawable.moodangry); break;
+        }
+    }
+
+    private String getToken() {
+        SharedPreferences prefs = getSharedPreferences("USER_PREF", MODE_PRIVATE);
+        return prefs.getString("token", null);
+    }
+
+    private void getAftercareFromAI() {
+        String token = getToken();
+        if (token == null) {
+            tvAftercare.setText("Token tidak tersedia. Silakan login ulang.");
+            return;
         }
 
-        // Tombol back
-        btnBack.setOnClickListener(v -> finish());
+        AftercareRequest request = new AftercareRequest(diaryId, content);
+        RetrofitClient.getApiService().generateAftercare("Bearer " + token, request)
+                .enqueue(new Callback<AfterCareResponse>() {
+                    @Override
+                    public void onResponse(Call<AfterCareResponse> call, Response<AfterCareResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            tvAftercare.setText(response.body().getAftercareText());
+                        } else {
+                            tvAftercare.setText("Gagal memuat Aftercare. Coba lagi nanti.");
+                        }
+                    }
 
-        // Tombol edit
-        btnEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(DetailDiaryActivity.this, uploadDiaryActivity.class);
-
-            intent.putExtra("isEdit", true);
-            intent.putExtra("diaryId", diaryId);
-            intent.putExtra("title", title);
-            intent.putExtra("content", content);
-            intent.putExtra("mood", mood);
-            intent.putExtra("date", date);
-            intent.putExtra("aftercare", aftercare);
-
-            startActivity(intent);
-        });
-
+                    @Override
+                    public void onFailure(Call<AfterCareResponse> call, Throwable t) {
+                        tvAftercare.setText("Error: " + t.getMessage());
+                    }
+                });
     }
 }

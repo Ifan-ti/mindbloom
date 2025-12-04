@@ -55,6 +55,7 @@
             android:layout_height="24dp"
             android:src="@drawable/logo_titik_tiga"
             android:contentDescription="More options"
+            android:tint="#808080"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -117,6 +118,7 @@
                 android:layout_height="20dp"
                 android:src="@drawable/logo_like"
                 />
+
 
             <TextView
                 android:id="@+id/tvLikes"

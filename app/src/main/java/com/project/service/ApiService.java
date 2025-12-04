@@ -1,5 +1,12 @@
 package com.project.service;
 
+import com.project.data.DiaryUploadModel;
+import com.project.response.ArticleDetailResponse;
+import com.project.response.ArticlePopulerResponse;
+import com.project.response.DiaryDetailResponse;
+import com.project.response.DiaryRespone;
+import com.project.response.DiaryPostResponse;
+
 import com.project.request.ChatSaveRequest;
 import com.project.request.DeepSeekRequest;
 import com.project.request.RegisterRequest;
@@ -36,6 +43,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -83,6 +91,15 @@ public interface ApiService {
     @GET("api/Diary/Mood")
     Call<MoodResponse> getDiaryMood(
             @Header("Authorization") String authToken);
+    @POST("diary/upload")
+    Call<DiaryPostResponse> uploadDiary(@Body DiaryUploadModel diary);
+
+    @PUT("diary/update/{id}")
+    Call<DiaryPostResponse> updateDiary(@Path("id") int diaryId,
+            @Body DiaryUploadModel diary
+    );
+
+
 
     //===================
     //     POSTING-API

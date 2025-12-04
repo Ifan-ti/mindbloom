@@ -70,25 +70,19 @@ public class MoodModel {
      * Pastikan kamu sudah punya gambar di res/drawable dengan nama sesuai.
      */
     public int getMoodIconResId() {
-        if (moodTag == null) return R.drawable.mood2; // Gambar default
+        if (moodTag == null) return R.drawable.moodhappy; // Gambar default
 
         switch (moodTag.toLowerCase()) {
             case "happy":
-                return R.drawable.mood1; // Ganti dengan nama file kamu
-            case "excited":
-                return R.drawable.mood1;
+                return R.drawable.moodhappy;
             case "neutral":
-                return R.drawable.mood2;
-            case "relaxed":
-                return R.drawable.mood1;
+                return R.drawable.moodneutral;
             case "sad":
-                return R.drawable.mood3;
-            case "anxious":
-                return R.drawable.mood3;
+                return R.drawable.moodsad;
             case "angry":
-                return R.drawable.mood4;
+                return R.drawable.moodangry;
             default:
-                return R.drawable.mood2;
+                return R.drawable.moodhappy;
         }
     }
 

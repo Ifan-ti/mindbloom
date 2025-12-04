@@ -10,13 +10,15 @@ import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
 import com.project.response.DiaryPostResponse;
 
+import com.project.request.AftercareRequest;
 import com.project.request.ChatSaveRequest;
 import com.project.request.DeepSeekRequest;
+import com.project.request.DiaryRequest;
 import com.project.request.RegisterRequest;
 import com.project.request.LoginRequest;
 import com.project.request.UpdateProfileRequest;
 
-
+import com.project.response.AfterCareResponse;
 import com.project.response.ArticleDetailResponse;
 import com.project.response.ArticlesResponse;
 import com.project.response.ChatHistoryChatBot;
@@ -25,6 +27,7 @@ import com.project.response.DeepSeekResponse;
 import com.project.response.DefaultResponse;
 import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
+import com.project.response.DiaryPostResponse;
 import com.project.response.ExpertsDetailResponse;
 import com.project.response.ExpertsRensponse;
 import com.project.response.LoginResponse;
@@ -60,13 +63,19 @@ public interface ApiService {
     //===================
     @GET("api/users/username/{id}")
     Call<UserResponse> getUserById(@Path("id") int userId);
+
     @POST("api/users/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
     @POST("api/users/register")
     Call<LoginResponse> register(@Body RegisterRequest registerRequest);
-    @POST("api/users/update") // Ganti dengan path file PHP Anda
+
+    @POST("api/register")
+    Call<LoginResponse> registerUser(@Body RegisterRequest request);
+
+    @POST("api/users/update")
     Call<ResponseBody> updateProfile(@Body UpdateProfileRequest request);
+
     @GET("api/users/experts")
     Call<ExpertsRensponse> getExpert();
     @GET("api/users/expertsDetail/{id}")
@@ -77,8 +86,10 @@ public interface ApiService {
     //===================
     @GET("api/articles/populer")
     Call<ArticlesResponse> getArticlesPopuler();
+
     @GET("api/articles/new")
     Call<ArticlesResponse> getArticlesNew();
+
     @GET("api/articles/Detail/{id}")
     Call<ArticleDetailResponse> getArticleDetail(@Path("id") int articleId);
     // Increment view count artikel
@@ -90,22 +101,32 @@ public interface ApiService {
     //===================
     @GET("api/Diary/all")
     Call<DiaryRespone> getDiary();
-    @GET("api/Diary/Detail/{id}") // Endpoint untuk detail diary (dari server)
-    Call<DiaryDetailResponse> getDiaryDetail(@Path("id") int diaryId);
-    @GET("api/Diary/me")
-    Call<DiaryRespone> getMyDiary(
-            @Header("Authorization") String authToken);
-    @GET("api/Diary/Mood")
-    Call<MoodResponse> getDiaryMood(
-            @Header("Authorization") String authToken);
-    @POST("api/Diary/upload")
-    Call<DiaryPostResponse> uploadDiary(@Body DiaryUploadModel diary);
 
-    @PUT("diary/update/{id}")
-    Call<DiaryPostResponse> updateDiary(@Path("id") int diaryId,
+    @GET("api/Diary/Detail/{id}")
+    Call<DiaryDetailResponse> getDiaryDetail(@Path("id") int diaryId);
+
+    @GET("api/Diary/me")
+    Call<DiaryRespone> getMyDiary(@Header("Authorization") String authToken);
+
+    @GET("api/Diary/Mood")
+    Call<MoodResponse> getDiaryMood(@Header("Authorization") String authToken);
+
+    @POST("api/Diary/upload")
+    Call<DiaryPostResponse> uploadDiary(
+            @Header("Authorization") String authToken,
             @Body DiaryUploadModel diary
     );
 
+
+    @POST("api/Diary/create")
+    Call<DiaryPostResponse> createDiary(@Body DiaryRequest diaryRequest);
+
+    @PUT("api/Diary/update/{id}")
+    Call<DiaryPostResponse> updateDiary(
+            @Header("Authorization") String token,
+            @Path("id") int diaryId,
+            @Body DiaryUploadModel diary
+    );
 
 
     //===================
@@ -116,64 +137,61 @@ public interface ApiService {
 
     @GET("api/notifications")
     Call<NotificationResponse> getNotifications(
-            @Header("Authorization") String authToken // Memerlukan "Bearer <token>"
+            @Header("Authorization") String authToken
     );
+
     //===================
     //     CHATBOT-API
     //===================
-    @POST("api/chatbot/chat") // 👈 GANTI ke endpoint proxy Anda
+    @POST("api/chatbot/chat")
     Call<DeepSeekResponse> sendChatToProxy(@Body DeepSeekRequest request);
 
-    /**
-     * 2. Mengambil history chat dari database Anda
-     */
-    @GET("api/chatbot/history/{userId}") // 👈 Endpoint untuk history
+    @GET("api/chatbot/history/{userId}")
     Call<List<ChatHistoryChatBot>> getChatHistory(@Path("userId") int userId);
 
-    /**
-     * 3. Menyimpan chat baru ke database Anda
-     */
-    @POST("api/chatbot/save") // 👈 Endpoint untuk menyimpan chat
+    @POST("api/chatbot/save")
     Call<DefaultResponse> saveChat(@Body ChatSaveRequest request);
 
     //===================
-    //     CHATBOT-API
+    //     PROFILE-API
     //===================
     @GET("api/users/profile")
     Call<ProfileResponse> getProfile(
-        @Header("Authorization") String authToken);
+            @Header("Authorization") String authToken
+    );
 
     //===================
-    //     CHAT-API
+    //     CONSULTATION-API
     //===================
     @POST("api/consultation/send")
     Call<DefaultResponse> sendMessage(@Body Map<String, Object> body);
-    // Untuk Request Konsultasi
+
     @POST("api/consultation/request")
     Call<DefaultResponse> sendConsultationRequest(@Body Map<String, Object> body);
 
-    // Untuk Cek Status (Query param uid & eid)
     @GET("api/consultation/status")
-    Call<StatusResponse> checkRequestStatus(@Query("uid") int userId, @Query("eid") int expertId);
+    Call<StatusResponse> checkRequestStatus(
+            @Query("uid") int userId,
+            @Query("eid") int expertId
+    );
+
     @GET("api/consultation/history")
     Call<ChatHistoryResponse> getChatHistory(@Query("room_id") String roomId);
+
     @POST("api/consultation/approve-by-user")
     Call<DefaultResponse> approveRequestByUser(@Body Map<String, Object> body);
 
     //===================
-    //     PATIENT-API
+    //     AFTERCARE-API  ⭐ BARU
     //===================
-    // Di ApiService.java
-    @GET("api/patient/detail")
-    Call<PatientDetailResponse> getPatienDetail(@Header("Authorization") String token);
-// ✅ UBAH return type ke PatientDetailResponse
-//
-// ===================
-    //     PATIENT-API
     //===================
-    // Di ApiService.java
-    @GET("api/expert-chat/status")
-    Call<StatusResponse> checkRequestStatusExpert(@Query("uid") int patientId, @Query("eid") int expertId);
+//     AFTERCARE-API
+//===================
+    @POST("api/aftercare")
+    Call<AfterCareResponse> generateAftercare(
+            @Header("Authorization") String authToken,
+            @Body AftercareRequest request
+    );
 
     // ===================
     // OTP - API
@@ -189,5 +207,15 @@ public interface ApiService {
     Call<ApiResponse> resetPassword(@Body ResetPasswordRequest request);
 
 
+    //===================
+    //     PATIENT-API
+    //===================
+    @GET("api/patient/detail")
+    Call<PatientDetailResponse> getPatientDetail(@Header("Authorization") String token);
 
+    @GET("api/expert-chat/status")
+    Call<StatusResponse> checkRequestStatusExpert(
+            @Query("uid") int patientId,
+            @Query("eid") int expertId
+    );
 }

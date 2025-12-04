@@ -84,6 +84,7 @@ dependencies {
 
     // --- Glide (untuk Java: pakai annotationProcessor) ---
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.firebase.inappmessaging)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // --- (Opsional) Coroutines kalau nanti dipakai ---

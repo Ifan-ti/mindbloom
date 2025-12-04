@@ -1,5 +1,6 @@
-package com.project.mindbloom;
+package com.project.mindbloom.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,10 +11,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.project.data.DiaryModel;
+import com.project.mindbloom.R;
+import com.project.model.DiaryModel;
 import com.project.data.DiaryUploadModel;
 import com.project.response.DiaryPostResponse;
-
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,9 +30,12 @@ public class uploadDiaryActivity extends AppCompatActivity {
     private Button btnSave;
     private ImageButton btnBack;
 
-
     private String selectedMood = null;
     private String happy, neutral, sad, angry;
+
+    private boolean isEdit = false;
+    private int diaryId = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +54,6 @@ public class uploadDiaryActivity extends AppCompatActivity {
         neutral = "neutral";
         sad = "sad";
         angry = "angry";
-
 
         etTitle = findViewById(R.id.etTitle);
         etContent = findViewById(R.id.etContent);
@@ -80,14 +83,54 @@ public class uploadDiaryActivity extends AppCompatActivity {
         moodSad.setOnClickListener(v -> selectMood(sad, R.drawable.moodsad));
         moodAngry.setOnClickListener(v -> selectMood(angry, R.drawable.moodangry));
 
-        btnSave.setOnClickListener(v -> uploadDiary());
+        // 🟦 Cek apakah masuk mode "Edit"
+        Intent i = getIntent();
+        isEdit = i.getBooleanExtra("isEdit", false);
+
+        if (isEdit) {
+            diaryId = i.getIntExtra("diaryId", -1);
+
+            etTitle.setText(i.getStringExtra("title"));
+            etContent.setText(i.getStringExtra("content"));
+
+            String mood = i.getStringExtra("mood");
+            selectedMood = mood;
+
+            if (mood != null) {
+                switch (mood) {
+                    case "happy":
+                        imgMood.setImageResource(R.drawable.moodhappy);
+                        break;
+                    case "neutral":
+                        imgMood.setImageResource(R.drawable.moodneutral);
+                        break;
+                    case "sad":
+                        imgMood.setImageResource(R.drawable.moodsad);
+                        break;
+                    case "angry":
+                        imgMood.setImageResource(R.drawable.moodangry);
+                        break;
+                }
+            }
+
+            tvDate.setText(i.getStringExtra("date")); // date dari detail
+
+            btnSave.setText("Update Diary");
+        }
+
+        btnSave.setOnClickListener(v -> {
+            if (isEdit) updateDiary();
+            else uploadDiary();
+        });
     }
+
 
     private void selectMood(String mood, int imageRes) {
         selectedMood = mood;
         imgMood.setImageResource(imageRes);
         moodPopup.setVisibility(LinearLayout.GONE);
     }
+
 
     private void uploadDiary() {
         String title = etTitle.getText().toString().trim();
@@ -104,7 +147,7 @@ public class uploadDiaryActivity extends AppCompatActivity {
             return;
         }
 
-        int userId = 1; // sementara DI SET 1, nanti pakai dari session login
+        int userId = 1;
 
         DiaryUploadModel diary = new DiaryUploadModel(
                 userId,
@@ -137,9 +180,45 @@ public class uploadDiaryActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
 
 
+    // 🟦 Tambahan: fungsi UPDATE diary
+    private void updateDiary() {
+        String title = etTitle.getText().toString().trim();
+        String content = etContent.getText().toString().trim();
 
+        if (selectedMood == null) {
+            Toast.makeText(this, "Pilih mood dulu", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        DiaryUploadModel diary = new DiaryUploadModel(
+                1,
+                title,
+                content,
+                selectedMood
+        );
+
+        RetrofitClient.getApiService().updateDiary(diaryId, diary)
+                .enqueue(new Callback<DiaryPostResponse>() {
+                    @Override
+                    public void onResponse(Call<DiaryPostResponse> call, Response<DiaryPostResponse> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(uploadDiaryActivity.this,
+                                    "Diary berhasil diperbarui!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(uploadDiaryActivity.this,
+                                    "Gagal update: " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DiaryPostResponse> call, Throwable t) {
+                        Toast.makeText(uploadDiaryActivity.this,
+                                "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

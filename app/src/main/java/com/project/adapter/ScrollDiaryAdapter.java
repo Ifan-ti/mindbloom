@@ -60,7 +60,7 @@ public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.
                 Intent intent = new Intent(context, FormDetailActivity.class);
 
                 // 🔥 KIRIM ID DIARY
-                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, Diary.getIdDiary());
+                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, Diary.getId());
 
                 context.startActivity(intent);
             }

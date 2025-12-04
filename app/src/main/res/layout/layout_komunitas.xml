@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/layout_postingan_gambar"
+        tools:listitem="@layout/layout_item_komentar"
         />
 
     <LinearLayout
@@ -90,19 +90,19 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:tint="@color/active_btn"
             android:src="@drawable/nav_people_icon"
             android:background="@android:color/transparent"
-            android:contentDescription="People" />
+            android:contentDescription="People"
+            app:tint="@color/active_btn" />
 
         <ImageButton
-            android:id="@+id/navCalendar"
+            android:id="@+id/navDiary"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/nav_articles_icon"
             android:background="@android:color/transparent"
-            android:contentDescription="Calendar" />
+            android:contentDescription="Diary" />
 
         <ImageButton
             android:id="@+id/navChat"

@@ -34,11 +34,11 @@ public class comunitasAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == Post.TYPE_IMAGE) {
             View view = LayoutInflater.from(context)
-                    .inflate(R.layout.layout_postingan_gambar, parent, false);
+                    .inflate(R.layout.layout_item_komentar, parent, false);
             return new ImagePostViewHolder(view);
         } else {
             View view = LayoutInflater.from(context)
-                    .inflate(R.layout.layout_postingan_teks, parent, false);
+                    .inflate(R.layout.layout_item_komentar, parent, false);
             return new TextPostViewHolder(view);
         }
     }

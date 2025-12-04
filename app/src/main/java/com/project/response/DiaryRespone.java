@@ -1,6 +1,6 @@
-package com.project.respone;
+package com.project.response;
 
-import com.project.respone.DiaryRespone;
+import com.project.response.DiaryRespone;
 import com.google.gson.annotations.SerializedName;
 import com.project.model.DiaryModel;
 

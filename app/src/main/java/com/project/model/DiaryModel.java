@@ -1,8 +1,9 @@
-package com.project.data;
+package com.project.model;
 
 import com.google.gson.annotations.SerializedName;
 
 public class DiaryModel {
+
     private int id;
     private String author;
     private int id_user;
@@ -16,26 +17,30 @@ public class DiaryModel {
     private String updated_at;
 
     // GETTER & SETTER
-
-
-
     public int getId() {
         return id;
     }
+
+    public void setId(int id) { this.id = id; }
+
     public int getId_user() {
         return id_user;
     }
-    public String getTitle() {
-        return title;
-    }
+
     public void setId_user(int id_user) {
         this.id_user = id_user;
     }
+
+    public String getAuthor() {
+        return author;
+    }
+
     public void setAuthor(String author) {
         this.author = author;
     }
-    public String getAuthor() {
-        return author;
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
@@ -56,13 +61,6 @@ public class DiaryModel {
 
     public void setEntry_date(String entry_date) {
         this.entry_date = entry_date;
-    }
-
-
-    }
-
-    public void setName_tag(String name_tag) {
-        this.name_tag = name_tag;
     }
 
     public String getMood_tag() {
@@ -104,4 +102,4 @@ public class DiaryModel {
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
-
+}

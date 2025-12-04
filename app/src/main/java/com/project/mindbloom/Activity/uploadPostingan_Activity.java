@@ -1,4 +1,4 @@
-package com.project.mindbloom;
+package com.project.mindbloom.Activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import com.project.mindbloom.R;
 
 public class uploadPostingan_Activity extends AppCompatActivity {
 

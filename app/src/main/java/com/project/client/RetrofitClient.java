@@ -1,77 +1,76 @@
 package com.project.client;
 
 import android.content.Context;
-import android.util.Log;
-
-import androidx.annotation.NonNull; // Import untuk anotasi
+import android.content.SharedPreferences;
 
 import com.project.service.ApiService;
-
-import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.Response;
+
+import java.io.IOException;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    // Pastikan URL NGROK ini masih aktif dan benar.
-    private static final String BASE_URL = "https://brenna-nonimbricate-randall.ngrok-free.dev/";
 
-    // Kita buat 'retrofit' sebagai singleton
-    private static Retrofit retrofit;
+    private static final String BASE_URL = "https://unlacquered-unbankable-alia.ngrok-free.dev/mindbloom-api/api/";
+    private static Retrofit retrofit = null;
 
-    public static ApiService getApiService(Context context) {
-        // Gunakan pola singleton check
+    // ===============================
+    //  Retrofit tanpa token (default)
+    // ===============================
+    public static Retrofit getClient() {
         if (retrofit == null) {
-            // Gunakan ApplicationContext untuk menghindari memory leak
-            Context appCtx = context.getApplicationContext();
-
-            // Interceptor untuk logging (sangat berguna untuk debugging)
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-            // Buat OkHttpClient kustom
-            OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(logging) // Tambahkan logging interceptor
-                    .addInterceptor(new Interceptor() {
-                        @NonNull // Tambahkan anotasi
-                        @Override
-                        public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
-                            Request original = chain.request();
-
-                            // Dapatkan token dari SessionManager
-                            SessionManager sm = new SessionManager(appCtx);
-                            String token = sm.getAuthToken();
-
-                            Request.Builder builder = original.newBuilder()
-                                    // Header Content-Type biasanya ditangani oleh GSON,
-                                    // tapi tidak masalah jika ada di sini.
-                                    .header("Content-Type", "application/json");
-
-                            // Tambahkan header Authorization jika token ada
-                            if (token != null && !token.isEmpty()) {
-                                builder.header("Authorization", "Bearer " + token);
-                                Log.d("Retrofit", "Token dikirim: " + token);
-                            } else {
-                                Log.w("Retrofit", "Token tidak ditemukan, request tanpa token.");
-                            }
-
-                            return chain.proceed(builder.build());
-                        }
-                    })
-                    .build();
-
-            // Buat instance Retrofit
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        // Kembalikan service API
-        return retrofit.create(ApiService.class);
+        return retrofit;
+    }
+
+    // ===============================
+    //  ApiService default
+    // ===============================
+    public static ApiService getApiService() {
+        return getClient().create(ApiService.class);
+    }
+
+    // ===============================
+    //  Retrofit dengan Token (opsional)
+    // ===============================
+    public static ApiService getApiService(Context context) {
+
+        SharedPreferences prefs = context.getSharedPreferences("AUTH", Context.MODE_PRIVATE);
+        String token = prefs.getString("token", null);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+
+                    Request original = chain.request();
+                    Request.Builder requestBuilder = original.newBuilder()
+                            .header("Accept", "application/json");
+
+                    // tambahkan header token hanya jika ada
+                    if (token != null) {
+                        requestBuilder.header("Authorization", "Bearer " + token);
+                    }
+
+                    Request request = requestBuilder.build();
+                    return chain.proceed(request);
+                })
+                .build();
+
+        Retrofit retrofitAuth = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofitAuth.create(ApiService.class);
     }
 }

@@ -1,16 +1,21 @@
 package com.project.adapter;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.project.model.DiaryModel;
 import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R;
@@ -53,6 +58,10 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
 
+        holder.ivDiaryImage.setVisibility(INVISIBLE);
+        holder.ivDiaryImage.setVisibility(VISIBLE);
+        holder.btnNext.setVisibility(INVISIBLE);
+
         // Cek Tipe View SEBELUM mengambil data
         if (getItemViewType(position) == VIEW_TYPE_EMPTY) {
 
@@ -71,9 +80,31 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
             holder.tvTitle.setText(diary.getTitle());
             holder.tvExcerpt.setText(diary.getContent());
 
+            String mood = diary.getMoodTag();
+
+            if ("happy".equals(mood)) {
+                Glide.with(context)
+                        .load(R.drawable.mood1)
+                        .into(holder.ivDiaryImage);
+            } else if ("sad".equals(mood)) {
+                Glide.with(context)
+                        .load(R.drawable.mood3)
+                        .into(holder.ivDiaryImage);
+            } else if ("angry".equals(mood)) {
+                Glide.with(context)
+                        .load(R.drawable.mood4)
+                        .into(holder.ivDiaryImage);
+            } else if ("neutral".equals(mood)) {
+                Glide.with(context)
+                        .load(R.drawable.mood2)
+                        .into(holder.ivDiaryImage);
+            }
+
             // Tampilkan kembali elemen yang disembunyikan
             holder.tvSelengkapnya.setVisibility(View.VISIBLE);
-            holder.ivArticleImage.setVisibility(View.VISIBLE);
+            holder.ivDiaryImage.setVisibility(View.VISIBLE);
+            holder.btnNext.setVisibility(VISIBLE);
+
 
             // TODO: Tambahkan kode Glide di sini jika diary punya gambar
             // Glide.with(context).load(diary.getGambarUrl()).into(holder.ivArticleImage);
@@ -102,14 +133,20 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
     // ViewHolder (Tidak berubah, sudah benar)
     public static class SliderViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvExcerpt, tvSelengkapnya;
-        ImageView ivArticleImage;
+        ImageView ivDiaryImage, ivArticleImage ;
+        ImageButton btnNext;
 
         public SliderViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.txtJudulArtikel);
             tvExcerpt = itemView.findViewById(R.id.txtDescripsiArtikel);
             tvSelengkapnya = itemView.findViewById(R.id.txtSelengkapnya);
-            ivArticleImage = itemView.findViewById(R.id.ivArticleImage);
+            ivDiaryImage = itemView.findViewById(R.id.ivArticleImageArticles);
+            ivArticleImage = itemView.findViewById(R.id.ivArticleImageArticles);
+            btnNext = itemView.findViewById(R.id.btnNext2);
+
+
+
         }
     }
 }

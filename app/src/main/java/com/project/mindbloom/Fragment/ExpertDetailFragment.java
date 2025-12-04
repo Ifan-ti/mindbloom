@@ -1,5 +1,7 @@
 package com.project.mindbloom.Fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -121,6 +123,21 @@ public class ExpertDetailFragment extends Fragment {
                     if(expertsDetails != null) {
                         binding.tvBio.setText(expertsDetails.getBio());
                         binding.tvLicenseNum.setText(expertsDetails.getLicense_number());
+
+                        String base64String = expertsDetails.getAvatar();
+                        if (binding.imgAvatarDetail != null) {
+                            if (base64String != null && !base64String.isEmpty()) {
+                                try {
+                                    byte[] imageBytes = android.util.Base64.decode(base64String, android.util. Base64.DEFAULT);
+                                    Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                                    binding.imgAvatarDetail. setImageBitmap(decodedImage);
+                                } catch (IllegalArgumentException e) {
+                                    binding.imgAvatarDetail.setImageResource(R.drawable.add_icon);
+                                }
+                            } else {
+                                binding.imgAvatarDetail.setImageResource(R.drawable.add_icon);
+                            }
+                        }
                     }
                 }
             }

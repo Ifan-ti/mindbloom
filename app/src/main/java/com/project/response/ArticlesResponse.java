@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.project.model.ArticleModel;
 
 
-public class ArticlePopulerResponse {
+public class ArticlesResponse {
     @SerializedName("status")
     private String status;
 

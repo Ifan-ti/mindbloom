@@ -97,22 +97,25 @@
                         android:textStyle="bold"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btnEditProfile"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginTop="10dp"
+                        />
 
                     <ImageButton
                         android:id="@+id/btnEditProfile"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginStart="6dp"
                         android:background="@android:color/transparent"
                         android:src="@drawable/icon_sharp"
                         app:tint="@android:color/white"
                         tools:ignore="UseAppTint"
                         app:layout_constraintStart_toEndOf="@id/tvName"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tvName"
-                        app:layout_constraintBottom_toBottomOf="@id/tvName"/>
+                        app:layout_constraintBottom_toBottomOf="@id/tvName"
+                        android:layout_marginStart="6dp"
+
+                        />
 
                     <TextView
                         android:id="@+id/tvUsername"
@@ -325,7 +328,8 @@
                     app:layout_constraintEnd_toEndOf="@id/cardHeader"
                     app:layout_constraintStart_toStartOf="@id/cardHeader"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/CircleStyle" />
+                    app:shapeAppearanceOverlay="@style/CircleStyle"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -355,18 +359,9 @@
             android:contentDescription="Home"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/navPeople"/>
-
-        <ImageButton
-            android:id="@+id/navPeople"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/nav_people_icon"
-            android:background="@android:color/transparent"
-            android:contentDescription="People"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/navHome"
             app:layout_constraintEnd_toStartOf="@id/nav_diary"/>
+
+
 
         <ImageButton
             android:id="@+id/nav_diary"
@@ -376,7 +371,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="Diary"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/navPeople"
+            app:layout_constraintStart_toEndOf="@id/navHome"
             app:layout_constraintEnd_toStartOf="@id/navChat"/>
 
         <ImageButton

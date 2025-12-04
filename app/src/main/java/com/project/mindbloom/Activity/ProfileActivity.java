@@ -48,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
     private LayoutProfileBinding binding;
     private ApiService apiService;
 
-    private String Username, bio, email;
+    private String Username, bio, email, fullname;
 
 
 
@@ -91,16 +91,18 @@ public class ProfileActivity extends AppCompatActivity {
                     if("success".equals(profileResponse.getStatus())){
                         ProfileModel profile = profileResponse.getData();
 
+                        binding.tvUsername.setText(profile.getFullName());
                         binding.tvName.setText(profile.getUsername());
                         binding.tvDiaryCount.setText(String.valueOf(profile.getDiaryCont()));
-                        binding.tvDiaryQuote.setText(profile.getBio());
+                        binding.tvSubtitle.setText(profile.getBio());
 
+                        fullname = profile.getFullName();
                         Username = profile.getUsername();
                         bio = profile.getBio();
                         email = profile.getEmail();
 
 
-                        String base64ImageString = profile.getCoverImage();
+                        String base64ImageString = profile.getAvatar();
 
                         if (base64ImageString == null || base64ImageString.isEmpty()) {
                             // Tangani kasus jika string kosong atau null
@@ -147,10 +149,12 @@ public class ProfileActivity extends AppCompatActivity {
         binding.btnEditProfile.setOnClickListener( v -> {
             Log.d("NAV_EDIT", "Tombol Edit Profil diklik");
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+            intent.putExtra("fullname", fullname);
             intent.putExtra("username", Username);
             intent.putExtra("bio", bio);
             intent.putExtra("email", email);
             startActivity(intent);
+            finish();
         });
         binding.btnLogout.setOnClickListener(v -> {
             Log.d("NAV_LOGOUT", "Tombol Logout diklik");
@@ -302,12 +306,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         // Listener untuk People/Komunitas
-        binding.navPeople.setOnClickListener(v -> {
-            Log.d("NAV_BAR", "Tombol People diklik");
-            Intent intent = new Intent(ProfileActivity.this, Community_Activity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-        });
+
 
         // Listener untuk Calendar/Diary
         binding.navDiary.setOnClickListener(v -> {

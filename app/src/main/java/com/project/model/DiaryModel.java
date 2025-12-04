@@ -3,6 +3,29 @@ package com.project.model;
 import com.google.gson.annotations.SerializedName;
 
 public class DiaryModel {
+    @SerializedName("id")
+    private String id_diary;
+    @SerializedName("title")
+    private String title;
+    @SerializedName("content")
+    private String Content;
+    @SerializedName("entry_date")
+    private String entryDate;
+    @SerializedName("mood_tag")
+    private String moodTag;
+    @SerializedName("ai_aftercare")
+    private String aiAftercare;
+
+    public String getId_diary() {
+        return id_diary;
+    }
+
+    public String getMoodTag() {
+        return moodTag;
+    }
+
+    public String getAiAftercare() {
+        return aiAftercare;
 
     private int id;
     private String author;
@@ -74,6 +97,8 @@ public class DiaryModel {
     public String getIs_private() {
         return is_private;
     }
+    public String getContent() {
+        return Content;
 
     public void setIs_private(String is_private) {
         this.is_private = is_private;
@@ -89,6 +114,9 @@ public class DiaryModel {
 
     public String getCreated_at() {
         return created_at;
+    }
+    public String getIdDiary(){
+        return id_diary;
     }
 
     public void setCreated_at(String created_at) {

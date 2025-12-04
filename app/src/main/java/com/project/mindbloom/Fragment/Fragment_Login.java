@@ -59,7 +59,7 @@ public class Fragment_Login extends Fragment {
         // Cek jika sudah login (token masih ada), langsung ke Homepage
         if (sessionManager.isLoggedIn()) {
             if (isNetworkAvailable()) {
-                if(sessionManager.getRoleId() == 2 ) {
+                if(sessionManager.getRoleId() == 4 ) {
                         navigateToHomepage();
                 } else if (sessionManager.getRoleId() == 3) {
                     if (getActivity() != null) {
@@ -133,12 +133,15 @@ public class Fragment_Login extends Fragment {
                         userId = loginResponse.getData().getUser().getId();
                         String userEmail = loginResponse.getData().getUser().getEmail();
                         int RoleId = loginResponse.getData().getUser().getRoleId();
+                        String fullname = loginResponse.getData().getUser().getFullName();
+                        String username = loginResponse.getData().getUser().getUsername();
+                        String avatar = loginResponse.getData().getUser().getAvatar();
 
                         // 4. Simpan Sesi (Token & ID User)
-                        sessionManager.saveLoginSession(token, userId, userEmail, RoleId);
+                        sessionManager.saveLoginSession(token, userId,fullname,username, userEmail, RoleId, avatar);
                         Toast.makeText(getContext(), "Login Berhasil!", Toast.LENGTH_SHORT).show();
 
-                        if (loginResponse.getData().getUser().getRoleId() == 2) {
+                        if (loginResponse.getData().getUser().getRoleId() == 4) {
                             navigateToHomepage();
 
                         } else if (loginResponse.getData().getUser().getRoleId() == 3){

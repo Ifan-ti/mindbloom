@@ -23,14 +23,16 @@
 
     <View
         android:id="@+id/viewSelect"
-        android:layout_width="64dp"
-        android:layout_height="27dp"
+        android:layout_width="74dp"
+        android:layout_height="35dp"
 
         app:layout_constraintTop_toTopOf="@id/btn_back"
+        app:layout_constraintBottom_toBottomOf="@id/btn_back"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="20dp"
 
         android:background="@drawable/raunded"
+
 
         />
 
@@ -42,10 +44,11 @@
         app:layout_constraintStart_toStartOf="@+id/viewSelect"
         app:layout_constraintTop_toTopOf="@id/viewSelect"
         app:layout_constraintBottom_toBottomOf="@id/viewSelect"
-        android:layout_marginStart="3dp"
+        android:layout_marginStart="6dp"
 
         android:src="@drawable/btn_active_ai"
         android:background="@android:color/transparent"
+        app:backgroundTint="@color/main_blue"
 
         />
     <ImageButton
@@ -78,17 +81,16 @@
         android:background="@android:color/transparent"
 
         android:visibility="gone"
-
         />
     <ImageButton
         android:id="@+id/btn_inactive_psikolog"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
         app:layout_constraintEnd_toEndOf="@+id/viewSelect"
         app:layout_constraintTop_toTopOf="@id/viewSelect"
         app:layout_constraintBottom_toBottomOf="@id/viewSelect"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="6dp"
 
         android:src="@drawable/btn_inactive_psikolog"
         android:background="@android:color/transparent"
@@ -142,6 +144,7 @@
             android:layout_height="48dp"
             android:background="@android:color/transparent"
             android:src="@drawable/icon_send"
+
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/messageInput"

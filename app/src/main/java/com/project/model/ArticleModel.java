@@ -17,10 +17,9 @@ public class ArticleModel {
 
     @SerializedName("id")
     private int id_articles;
-
-
-
-    @SerializedName("cover_image_url")
+    @SerializedName("peninjau")
+    private String peninjau;
+    @SerializedName("cover_image")
     private String coverImageUrl;
 
     @SerializedName("read_count")
@@ -41,19 +40,32 @@ public class ArticleModel {
     // ... Tambahkan semua kolom lain yang Anda ambil
 
     // Getter untuk diakses di Activity/Adapter
-    public String getTitle() {
 
+
+    public String getPeninjau() {
+        return peninjau;
+    }
+
+    public String getTitle() {
         return title;
+    }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public String getExcerpt() {
         return excerpt;
     }
 
-    // 🔥 TAMBAHKAN GETTER INI 🔥
-    public String getCoverImageUrl() {
-        return coverImageUrl;
+    public int getId_articles() {
+        return id_articles;
     }
+
     public int getReadCount() {
         return readCount;
     }
@@ -62,23 +74,13 @@ public class ArticleModel {
         return namaTag;
     }
 
-    public int getIdArticles(){
-        return id_articles;
-    }
-
-    public String getContent(){
-        return content;
-    }
-
-    public String getDate(){
+    public String getDate() {
         return Date;
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return author;
     }
-
-
 }
 
 

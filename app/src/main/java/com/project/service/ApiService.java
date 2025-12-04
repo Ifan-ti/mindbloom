@@ -15,7 +15,7 @@ import com.project.request.UpdateProfileRequest;
 
 
 import com.project.response.ArticleDetailResponse;
-import com.project.response.ArticlePopulerResponse;
+import com.project.response.ArticlesResponse;
 import com.project.response.ChatHistoryChatBot;
 import com.project.response.ChatHistoryResponse;
 import com.project.response.DeepSeekResponse;
@@ -70,7 +70,9 @@ public interface ApiService {
     //     ARTICLES-API
     //===================
     @GET("api/articles/populer")
-    Call<ArticlePopulerResponse> getArticles();
+    Call<ArticlesResponse> getArticlesPopuler();
+    @GET("api/articles/new")
+    Call<ArticlesResponse> getArticlesNew();
     @GET("api/articles/Detail/{id}")
     Call<ArticleDetailResponse> getArticleDetail(@Path("id") int articleId);
     @PATCH("api/articles/view/{id}")

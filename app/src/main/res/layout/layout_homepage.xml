@@ -51,34 +51,43 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-        <ImageView
+
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/avatarImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:contentDescription="User Avatar"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/bg_rounded"
+            android:elevation="11dp"
+            android:scaleType="centerCrop"
+
+            app:shapeAppearanceOverlay="@style/CircleStyle"
+            app:layout_constraintTop_toTopOf="@id/UsernameUser"
+            app:layout_constraintBottom_toBottomOf="@id/UsernameUser"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:src="@drawable/ic_launcher_foreground"
+
+            />
         <ImageView
             android:id="@+id/AppIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/icon_app"
             android:contentDescription="App Icon"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/UsernameUser"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/UsernameUser"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="15dp" />
+            />
         <TextView
             android:id="@+id/UsernameUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/AppIcon"
             app:layout_constraintStart_toEndOf="@+id/avatarImage"
-            app:layout_constraintTop_toTopOf="@+id/avatarImage"
-            app:layout_constraintBottom_toBottomOf="@+id/avatarImage"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="20dp"
             android:text="Hallo User"
             android:textColor="#D5DEEF"
             android:textSize="16sp" />
@@ -304,17 +313,7 @@
             android:background="@android:color/transparent"
             app:tint="@color/active_btn"
             android:contentDescription="People"
-
             />
-        <ImageButton
-            android:id="@+id/navPeople"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/nav_people_icon"
-            android:background="@android:color/transparent"
-            android:contentDescription="People" />
-
         <ImageButton
             android:id="@+id/nav_diary"
             android:layout_width="0dp"

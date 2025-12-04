@@ -1,15 +1,19 @@
 package com.project.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
 import com.project.model.ExpertsModel;
 import com.project.mindbloom.R;
 
@@ -71,6 +75,20 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Ex
         holder.tvName.setText(expert.getName());
         holder.tvJob.setText(expert.getExpertise_area());
 
+        String base64String = expert.getAvatar();
+        if (holder.imgProfile != null) {
+            if (base64String != null && !base64String.isEmpty()) {
+                try {
+                    byte[] imageBytes = android.util.Base64.decode(base64String, android.util. Base64.DEFAULT);
+                    Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                    holder.imgProfile. setImageBitmap(decodedImage);
+                } catch (IllegalArgumentException e) {
+                    holder.imgProfile.setImageResource(R.drawable.add_icon);
+                }
+            } else {
+                holder.imgProfile.setImageResource(R.drawable.add_icon);
+            }
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,11 +110,14 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Ex
 
     public static class ExpertListViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvJob;
+        ShapeableImageView imgProfile;
 
         public ExpertListViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.txtUsernmae);  // ⚠️ Pastikan ID ini sesuai dengan layout
             tvJob = itemView.findViewById(R.id.txtJob);
+            imgProfile = itemView.findViewById(R.id.avatarExpert);
+
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.project.adapter;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -43,16 +46,34 @@ public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.
     @Override // ANOTASI @Override wajib
     public void onBindViewHolder(@NonNull ScrollDiaryAdapter.DiaryViewHolder holder, int position) {
         DiaryModel Diary = DiaryList.get(position);
+        holder.ivArticleImage.setVisibility(INVISIBLE);
+        holder.ivDiaryImage.setVisibility(VISIBLE);
 
         // 1. Mengisi TextViews
         holder.tvTitle.setText(Diary.getTitle());
         holder.tvExcerpt.setText(Diary.getContent());
 
-        Glide.with(context)
-                .load(R.drawable.icon_app) // Muat logo statis Anda
-                .placeholder(R.drawable.icon_app)
-                .error(R.drawable.icon_app)
-                .into(holder.ivArticleImage);
+        String mood = Diary.getMoodTag();
+
+        if ("happy".equals(mood)) {
+            Glide.with(context)
+                    .load(R.drawable.mood1)
+                    .into(holder.ivDiaryImage);
+        } else if ("sad".equals(mood)) {
+            Glide.with(context)
+                    .load(R.drawable.mood3)
+                    .into(holder.ivDiaryImage);
+        } else if ("angry".equals(mood)) {
+            Glide.with(context)
+                    .load(R.drawable.mood4)
+                    .into(holder.ivDiaryImage);
+        } else if ("neutral".equals(mood)) {
+            Glide.with(context)
+                    .load(R.drawable.mood2)
+                    .into(holder.ivDiaryImage);
+        }
+        // 2. Memuat Gambar menggunakan Glide
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,14 +96,17 @@ public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.
 
     public static class DiaryViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvExcerpt, tvSelengkapnya;
-        ImageView ivArticleImage;
+        ImageView ivDiaryImage, ivArticleImage;
 
         public DiaryViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.txtJudulArtikel);
             tvExcerpt = itemView.findViewById(R.id.txtDescripsiArtikel);
             tvSelengkapnya = itemView.findViewById(R.id.txtSelengkapnya);
-            ivArticleImage = itemView.findViewById(R.id.ivArticleImage);
+            ivDiaryImage = itemView.findViewById(R.id.ivArticleImageDiary);
+            ivArticleImage = itemView.findViewById(R.id.ivArticleImageArticles);
+
+
         }
     }
 

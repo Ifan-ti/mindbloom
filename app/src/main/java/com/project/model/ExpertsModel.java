@@ -6,18 +6,21 @@ public class ExpertsModel {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("name")
+    @SerializedName("fullName")
     private String name;
 
     @SerializedName("expertise_area")
     private String expertise_area;
 
+    @SerializedName("avatar")
+    private String avatar;
     // ✅ TAMBAHKAN CONSTRUCTOR KOSONG (untuk Gson)
     public ExpertsModel() {
     }
 
     // ✅ TAMBAHKAN CONSTRUCTOR LENGKAP (untuk testing)
-    public ExpertsModel(int id, String name, String expertise_area) {
+    public ExpertsModel(int id, String name, String expertise_area, String avatar) {
+        this.avatar = avatar;
         this.id = id;
         this.name = name;
         this.expertise_area = expertise_area;
@@ -34,6 +37,10 @@ public class ExpertsModel {
 
     public String getExpertise_area() {
         return expertise_area;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 
     // ✅ TAMBAHKAN toString() untuk debugging

@@ -79,6 +79,10 @@ public class PatientDetailFragment extends Fragment {
 
         // ✅ TAMBAHKAN: Setup Pusher untuk listen incoming-request
         setupPusherListener();
+
+        binding.navProfile.setOnClickListener(v -> {
+
+        });
     }
 
     private void setupRecyclerView() {

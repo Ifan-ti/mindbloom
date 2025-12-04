@@ -1,7 +1,10 @@
 package com.project.mindbloom.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +47,7 @@ import com.project.model.dateModel;
 
 import com.project.mindbloom.R;
 import com.project.mindbloom.databinding.LayoutHomepageBinding;
-import com.project.response.ArticlePopulerResponse;
+import com.project.response.ArticlesResponse;
 import com.project.response.DiaryRespone;
 import com.project.response.UserResponse;
 import com.project.service.ApiService;
@@ -121,7 +124,8 @@ public class Homepage_Activity extends AppCompatActivity {
         setupSearchListener();
         setupNavBarListeners();
 
-        fetchUsername();
+        fetchUsernameNavatar();
+
 
 
 
@@ -223,9 +227,9 @@ public class Homepage_Activity extends AppCompatActivity {
         articleParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         binding.recyclerViewPopularArticles.setLayoutParams(articleParams);
 
-        fetchArticles();
+        fetchArticlesPopuler();
+        fetchArticlesNew();
     }
-
     private void showDiaryView() {
         // 1. ATUR STYLE TOMBOL & HINT
         binding.SearchInput.setHint("Cari Diary Yang Kamu Inginkan");
@@ -275,59 +279,26 @@ public class Homepage_Activity extends AppCompatActivity {
 
         fetchDiary();
     }
-
     // Homepage_Activity.java
-
-    private void fetchArticles() {
-        Call<ArticlePopulerResponse> call = apiService.getArticles();
-
+    private void fetchArticlesPopuler() {
+        Call<ArticlesResponse> call = apiService.getArticlesPopuler();
         // HANYA SATU PANGGILAN API UNTUK MENGISI KEDUA ADAPTER DAN INDIKATOR
-        call.enqueue(new Callback<ArticlePopulerResponse>() {
+        call.enqueue(new Callback<ArticlesResponse>() {
             @Override
-            public void onResponse(Call<ArticlePopulerResponse> call, Response<ArticlePopulerResponse> response) {
+            public void onResponse(Call<ArticlesResponse> call, Response<ArticlesResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<ArticleModel> articles = response.body().getData();
+                    fullArticleList = new ArrayList<>(articles);
 
 
-                    if (articles != null && !articles.isEmpty()) {
+                        if (articles != null && !articles.isEmpty()) {
+                            Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
+                            List<ArticleModel> listPopuler = new ArrayList<>(articles);
+                            // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
+                            popularArticleAdapter.setData(listPopuler);
 
-                        Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
-
-
-
-                        List<ArticleModel> listPopuler = new ArrayList<>(articles);
-
-
-                        Collections.sort(listPopuler, new Comparator<ArticleModel>() {
-                                    @Override
-                                    public int compare(ArticleModel a1, ArticleModel a2) {
-                                        // Ganti getReadCount() sesuai nama method di ArticleModel Anda
-                                        // Ini mengurutkan descending (a2 dibanding a1)
-                                        return Integer.compare(a2.getReadCount(), a1.getReadCount());
-                                    }
-
-                                });
-
-                        List<ArticleModel> listRekomendasi = new ArrayList<>();
-
-                        // Loop semua artikel
-                        // ⬇️ ASUMSI: ArticleModel punya getTags() & tag-nya "rekomendasi"
-                        for (ArticleModel article : articles) {
-                            // Ganti getTags() dan "rekomendasi" sesuai data Anda
-                            if (article.getNamaTag() != null && article.getNamaTag().contains("Rekomendasi")) {
-                                listRekomendasi.add(article);
-                            }
-                        }
-
-                        fullArticleList = new ArrayList<>(listPopuler);
-                        // 1. ISI ADAPTER ARTIKEL POPULER (List Vertikal)
-                        popularArticleAdapter.setData(listPopuler);
-
-                        // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
-                        rekomendasiartikeladapter.setData(listRekomendasi);
-
-                        // 🔥 3. PANGGIL SETUP INDICATOR 🔥
-                        setupIndicators(listRekomendasi.size());
+                            // 🔥 3. PANGGIL SETUP INDICATOR 🔥
+                            setupIndicators(listPopuler.size());
 
                     } else {
                         Log.w("API_EMPTY", "Data artikel kosong.");
@@ -338,26 +309,45 @@ public class Homepage_Activity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onFailure(Call<ArticlePopulerResponse> call, Throwable t) {
+            public void onFailure(Call<ArticlesResponse> call, Throwable t) {
                 Log.e("API_ERROR", "Koneksi ke API Artikel gagal: " + t.getMessage());
             }
         });
     }
-// ASUMSI: Anda punya variabel global ini di Homepage_Activity
-// private ScrollDiaryAdapter scrollDiaryAdapter; // (untuk slider)
-// private DiaryHistoryAdapter historyDiaryAdapter; // (untuk list riwayat)
+    private void fetchArticlesNew() {
+        Call<ArticlesResponse> call = apiService.getArticlesNew();
 
-    // Homepage_Activity.java
+        // HANYA SATU PANGGILAN API UNTUK MENGISI KEDUA ADAPTER DAN INDIKATOR
+        call.enqueue(new Callback<ArticlesResponse>() {
+            @Override
+            public void onResponse(Call<ArticlesResponse> call, Response<ArticlesResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<ArticleModel> articles = response.body().getData();
 
-// --- Variabel Global yang Diasumsikan ---
-// private ScrollDiaryAdapter diarySliderAdapter;
-// private DiaryHistoryAdapter diaryHistoryAdapter; // (Anda harus membuat class adapter ini)
-// private List<ImageView> diaryIndicators = new ArrayList<>(); // (List terpisah untuk indikator diary)
 
-// ...
+                    if (articles != null && !articles.isEmpty()) {
+                        Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
+                        List<ArticleModel> listNew = new ArrayList<>(articles);
+                        // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
+                        rekomendasiartikeladapter.setData(listNew);
 
-// ... (import lain untuk Activity, Toast, Log, Retrofit, dsb.)
+                        // 🔥 3. PANGGIL SETUP INDICATOR 🔥
+                        setupIndicators(listNew.size());
 
+                    } else {
+                        Log.w("API_EMPTY", "Data artikel kosong.");
+                    }
+                } else {
+                    // Respons Gagal (misal status 404, 500 dari server)
+                    Log.e("API_FAIL", "Respon gagal: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArticlesResponse> call, Throwable t) {
+                Log.e("API_ERROR", "Koneksi ke API Artikel gagal: " + t.getMessage());
+            }
+        });
+    }
     private void fetchDiary() {
         SessionManager sessionManager = new SessionManager(this);
         String token = sessionManager.getAuthToken();
@@ -439,44 +429,38 @@ public class Homepage_Activity extends AppCompatActivity {
             }
         });
     }
-    private void fetchUsername()  {
+    private void fetchUsernameNavatar(){
         SessionManager sessionManager = new SessionManager(this);
 
-        int userId = sessionManager.getUserId();
+        binding.UsernameUser.setText("Hallo, " + sessionManager.getUsername());
 
-        Call<UserResponse> call = apiService.getUserById(userId);
-        call.enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    UserResponse userResponse = response.body();
-                    if ("success".equals(userResponse.getStatus())) {
-                        String username = userResponse.getData().getUsername();
-                        // Misal tampilkan di TextView
-                        binding.UsernameUser.setText("Hallo, " + username);
-                    } else {
-                        Toast.makeText(Homepage_Activity.this,
-                                "Gagal ambil username: " + userResponse.getStatus(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(Homepage_Activity.this,
-                            "Gagal memuat data user. Kode: " + response.code(),
-                            Toast.LENGTH_SHORT).show();
-                    sessionManager.clearSession();
-                    Intent intent = new Intent(Homepage_Activity.this, LoginFragmentActivity.class);
-                    startActivity(intent);
+        String base64ImageString = sessionManager.getAvatar();
 
-                }
-            }
 
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                Toast.makeText(Homepage_Activity.this,
-                        "Koneksi gagal: " + t.getMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        if (base64ImageString == null || base64ImageString.isEmpty()) {
+            // Tangani kasus jika string kosong atau null
+            Log.d("IMAGE", "IMAGE: " + base64ImageString);
+            return;
+        }
+
+        try {
+            // 1. Mendekode string Base64 ke byte array
+            // Menggunakan flag DEFAULT atau NO_WRAP (tergantung cara encoding API)
+            byte[] decodedString = Base64.decode(base64ImageString, Base64.DEFAULT);
+
+            // 2. Mengubah byte array menjadi Bitmap
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            // 3. Menampilkan Bitmap di ImageView
+            binding.avatarImage.setImageBitmap(decodedByte);
+
+        } catch (IllegalArgumentException e) {
+            // Tangani jika string Base64 tidak valid
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -682,14 +666,6 @@ public class Homepage_Activity extends AppCompatActivity {
             Log.d("NAV_BAR", "Tombol Home diklik");
             // Tambahkan intent un tuk berpindah ke Activity Home jika perlu
             // Contoh: startActivity(new Intent(this, Homepage_Activity.class));
-        });
-
-        // Listener untuk People/Komunitas
-        binding.navPeople.setOnClickListener(v -> {
-            Log.d("NAV_BAR", "Tombol People diklik");
-            Intent intent = new Intent(Homepage_Activity.this, Community_Activity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
         });
 
         // Listener untuk Calendar/Diary

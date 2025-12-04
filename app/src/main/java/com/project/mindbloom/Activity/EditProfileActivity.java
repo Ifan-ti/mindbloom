@@ -38,7 +38,7 @@ import retrofit2.Response;
 public class EditProfileActivity extends AppCompatActivity {
 
     // Data dari Intent (profil lama)
-    private String Username, bio, imageUrl, email;
+    private String username, bio, imageUrl, email, fullname;
 
     private LayoutEditProfileBinding binding;
     private ApiService apiService;
@@ -73,7 +73,8 @@ public class EditProfileActivity extends AppCompatActivity {
     //  MENGAMBIL DATA INTENT
     // =======================
     private void getData() {
-        Username = getIntent().getStringExtra("username");
+        fullname = getIntent().getStringExtra("fullname");
+        username = getIntent().getStringExtra("username");
         bio = getIntent().getStringExtra("bio");
         imageUrl = getIntent().getStringExtra("imageUrl");  // base64 lama
         email = getIntent().getStringExtra("email");
@@ -84,7 +85,8 @@ public class EditProfileActivity extends AppCompatActivity {
     // MENAMPILKAN DATA AWAL KE UI
     // ================================
     private void setProfileData() {
-        binding.tvValueUsername.setText(Username);
+        binding.tvValueFullName.setText(fullname);
+        binding.tvValueUsername.setText(username);
         binding.tvValueAccount.setText(email);
         binding.tvValueBio.setText(bio);
 
@@ -114,6 +116,7 @@ public class EditProfileActivity extends AppCompatActivity {
         binding.btnSave.setOnClickListener(v -> updateProfile());
 
         // Dialog edit teks
+        binding.btnFullNameNext.setOnClickListener(v -> showTextInputDialog(0));
         binding.btnUsernameNext.setOnClickListener(v -> showTextInputDialog(1));
         binding.btnBioNext.setOnClickListener(v -> showTextInputDialog(2));
         binding.btnMoreAccount.setOnClickListener(v -> showTextInputDialog(3));
@@ -135,11 +138,14 @@ public class EditProfileActivity extends AppCompatActivity {
         EditText input = customLayout.findViewById(R.id.input_field_custom);
 
         // Pre-chart text
+        if (index == 0) input.setText(binding.tvValueFullName.getText());
         if (index == 1) input.setText(binding.tvValueUsername.getText());
         if (index == 2) input.setText(binding.tvValueBio.getText());
         if (index == 3) input.setText(binding.tvValueAccount.getText());
 
         builder.setPositiveButton("Oke", (dialog, which) -> {
+            if (index == 0)
+                binding.tvValueFullName.setText(input.getText().toString());
             if (index == 1)
                 binding.tvValueUsername.setText(input.getText().toString());
             if (index == 2)
@@ -167,7 +173,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     ProfileModel profile = response.body().getData();
 
                     // Tampilkan gambar terbaru dari server
-                    String base64 = profile.getCoverImage();
+                    String base64 = profile.getAvatar();
                     if (base64 != null && !base64.isEmpty()) {
                         byte[] decoded = Base64.decode(base64, Base64.DEFAULT);
                         Bitmap bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
@@ -301,6 +307,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String newUsername = binding.tvValueUsername.getText().toString().trim();
         String newBio = binding.tvValueBio.getText().toString().trim();
         String newEmail = binding.tvValueAccount.getText().toString().trim();
+        String fullName = binding.tvValueFullName.getText().toString().trim();
 
         if (newUsername.isEmpty()) {
             Toast.makeText(this, "Username tidak boleh kosong", Toast.LENGTH_SHORT).show();
@@ -315,6 +322,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (imageToSend == null) imageToSend = "";
 
         UpdateProfileRequest request = new UpdateProfileRequest(
+                fullName,
                 newUsername,
                 newBio,
                 newEmail,
@@ -327,6 +335,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     Toast.makeText(EditProfileActivity.this, "Profil berhasil diupdate!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(EditProfileActivity.this, ProfileActivity.class));
+                    overridePendingTransition(0, 0);
                     finish();
                 } else {
                     Toast.makeText(EditProfileActivity.this, "Gagal: " + response.message(), Toast.LENGTH_SHORT).show();

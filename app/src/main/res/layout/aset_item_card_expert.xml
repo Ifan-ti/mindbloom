@@ -18,10 +18,10 @@
         android:background="@drawable/frame_home"
         >
 
-        <ImageView
-            android:id="@+id/img_profile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatarExpert"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,6 +32,8 @@
 
 
             android:src="@drawable/mood1"
+            app:shapeAppearanceOverlay="@style/CircleStyle"
+
             />
 
         <TextView
@@ -39,8 +41,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
-            app:layout_constraintTop_toTopOf="@id/img_profile"
-            app:layout_constraintStart_toEndOf="@id/img_profile"
+            app:layout_constraintTop_toTopOf="@id/avatarExpert"
+            app:layout_constraintStart_toEndOf="@id/avatarExpert"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="20dp"

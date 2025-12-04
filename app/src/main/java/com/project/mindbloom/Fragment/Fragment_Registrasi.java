@@ -31,7 +31,7 @@ public class Fragment_Registrasi extends Fragment {
     private ApiService apiService;
     private SessionManager sessionManager;
 
-    private EditText EmailInput, PasswordInput, UsernameInput;
+    private EditText EmailInput, PasswordInput, UsernameInput, FUllNameInput;
     private Button ContinueBtn;
     private TextView BtnSignIn;
 
@@ -56,6 +56,7 @@ public class Fragment_Registrasi extends Fragment {
         UsernameInput = view.findViewById(R.id.UsernameInput);
         ContinueBtn = view.findViewById(R.id.btnContinue);
         BtnSignIn = view.findViewById(R.id.btnsignup);
+        FUllNameInput = view.findViewById(R.id.FullNameInput);
 
         BtnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +79,7 @@ public class Fragment_Registrasi extends Fragment {
         String username = UsernameInput.getText().toString().trim();
         String email = EmailInput.getText().toString().trim();
         String password = PasswordInput.getText().toString().trim();
+        String Fullname = FUllNameInput.getText().toString().trim();
 
         // Validasi
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -90,11 +92,11 @@ public class Fragment_Registrasi extends Fragment {
             return;
         }
 
-        registerUser(username, email, password);
+        registerUser(username, email, password, Fullname);
     }
 
-    private void registerUser(String username, String email, String password) {
-        RegisterRequest request = new RegisterRequest(username, email, password);
+    private void registerUser(String username, String email, String password,String Fullname) {
+        RegisterRequest request = new RegisterRequest(username, email, password, Fullname );
 
         // Panggilan API mengharapkan LoginResponse (sesuai backend baru)
         apiService.register(request).enqueue(new Callback<LoginResponse>() {
@@ -109,8 +111,12 @@ public class Fragment_Registrasi extends Fragment {
                         int userId = loginResponse.getData().getUser().getId(); // ID user berhasil dibawa
                         String userEmail = loginResponse.getData().getUser().getEmail();
                         int role_Id = loginResponse.getData().getUser().getRoleId();
+                        String fullname = loginResponse.getData().getUser().getFullName();
+                        String username = loginResponse.getData().getUser().getUsername();
+                        String avatar = loginResponse.getData().getUser().getAvatar();
 
-                        sessionManager.saveLoginSession(token, userId, userEmail, role_Id);
+                        // 4. Simpan Sesi (Token & ID User)
+                        sessionManager.saveLoginSession(token, userId,fullname,username, userEmail, role_Id, avatar);
 
                         Toast.makeText(getContext(), "Registrasi Berhasil!", Toast.LENGTH_SHORT).show();
                         navigateToHomepage(); // Langsung pindah ke Homepage

@@ -8,33 +8,26 @@
 
     <ImageButton
         android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:minWidth="48dp"
-        android:minHeight="48dp"
-
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/button_back"
+        android:contentDescription="Back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Tombol Posting -->
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+    <!-- Label Foto -->
     <Button
         android:id="@+id/btnPosting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-
-        android:minHeight="48dp"
-
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="#3B5998"
+        android:text="Post"
         android:textColor="@android:color/white"
-
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,8 +35,7 @@
         android:id="@+id/tvFoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-
+        android:text="Photo"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
@@ -51,6 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="24dp" />
 
+    <!-- Tombol Tambah Foto -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardAddPhoto"
         android:layout_width="120dp"
@@ -66,21 +59,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="32dp"
-
-
+            android:src="@drawable/icon_add"
+            android:contentDescription="Add Photo"
             android:scaleType="centerInside"
-/>
+            app:tint="@color/default_blue" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Caption -->
     <EditText
         android:id="@+id/etCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
-        android:minHeight="48dp"
-
-        android:hint=""
-
+        android:hint="Write caption here..."
         android:background="@android:color/transparent"
         android:textColor="#000000"
         android:textSize="14sp"

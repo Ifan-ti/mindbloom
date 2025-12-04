@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F6F8FC"
+    android:padding="16dp">
+
+    <!-- BACK -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/button_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- EDIT -->
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#3B5998"
+        android:text="EDIT"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack" />
+
+    <!-- DATE -->
+    <TextView
+        android:id="@+id/txtDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="05 Sep 2025"
+        android:textColor="#3D5AF1"
+        android:textSize="14sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="@id/btnBack"
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+    <!-- MOOD ICON -->
+    <ImageView
+        android:id="@+id/imgMood"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/moodhappy"
+        app:layout_constraintTop_toTopOf="@id/txtDate"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- TITLE -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="My Diary Title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#1C1C1C"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/txtDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- CONTENT -->
+    <TextView
+        android:id="@+id/txtContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        android:text="Diary content goes here..."
+        android:textColor="#1C1C1C"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- AFTERCARE BOX -->
+
+    <LinearLayout
+        android:id="@+id/aftercareBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="350dp"
+        android:background="@drawable/aftercare_bg"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtContent">
+
+        <TextView
+            android:id="@+id/aftercareTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI Aftercare"
+            android:textColor="#4A6CF7"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="17dp"
+            tools:layout_editor_absoluteY="480dp" />
+
+        <TextView
+            android:id="@+id/txtAftercare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Aftercare content will appear here..."
+            android:textColor="#1C1C1C"
+            android:textSize="15sp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

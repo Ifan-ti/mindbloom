@@ -291,14 +291,14 @@ public class Homepage_Activity extends AppCompatActivity {
                     fullArticleList = new ArrayList<>(articles);
 
 
-                        if (articles != null && !articles.isEmpty()) {
-                            Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
-                            List<ArticleModel> listPopuler = new ArrayList<>(articles);
-                            // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
-                            popularArticleAdapter.setData(listPopuler);
+                    if (articles != null && !articles.isEmpty()) {
+                        Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
+                        List<ArticleModel> listPopuler = new ArrayList<>(articles);
+                        // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
+                        popularArticleAdapter.setData(listPopuler);
 
-                            // 🔥 3. PANGGIL SETUP INDICATOR 🔥
-                            setupIndicators(listPopuler.size());
+                        // 🔥 3. PANGGIL SETUP INDICATOR 🔥
+                        setupIndicators(listPopuler.size());
 
                     } else {
                         Log.w("API_EMPTY", "Data artikel kosong.");
@@ -378,13 +378,13 @@ public class Homepage_Activity extends AppCompatActivity {
                     // --- 2. Siapkan data "Riwayat Diary" (Sorted) ---
                     listRiwayat = new ArrayList<>(fullDiaryList);
                     Collections.sort(listRiwayat, (a1, a2) -> {
-                        if (a1.getEntry_date() == null || a2.getEntry_date() == null) return 0;
-                        return a2.getEntry_date().compareTo(a1.getEntry_date());
+                        if (a1.getEntryDate() == null || a2.getEntryDate() == null) return 0;
+                        return a2.getEntryDate().compareTo(a1.getEntryDate());
                     });
 
                     // --- 3. Siapkan data "Diary Hari Ini" (Filtered) ---
                     for (DiaryModel diary : fullDiaryList) {
-                        if (diary.getEntry_date() != null && diary.getEntry_date().equals(tanggalHariIni)) {
+                        if (diary.getEntryDate() != null && diary.getEntryDate() .equals(tanggalHariIni)) {
                             listDiaryHariIni.add(diary);
                         }
                     }
@@ -671,7 +671,7 @@ public class Homepage_Activity extends AppCompatActivity {
         // Listener untuk Calendar/Diary
         binding.navDiary.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Calendar/Diary diklik");
-            startActivity(new Intent(Homepage_Activity.this, uploadDiaryActivity.class));
+//            startActivity(new Intent(Homepage_Activity.this, uploadDiaryActivity.class));
             // Panggil showDiaryView() jika ini seharusnya mengaktifkan tab Diary
 
         });

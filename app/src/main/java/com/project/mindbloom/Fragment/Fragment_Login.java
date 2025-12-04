@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,7 +35,7 @@ public class Fragment_Login extends Fragment {
     private EditText etEmail, etPassword;
     private Button btnContinue;
     private View btnSignUp;
-
+    private TextView btnForgot;
     private ApiService apiService;
 
     private static final String PREF_NAME = "USER_PREF";
@@ -60,6 +61,17 @@ public class Fragment_Login extends Fragment {
         etPassword = view.findViewById(R.id.PasswordInput);
         btnContinue = view.findViewById(R.id.btnContinue);
         btnSignUp = view.findViewById(R.id.btnsignup);
+        btnForgot = view.findViewById(R.id.forgotPassword);
+
+        btnForgot.setOnClickListener( v -> {
+            if (getActivity() != null) {
+                // Pindah ke Fragment Registrasi
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ForgotPasswordVerificationFragment())
+                        .addToBackStack(null) // Penting untuk tombol back
+                        .commit();
+            }
+        });
 
         // Tombol login
         btnContinue.setOnClickListener(v -> performLogin());

@@ -4,7 +4,6 @@ plugins {
     // butuh karena Gemini client ditulis Kotlin (tetap bisa dipanggil dari Java)
     id("org.jetbrains.kotlin.android") version "1.9.24"
     // Google Services (Firebase)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -71,7 +70,6 @@ dependencies {
 
     // --- RecyclerView & Gson ---
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.google.code.gson:gson:2.11.0")
 
     // --- Retrofit & OkHttp ---
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -84,7 +82,6 @@ dependencies {
 
     // --- Glide (untuk Java: pakai annotationProcessor) ---
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation(libs.firebase.inappmessaging)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // --- (Opsional) Coroutines kalau nanti dipakai ---
@@ -106,5 +103,11 @@ dependencies {
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation ("androidx.cardview:cardview:1.0.0 ")
+
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("com.google.android.material:material:1.11.0")
+
+
+    // OkHttp for API calls
 
 }

@@ -1,6 +1,14 @@
 package com.project.service;
 
 import com.project.model.DiaryUploadModel;
+import com.project.request.ForgotPasswordRequest;
+import com.project.request.ResetPasswordRequest;
+import com.project.request.VerifyOTPRequest;
+import com.project.response.ApiResponse;
+import com.project.response.ArticleDetailResponse;
+import com.project.response.DiaryDetailResponse;
+import com.project.response.DiaryRespone;
+import com.project.response.DiaryPostResponse;
 
 import com.project.request.AftercareRequest;
 import com.project.request.ChatSaveRequest;
@@ -25,11 +33,14 @@ import com.project.response.ExpertsRensponse;
 import com.project.response.LoginResponse;
 import com.project.response.MoodResponse;
 import com.project.response.NotificationResponse;
+import com.project.response.OTPResponse;
 import com.project.response.PatientDetailResponse;
 import com.project.response.PostResponse;
 import com.project.response.ProfileResponse;
 import com.project.response.StatusResponse;
 import com.project.response.UserResponse;
+import com.project.response.VerifyOTPResponse;
+import com.project.response.ViewCountResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -67,9 +78,8 @@ public interface ApiService {
 
     @GET("api/users/experts")
     Call<ExpertsRensponse> getExpert();
-
     @GET("api/users/expertsDetail/{id}")
-    Call<ExpertsDetailResponse> getExpertsDetail(@Path("id") int expertId);
+    Call<ExpertsDetailResponse> getExpertsDetail(@Path("id") int diaryId);
 
     //===================
     //     ARTICLES-API
@@ -82,9 +92,9 @@ public interface ApiService {
 
     @GET("api/articles/Detail/{id}")
     Call<ArticleDetailResponse> getArticleDetail(@Path("id") int articleId);
-
+    // Increment view count artikel
     @PATCH("api/articles/view/{id}")
-    Call<Void> incrementArticleView(@Path("id") int articleId);
+    Call<ViewCountResponse> incrementArticleView(@Path("id") int articleId, @Header("Authorization") String authToken);
 
     //===================
     //     DIARY-API
@@ -182,6 +192,19 @@ public interface ApiService {
             @Header("Authorization") String authToken,
             @Body AftercareRequest request
     );
+
+    // ===================
+    // OTP - API
+    // ===================
+
+    @POST("api/forgot-password/request")
+    Call<OTPResponse> requestOTP(@Body ForgotPasswordRequest request);
+
+    @POST("api/forgot-password/verify-otp")
+    Call<VerifyOTPResponse> verifyOTP(@Body VerifyOTPRequest request);
+
+    @POST("api/forgot-password/reset")
+    Call<ApiResponse> resetPassword(@Body ResetPasswordRequest request);
 
 
     //===================

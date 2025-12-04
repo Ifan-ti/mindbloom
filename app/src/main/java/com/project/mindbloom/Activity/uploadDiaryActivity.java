@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.project.client.RetrofitClient;
 import com.project.model.DiaryUploadModel;
 import com.project.mindbloom.R;
+import com.project.model.DiaryModel;
+import com.project.model.DiaryUploadModel;
 import com.project.response.DiaryPostResponse;
 
 import retrofit2.Call;

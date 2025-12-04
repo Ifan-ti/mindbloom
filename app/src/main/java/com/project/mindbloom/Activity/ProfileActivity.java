@@ -311,7 +311,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Listener untuk Calendar/Diary
         binding.navDiary.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Calendar/Diary diklik");
-            // Panggil showDiaryView() jika ini seharusnya mengaktifkan tab Diary
+            startActivity(new Intent(ProfileActivity.this, uploadDiaryActivity.class));
 
         });
 

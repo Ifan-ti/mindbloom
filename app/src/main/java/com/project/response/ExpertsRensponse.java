@@ -6,6 +6,7 @@ import com.project.model.ExpertsModel;
 import java.util.List;
 
 public class ExpertsRensponse {
+
     public String getStatus() {
         return status;
     }
@@ -13,6 +14,7 @@ public class ExpertsRensponse {
     public List<ExpertsModel> getData() {
         return data;
     }
+
 
     @SerializedName("status")
     private String status;

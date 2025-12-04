@@ -85,4 +85,4 @@ public class ArticleModel {
 
 
 
-    // ... Pastikan Anda juga menambahkan getter untuk kolom lain jika diperlukan (id, published_at, dll.)
+// ... Pastikan Anda juga menambahkan getter untuk kolom lain jika diperlukan (id, published_at, dll.)

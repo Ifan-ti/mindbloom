@@ -291,14 +291,14 @@ public class Homepage_Activity extends AppCompatActivity {
                     fullArticleList = new ArrayList<>(articles);
 
 
-                        if (articles != null && !articles.isEmpty()) {
-                            Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
-                            List<ArticleModel> listPopuler = new ArrayList<>(articles);
-                            // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
-                            popularArticleAdapter.setData(listPopuler);
+                    if (articles != null && !articles.isEmpty()) {
+                        Log.d("API_SUCCESS", "Total Artikel: " + articles.size());
+                        List<ArticleModel> listPopuler = new ArrayList<>(articles);
+                        // 2. ISI ADAPTER REKOMENDASI SLIDER (ViewPager)
+                        popularArticleAdapter.setData(listPopuler);
 
-                            // 🔥 3. PANGGIL SETUP INDICATOR 🔥
-                            setupIndicators(listPopuler.size());
+                        // 🔥 3. PANGGIL SETUP INDICATOR 🔥
+                        setupIndicators(listPopuler.size());
 
                     } else {
                         Log.w("API_EMPTY", "Data artikel kosong.");
@@ -671,6 +671,7 @@ public class Homepage_Activity extends AppCompatActivity {
         // Listener untuk Calendar/Diary
         binding.navDiary.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Calendar/Diary diklik");
+//            startActivity(new Intent(Homepage_Activity.this, uploadDiaryActivity.class));
             // Panggil showDiaryView() jika ini seharusnya mengaktifkan tab Diary
 
         });

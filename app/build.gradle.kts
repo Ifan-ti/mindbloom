@@ -4,7 +4,6 @@ plugins {
     // butuh karena Gemini client ditulis Kotlin (tetap bisa dipanggil dari Java)
     id("org.jetbrains.kotlin.android") version "1.9.24"
     // Google Services (Firebase)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -84,7 +83,6 @@ dependencies {
 
     // --- Glide (untuk Java: pakai annotationProcessor) ---
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation(libs.firebase.inappmessaging)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // --- (Opsional) Coroutines kalau nanti dipakai ---

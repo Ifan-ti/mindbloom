@@ -112,7 +112,7 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
             // Aktifkan klik
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, FormDetailActivity.class);
-                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, diary.getId());
+                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, diary.getIdDiary());
                 context.startActivity(intent);
             });
         }

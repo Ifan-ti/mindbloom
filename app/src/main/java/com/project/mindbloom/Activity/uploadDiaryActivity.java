@@ -157,7 +157,7 @@ public class uploadDiaryActivity extends AppCompatActivity {
         );
 
 
-        RetrofitClient.getApiService().uploadDiary(diary)
+        RetrofitClient.getApiService(this).uploadDiary(diary)
                 .enqueue(new Callback<DiaryPostResponse>() {
                     @Override
                     public void onResponse(Call<DiaryPostResponse> call, Response<DiaryPostResponse> response) {
@@ -200,7 +200,7 @@ public class uploadDiaryActivity extends AppCompatActivity {
                 selectedMood
         );
 
-        RetrofitClient.getApiService().updateDiary(diaryId, diary)
+        RetrofitClient.getApiService(this).updateDiary(diaryId, diary)
                 .enqueue(new Callback<DiaryPostResponse>() {
                     @Override
                     public void onResponse(Call<DiaryPostResponse> call, Response<DiaryPostResponse> response) {

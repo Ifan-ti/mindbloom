@@ -2,7 +2,6 @@ package com.project.service;
 
 import com.project.data.DiaryUploadModel;
 import com.project.response.ArticleDetailResponse;
-import com.project.response.ArticlePopulerResponse;
 import com.project.response.DiaryDetailResponse;
 import com.project.response.DiaryRespone;
 import com.project.response.DiaryPostResponse;

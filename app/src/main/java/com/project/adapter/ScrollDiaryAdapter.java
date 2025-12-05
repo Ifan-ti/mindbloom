@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bumptech.glide.Glide;
+import com.project.mindbloom.Activity.DetailDiaryActivity;
 import com.project.model.DiaryModel;
 import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R;
@@ -53,7 +54,7 @@ public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.
         holder.tvTitle.setText(Diary.getTitle());
         holder.tvExcerpt.setText(Diary.getContent());
 
-        String mood = Diary.getMoodTag();
+        String mood = Diary.getMood_tag();
 
         if ("happy".equals(mood)) {
             Glide.with(context)
@@ -75,18 +76,25 @@ public class ScrollDiaryAdapter extends RecyclerView.Adapter<ScrollDiaryAdapter.
         // 2. Memuat Gambar menggunakan Glide
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, FormDetailActivity.class);
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, FormDetailActivity.class);
+            intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, Diary.getId_diary());
 
-                // 🔥 KIRIM ID DIARY
-                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, Diary.getIdDiary());
 
-                context.startActivity(intent);
-            }
+            intent = new Intent(context, DetailDiaryActivity.class);
+
+            // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
+
+
+
+            intent.putExtra("title", Diary.getTitle());
+            intent.putExtra("content", Diary.getContent());
+            intent.putExtra("mood", Diary.getMood_tag());
+            intent.putExtra("date", Diary.getEntry_date());
+            // Mulai Activity baru
+
+            context.startActivity(intent);
         });
-
 
     }
     @Override // ANOTASI @Override wajib

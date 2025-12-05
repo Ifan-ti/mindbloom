@@ -199,6 +199,9 @@
 
         app:background="@drawable/clickbtn"
         app:backgroundTint="#395886"
+
+        android:textColor="@color/inactive_light_blue"
+
         />
 
     <TextView

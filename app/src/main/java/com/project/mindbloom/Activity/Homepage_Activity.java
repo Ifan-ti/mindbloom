@@ -359,8 +359,10 @@ public class Homepage_Activity extends AppCompatActivity {
         Call<DiaryRespone> call = apiService.getMyDiary("Bearer " + token);
 
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String tanggalHariIni = today.format(formatter);
+        DateTimeFormatter formatter = DateTimeFormatter. ofPattern("yyyy-MM-dd");
+        String tanggalHariIni = today.format(formatter); // "2025-12-05"
+
+        Log.d("DIARY_FILTER", "📅 Tanggal hari ini: " + tanggalHariIni);
 
         call.enqueue(new Callback<DiaryRespone>() {
             @Override
@@ -373,50 +375,57 @@ public class Homepage_Activity extends AppCompatActivity {
 
                     List<DiaryModel> diaries = response.body().getData();
                     fullDiaryList = new ArrayList<>(diaries);
-                    Log.d("API_SUCCESS", "Total Diary: " + fullDiaryList.size());
+                    Log.d("API_SUCCESS", "📋 Total Diary: " + fullDiaryList.size());
 
-                    // --- 2. Siapkan data "Riwayat Diary" (Sorted) ---
+                    // --- 2.  Siapkan data "Riwayat Diary" (Sorted) ---
                     listRiwayat = new ArrayList<>(fullDiaryList);
                     Collections.sort(listRiwayat, (a1, a2) -> {
-                        if (a1.getEntryDate() == null || a2.getEntryDate() == null) return 0;
-                        return a2.getEntryDate().compareTo(a1.getEntryDate());
+                        if (a1.getEntry_date() == null || a2.getEntry_date() == null) return 0;
+                        return a2. getEntry_date().compareTo(a1.getEntry_date());
                     });
 
-                    // --- 3. Siapkan data "Diary Hari Ini" (Filtered) ---
+                    // ✅ 3.  PERBAIKAN: Filter "Diary Hari Ini"
                     for (DiaryModel diary : fullDiaryList) {
-                        if (diary.getEntryDate() != null && diary.getEntryDate() .equals(tanggalHariIni)) {
-                            listDiaryHariIni.add(diary);
+                        String entryDate = diary.getEntry_date();
+
+                        if (entryDate != null) {
+                            // ✅ Ekstrak 10 karakter pertama (YYYY-MM-DD)
+                            String extractedDate = entryDate.length() >= 10
+                                    ? entryDate.substring(0, 10)
+                                    : entryDate;
+
+                            Log.d("DIARY_FILTER", "🔍 Diary: " + diary.getTitle());
+                            Log.d("DIARY_FILTER", "   Raw date: " + entryDate);
+                            Log. d("DIARY_FILTER", "   Extracted: " + extractedDate);
+                            Log.d("DIARY_FILTER", "   Match?  " + extractedDate.equals(tanggalHariIni));
+
+                            if (extractedDate.equals(tanggalHariIni)) {
+                                listDiaryHariIni.add(diary);
+                                Log.d("DIARY_FILTER", "✅ Added to today's list!");
+                            }
                         }
                     }
 
-                } else if (response.code() != 404) {
-                    // Tangani error jika bukan "Not Found"
+                    Log.d("DIARY_FILTER", "📊 Total diary hari ini: " + listDiaryHariIni.size());
+
+                } else if (response. code() != 404) {
                     Toast.makeText(Homepage_Activity.this,
-                            "Gagal memuat diary. Code: " + response.code(),
+                            "Gagal memuat diary.  Code: " + response.code(),
                             Toast.LENGTH_SHORT).show();
                 }
-                // Jika 404 atau data null, list akan otomatis kosong (sudah benar)
-
 
                 // --- 4. SET DATA KE ADAPTER ---
-                // Adapter akan menangani jika listRiwayat atau listDiaryHariIni kosong
                 scrolldiaryadapter.setData(listRiwayat);
                 slidediaryadaptert.setData(listDiaryHariIni);
 
-
-                // 🔥 5. PERBAIKAN: ATUR INDIKATOR
-                // Kita hanya ingin indikator muncul jika ada LEBIH DARI 1 diary.
-                // Adapter (di langkah 2) akan menampilkan 1 card "kosong",
-                // jadi kita cek list aslinya.
+                // --- 5. ATUR INDIKATOR ---
                 if (listDiaryHariIni.size() > 1) {
                     binding.SlideIndicator.setVisibility(View.VISIBLE);
                     setupIndicators(listDiaryHariIni.size());
                 } else {
-                    // Sembunyikan jika list kosong ATAU hanya ada 1 item
                     binding.SlideIndicator.setVisibility(View.GONE);
                 }
 
-                // Pastikan ViewPager selalu terlihat
                 binding.viewPagerDiarySlider.setVisibility(View.VISIBLE);
             }
 
@@ -664,6 +673,7 @@ public class Homepage_Activity extends AppCompatActivity {
         // Listener untuk Home
         binding.navHome.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Home diklik");
+
             // Tambahkan intent un tuk berpindah ke Activity Home jika perlu
             // Contoh: startActivity(new Intent(this, Homepage_Activity.class));
         });
@@ -671,7 +681,7 @@ public class Homepage_Activity extends AppCompatActivity {
         // Listener untuk Calendar/Diary
         binding.navDiary.setOnClickListener(v -> {
             Log.d("NAV_BAR", "Tombol Calendar/Diary diklik");
-//            startActivity(new Intent(Homepage_Activity.this, uploadDiaryActivity.class));
+            startActivity(new Intent(Homepage_Activity.this, uploadDiaryActivity.class));
             // Panggil showDiaryView() jika ini seharusnya mengaktifkan tab Diary
 
         });

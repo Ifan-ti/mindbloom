@@ -1,5 +1,7 @@
 package com.project.mindbloom.Activity;
 
+import static android.view.View.GONE;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
@@ -21,6 +23,8 @@ public class DetailDiaryActivity extends AppCompatActivity {
     private ImageView imgMood;
     private int diaryId;
     private String content;
+    Button btnEdit;
+    private LinearLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,8 @@ public class DetailDiaryActivity extends AppCompatActivity {
         tvContent = findViewById(R.id.txtContent);
         tvAftercare = findViewById(R.id.txtAftercare);
         imgMood = findViewById(R.id.imgMood);
+        layout = findViewById(R.id.aftercareBox);
+        btnEdit = findViewById(R.id.btnEdit);
 
         diaryId = getIntent().getIntExtra("diaryId", -1);
         String date = getIntent().getStringExtra("date");
@@ -43,6 +49,11 @@ public class DetailDiaryActivity extends AppCompatActivity {
         tvTitle.setText(title);
         tvContent.setText(content);
         tvAftercare.setText("Sedang memuat aftercare...");
+
+        layout.setVisibility(GONE);
+        btnEdit.setVisibility(GONE);
+
+
 
         setMoodImage(mood);
 
@@ -73,7 +84,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
         }
 
         AftercareRequest request = new AftercareRequest(diaryId, content);
-        RetrofitClient.getApiService().generateAftercare("Bearer " + token, request)
+        RetrofitClient.getApiService(this).generateAftercare("Bearer " + token, request)
                 .enqueue(new Callback<AfterCareResponse>() {
                     @Override
                     public void onResponse(Call<AfterCareResponse> call, Response<AfterCareResponse> response) {

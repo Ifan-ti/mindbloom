@@ -41,6 +41,7 @@
         <activity android:name=".Activity.EditProfileActivity"/>
         <activity android:name=".Activity.ExpertFragmentActivity"/>
         <activity android:name=".Activity.uploadDiaryActivity" />
+        <activity android:name=".Activity.DetailDiaryActivity" />
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

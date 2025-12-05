@@ -398,7 +398,7 @@ public class PatientDetailFragment extends Fragment {
     private void fetchPatientList() {
         String token = sessionManager.getAuthToken();
 
-        Call<PatientDetailResponse> call = apiService.getPatienDetail("Bearer " + token);
+        Call<PatientDetailResponse> call = apiService.getPatientDetail("Bearer " + token);
 
         call.enqueue(new Callback<PatientDetailResponse>() {
             @Override

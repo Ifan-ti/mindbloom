@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.project.mindbloom.Activity.DetailDiaryActivity;
 import com.project.model.DiaryModel;
 import com.project.mindbloom.Activity.FormDetailActivity;
 import com.project.mindbloom.R;
@@ -80,7 +81,7 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
             holder.tvTitle.setText(diary.getTitle());
             holder.tvExcerpt.setText(diary.getContent());
 
-            String mood = diary.getMoodTag();
+            String mood = diary.getMood_tag();
 
             if ("happy".equals(mood)) {
                 Glide.with(context)
@@ -112,7 +113,21 @@ public class SlideDiaryAdapter extends RecyclerView.Adapter<SlideDiaryAdapter.Sl
             // Aktifkan klik
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, FormDetailActivity.class);
-                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, diary.getIdDiary());
+                intent.putExtra(FormDetailActivity.EXTRA_DIARY_ID, diary.getId_diary());
+
+
+                intent = new Intent(context, DetailDiaryActivity.class);
+
+                // Kirim ID artikel menggunakan ID yang sudah kita buat getter-nya
+
+
+
+                intent.putExtra("title", diary.getTitle());
+                intent.putExtra("content", diary.getContent());
+                intent.putExtra("mood", diary.getMood_tag());
+                intent.putExtra("date", diary.getEntry_date());
+                // Mulai Activity baru
+
                 context.startActivity(intent);
             });
         }
